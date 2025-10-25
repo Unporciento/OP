@@ -1,23 +1,24 @@
-const express = require('express');
-const dotenv = require('dotenv');
 const fetch = require('node-fetch');
-const cors = require('cors');
 
-dotenv.config();
+export default async function handler(req, res) {
+  
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-const app = express();
-
-app.use(cors()); 
-app.use(express.json());
-
-const handler = async (req, res) => {
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   try {
     const prompt = req.body.prompt;
-    if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
+    if (!prompt) {
+      return res.status(400).json({ error: 'No prompt provided' });
+    }
 
     const API_KEY = process.env.GEMINI_API_KEY;
     if (!API_KEY) {
@@ -49,7 +50,7 @@ const handler = async (req, res) => {
       console.error('Gemini API Error:', response.status, responseData);
       let userError = `Error ${response.status} de la API. `;
       if (response.status === 400 || response.status === 403 || response.status === 429) {
-          userError += 'Verifique que su API Key sea válida, tenga permisos para el modelo "pro" o que no haya excedido el límite de uso.';
+          userError += 'Verifique que su API Key sea válida, tenga permisos o no haya excedido el límite.';
       } else {
           userError += 'Error interno de la API de Google.';
       }
@@ -60,12 +61,8 @@ const handler = async (req, res) => {
     return res.json({ text: text });
 
   } catch (err) {
-    console.error('Error de Conexión o Servidor Interno:', err.message);
-    return res.status(500).json({ error: 'Error de Conexión: No se pudo contactar el servidor.' });
+    console.error('Error Interno del Servidor:', err.message);
+    return res.status(500).json({ error: `Error interno del servidor: ${err.message}` });
   }
-};
-
-app.post('/', handler);
-
-module.exports = app;
+}
 
