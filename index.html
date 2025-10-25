@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚜 HeavyDiag - Simulador Predictivo de Averías Mineras</title>
+<style>
+  /* --- ESTILOS CSS CONSOLIDADOS --- */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #101820 0%, #1b2730 100%); min-height: 100vh; padding: 20px; color: #fff; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  header { text-align: center; color: #f5af19; margin-bottom: 24px; }
+  header h1 { font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); }
+  .main-content { background: #222e39; border-radius: 12px; padding: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+  .machines-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 15px 0; }
+  .machine-card { background: linear-gradient(135deg, #f5af19 0%, #f7d794 100%); color: #000; padding: 15px; border-radius: 8px; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; text-align: center; }
+  .machine-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(245, 175, 25, 0.3); }
+  .machine-card.selected { border-color: #e74c3c; background: #fff; box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); }
+  .machine-card strong { display: block; margin-top: 5px; }
+  .failure-section { margin-top: 25px; }
+  .failures-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+  .failure-btn { background: #4a5d73; color: white; padding: 15px; border-radius: 8px; border: none; text-align: left; cursor: pointer; transition: background 0.2s; }
+  .failure-btn:hover { background: #5d728c; }
+  .failure-btn strong { display: block; margin-bottom: 5px; }
+  .diagnosis-area { margin-top: 25px; background: #334455; padding: 20px; border-radius: 8px; }
+  .info-card { background: #3e5163; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+  .chain-step { background: #4a5d73; padding: 8px; border-radius: 4px; margin: 5px 0; border-left: 4px solid #f5af19; }
+  ol, ul { margin-left: 20px; }
+  .alert-safety { background: #e74c3c; border-left: 4px solid #c0392b; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+  .alert-engineer { background: #27ae60; border-left: 4px solid #2ecc71; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+  .action-buttons { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+  .search-btn { background: #3498db; color: #fff; padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer; transition: background 0.2s; }
+  .search-btn:hover { background: #2980b9; }
+  .reset-btn { background: #95a5a6; }
+  .gemini-answer { background: #1b2730; padding: 15px; border-radius: 8px; margin-top: 15px; white-space: pre-wrap; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚜 HeavyDiag - Simulador Predictivo de Averías Mineras</h1>
+      <p>Selecciona la máquina y la falla para obtener diagnóstico técnico y gestión de costos.</p>
+    </header>
+
+    <div class="main-content">
+      <section>
+        <h2>Selecciona el tipo de maquinaria</h2>
+        <div id="machinesGrid" class="machines-grid"></div>
+      </section>
+
+      <section id="failureSection" class="failure-section" style="display:none;">
+        <h2>Selecciona una avería</h2>
+        <div id="failuresList" class="failures-list"></div>
+      </section>
+
+      <section id="diagnosisArea" class="diagnosis-area" style="display:none;">
+        <h2>Diagnóstico Completo y Gestión de Falla</h2>
+        <div id="diagnosisResult"></div>
+
+        <div class="action-buttons">
+          <button id="btnGemini" class="search-btn">🔎 Pedir más info (Gemini)</button>
+          <button id="btnOpenGoogle" class="search-btn">🌐 Abrir búsquedas en Google</button>
+          <button id="btnReset" class="search-btn reset-btn">♻️ Reiniciar Todo</button>
+        </div>
+
+        <div id="geminiAnswer" class="gemini-answer" style="display:none;"></div>
+      </section>
+    </div>
+  </div>
+
+<script>
+/* ----------------------------------------------------------------------------------------- */
+/* HEAVYDIAG - DATOS Y LÓGICA CONSOLIDADA (v2.1) */
+/* ----------------------------------------------------------------------------------------- */
+
+const machines = {
+    retroexcavadora: { name: "Retroexcavadora", icon: "🚜", description: "Excavación y carga" },
+    excavadora: { name: "Excavadora Hidráulica", icon: "⛏️", description: "Excavación profunda" },
+    cargador: { name: "Cargador Frontal", icon: "🏗️", description: "Carga de material" },
+    dumper: { name: "Camión Minero (Dumper)", icon: "🚛", description: "Transporte de material" },
+    skidsteer: { name: "Cargador Compacto", icon: "🚧", description: "Equipo auxiliar y soporte" },
+    camioneta: { name: "Camioneta Minera 4x4", icon: "🚙", description: "Transporte de personal" }
+};
+
+const failures = {
+    retroexcavadora: [
+        {
+            id: 1, name: "Ingreso de agua al motor (Hydrolock)", initial: "Motor se apaga súbitamente tras cruzar un charco.",
+            alertaSeguridad: "⚠️ CRÍTICO: NO intentar arrancar de nuevo. Esto puede causar una fractura del bloque o cárter.",
+            chainReaction: ["Agua entra a la cámara de combustión", "El agua es incompresible (Hydrolock)", "Bielas se doblan o rompen (fuerza extrema)", "Daño al cigüeñal y fisura del bloque"],
+            symptoms: ["Motor detenido súbitamente", "No gira al intentar arrancar", "Aceite con aspecto lechoso"],
+            diagnosticSteps: ["1. NO intentar encendido.", "2. Retirar inyectores/bujías y girar motor manualmente para drenar agua.", "3. Revisar aspecto del aceite (emulsión lechosa)."],
+            solution: ["Desmontaje completo del motor.", "Reemplazo de bielas y pistones.", "Cambio múltiple de aceite y filtros."],
+            tiempoDowntime: "120 - 240 horas (por reconstrucción del motor).",
+            costoEstimado: "US$ 15,000 - US$ 50,000.", searchTerms: "hydrolock motor diesel maquinaria pesada bielas dobladas",
+            datoIngeniero: "La compresión del agua genera picos de presión que superan el límite elástico del acero de la biela en milisegundos."
+        },
+        {
+            id: 2, name: "Drift o Hundimiento del Brazo (Arm Drift)", initial: "El brazo de excavación desciende lentamente al dejarlo en posición extendida.",
+            alertaSeguridad: "Máquina operable, pero riesgo de caída de carga. Asegurar área de trabajo.",
+            chainReaction: ["Fuga interna en el cilindro de brazo (sellos de pistón).", "Válvula de Bloqueo (Lock Valve) defectuosa en el banco de válvulas.", "Pérdida de eficiencia por necesidad de potencia constante."],
+            symptoms: ["Brazo no mantiene posición", "Movimiento lento o errático"],
+            diagnosticSteps: ["1. Calentar aceite a temperatura de operación.", "2. Medir tasa de caída (drift rate) con carga.", "3. Medir presión en el lado de bloqueo del cilindro para aislar cilindro vs. válvula."],
+            solution: ["Reemplazo de sellos internos de pistón.", "Reemplazo del cartucho de la Válvula de Bloqueo."],
+            tiempoDowntime: "10 - 30 horas (si el problema es un cilindro).",
+            costoEstimado: "US$ 1,500 - US$ 8,000.", searchTerms: "hydraulic arm drift excavator lock valve cylinder seal failure"
+        }
+    ],
+    dumper: [
+        {
+            id: 3, name: "Fallo Sensor de Velocidad de Transmisión (DTC 281-04)", initial: "Transmisión no hace cambios, o se bloquea en una marcha fija.",
+            alertaSeguridad: "Maquina inoperativa (modo Limp Home). Riesgo bajo, pero inmovilizar el equipo.",
+            chainReaction: ["ECU no recibe señal de velocidad (G69).", "Sistema entra en modo de protección (Limp Home).", "Se puede recalentar la transmisión a largo plazo."],
+            symptoms: ["Transmisión bloqueada", "Luz de 'Check Trans' encendida", "Velocímetro errático o nulo"],
+            diagnosticSteps: ["1. Escanear código 281-04 o similar.", "2. Revisar visualmente el sensor G69.", "3. Comprobar continuidad y aislamiento del arnés (cableado)."],
+            solution: ["Reparación o reemplazo del arnés del sensor G69.", "Reemplazo del sensor de velocidad."],
+            tiempoDowntime: "4 - 12 horas.",
+            costoEstimado: "US$ 500 - US$ 1,500.", searchTerms: "DTC 281-04 sensor velocidad transmisión allison G69"
+        },
+        {
+            id: 4, name: "Sobrecalentamiento Transmisión (Frenado Excesivo)", initial: "Luz de advertencia de alta temperatura de transmisión; olor a quemado.",
+            alertaSeguridad: "APAGAR INMEDIATAMENTE. Alto riesgo de incendio o falla catastrófica.",
+            chainReaction: ["Degradación rápida del aceite (ATF).", "Daño por calor en sellos y discos de embrague.", "Fallo del Convertidor de Par."],
+            symptoms: ["Temperatura alta", "Cambios bruscos", "Olor a aceite quemado"],
+            diagnosticSteps: ["1. Revisar nivel y olor/color del aceite.", "2. Inspeccionar el enfriador de aceite (obstrucción).", "3. Escanear códigos de falla de alta temperatura (ej. DTC 190-XX)."],
+            solution: ["Limpieza/reparación del enfriador.", "Cambio de aceite y filtros.", "Si hay daño: reconstrucción total de la caja."],
+            tiempoDowntime: "24 - 48 horas (limpieza/reparación menor); 160+ horas (reconstrucción).",
+            costoEstimado: "US$ 2,500 - US$ 80,000.", searchTerms: "sobrecalentamiento transmision dumper camion minero retardador"
+        }
+    ],
+    camioneta: [
+        {
+            id: 5, name: "Vibración Severa del Eje de Transmisión", initial: "Vibración muy fuerte al acelerar o a cierta velocidad.",
+            alertaSeguridad: "Máquina inoperativa. Detener el vehículo inmediatamente. El eje puede desbalancearse.",
+            chainReaction: ["Fractura o fisura en eje (propeller shaft).", "Desgaste o daño en crucetas (U-Joints).", "Daño al piñón y corona del diferencial por estrés."],
+            symptoms: ["Ruido metálico (clunk) al cambiar", "Vibración que aumenta con la velocidad"],
+            diagnosticSteps: ["1. Inspeccionar visualmente el eje por golpes.", "2. Verificar holgura en las crucetas/juntas universales.", "3. Revisar soportes de motor y transmisión."],
+            solution: ["Reemplazo del eje de transmisión.", "Cambio de crucetas/juntas universales y re-balanceo."],
+            tiempoDowntime: "4 - 8 horas.",
+            costoEstimado: "US$ 1,500 - US$ 4,000.", searchTerms: "fractura eje de transmisión camioneta minera vibración 4x4"
+        }
+    ],
+    excavadora: [
+        {
+            id: 6, name: "Falla en Circuito Piloto (Movimientos Lentos)", initial: "Todos los movimientos hidráulicos son lentos y débiles.",
+            alertaSeguridad: "Operable, pero con riesgo de control impreciso. Proceder a diagnóstico con la cabina bloqueada.",
+            chainReaction: ["Presión Piloto insuficiente (debajo de 4100 kPa/595 psi).", "Carretes de la válvula principal no se desplazan completamente.", "Pérdida de fuerza de la bomba por regulación incorrecta."],
+            symptoms: ["Velocidad de ciclo muy lenta", "Palancas de control suaves", "Dificultad en combinar movimientos"],
+            diagnosticSteps: ["1. Conectar manómetro a toma de presión piloto.", "2. Verificar que la presión esté en el rango **4100 kPa (595 psi) ± 200 kPa**.", "3. Revisar la Válvula Reductora de Presión Piloto."],
+            solution: ["Ajuste de la válvula de alivio piloto.", "Limpieza/reemplazo del filtro piloto."],
+            tiempoDowntime: "8 - 24 horas.",
+            costoEstimado: "US$ 1,500 - US$ 6,000.", searchTerms: "presión nominal sistema piloto excavadora 4100 kPa",
+            datoIngeniero: "La presión piloto es de 'baja presión' y actúa como la señal nerviosa del sistema; si es baja, el sistema principal no actúa, aunque la bomba principal esté sana."
+        }
+    ],
+    cargador: [], 
+    skidsteer: [] 
+};
+
+// --- UI / LÓGICA ---
+let selectedMachineKey = null;
+let selectedFailure = null;
+const grid = document.getElementById('machinesGrid');
+const failureSection = document.getElementById('failureSection');
+const diagnosisArea = document.getElementById('diagnosisArea');
+const diagnosisResult = document.getElementById('diagnosisResult');
+const geminiAnswer = document.getElementById('geminiAnswer');
+
+function initMachines(){
+    grid.innerHTML = '';
+    Object.keys(machines).forEach(key=>{
+        const m = machines[key];
+        const card = document.createElement('div');
+        card.className = 'machine-card';
+        card.innerHTML = `<div style="font-size:28px">${m.icon}</div><strong>${m.name}</strong><div style="font-size:12px;margin-top:6px">${m.description}</div>`;
+        card.onclick = () => {
+            document.querySelectorAll('.machine-card').forEach(c=>c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectMachine(key);
+        };
+        grid.appendChild(card);
+    });
+}
+
+function selectMachine(key) {
+    selectedMachineKey = key;
+    const list = document.getElementById('failuresList');
+    list.innerHTML = '';
+    failureSection.style.display = 'block';
+    diagnosisArea.style.display = 'none';
+    const machineFailures = failures[key] || [];
+    if (machineFailures.length === 0) {
+        list.innerHTML = `<p style="color: #f5af19; padding: 10px;">Aún no hay fallas definidas para ${machines[key].name}.</p>`;
+    } else {
+        machineFailures.forEach(f => {
+            const btn = document.createElement('button');
+            btn.className = 'failure-btn';
+            btn.innerHTML = `<strong>${f.name}</strong><div style="font-size:12px;margin-top:6px;color:#ccc">${f.initial}</div>`;
+            btn.onclick = () => showDiagnosis(f);
+            list.appendChild(btn);
+        });
+    }
+}
+
+function showDiagnosis(f) {
+    selectedFailure = f;
+    diagnosisArea.style.display = 'block';
+    geminiAnswer.style.display = 'none';
+    geminiAnswer.innerText = '';
+    diagnosisResult.innerHTML = `
+        <div class="alert-safety">
+            <h4>⚠️ ALERTA DE SEGURIDAD (HSE)</h4>
+            <p>${f.alertaSeguridad}</p>
+        </div>
+        <div class="info-card">
+            <h4>SINTOMAS Y CONTEXTO</h4>
+            <p><strong>Contexto Inicial:</strong> ${f.initial}</p>
+            <ul>${f.symptoms.map(s=>`<li>${s}</li>`).join('')}</ul>
+        </div>
+        <div class="info-card">
+            <h4>CADENA DE FALLA (Efecto Dominó)</h4>
+            ${f.chainReaction.map(c=>`<div class="chain-step">${c}</div>`).join('')}
+        </div>
+        <div class="info-card">
+            <h4>PASOS DE DIAGNÓSTICO Y REVISIÓN</h4>
+            <ol>${f.diagnosticSteps.map(s=>`<li>${s}</li>`).join('')}</ol>
+        </div>
+        <div class="info-card">
+            <h4>GESTIÓN Y LOGÍSTICA</h4>
+            <p><strong>Costo Estimado de Reparación:</strong> ${f.costoEstimado || 'No disponible'}</p>
+            <p><strong>Tiempo de Inactividad (Downtime):</strong> ${f.tiempoDowntime || 'Variable'}</p>
+        </div>
+        ${f.datoIngeniero ? 
+          `<div class="alert-engineer">
+              <h4>💡 Dato Técnico del Ingeniero</h4>
+              <p>${f.datoIngeniero}</p>
+          </div>` : ''
+        }
+    `;
+    document.getElementById('btnOpenGoogle').onclick = () => {
+        const q = encodeURIComponent(f.searchTerms || f.name);
+        window.open(`https://www.google.com/search?q=${q}`, '_blank');
+    };
+    window.scrollTo({top: diagnosisArea.offsetTop - 50, behavior:'smooth'});
+}
+
+// --- BOTONES DE ACCIÓN (CONEXIÓN EXTERNA) ---
+document.addEventListener('DOMContentLoaded', () => {
+    initMachines();
+    
+    document.getElementById('btnGemini').addEventListener('click', async () => {
+        if (!selectedFailure) { 
+            alert('Selecciona una falla primero'); 
+            return; 
+        }
+        
+        const f = selectedFailure;
+        const prompt = `Analiza la siguiente falla en maquinaria pesada: ${f.name}. Síntomas: ${f.symptoms.join('; ')}. Pasos de diagnóstico: ${f.diagnosticSteps.join('; ')}. ¿Qué información técnica crítica (ej. presiones, torques, códigos de error) de manuales de servicio se necesita para confirmar la causa raíz?`;
+        
+        geminiAnswer.style.display = 'block';
+        geminiAnswer.innerText = '🕐 Buscando información técnica detallada en Gemini...';
+
+        let responseText = '';
+
+        try {
+            // Llama al endpoint de Node.js que creaste:
+            const res = await fetch('/api/gemini', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt })
+            });
+            
+            // Intenta leer la respuesta JSON del servidor, incluso si es un error
+            const data = await res.json();
+
+            if (res.ok) {
+                // Éxito: El servidor devolvió 200 OK
+                responseText = "🌐 RESPUESTA DE GEMINI:\n\n" + (data.text || 'No se obtuvo respuesta del modelo.');
+            } else {
+                // Error: El servidor devolvió un error (ej. 500, 502, 400)
+                // 'data.error' es el mensaje que enviamos desde server.js
+                responseText = `❌ Error del Servidor: ${data.error || 'Error desconocido del servidor.'}`;
+            }
+            
+        } catch (err) {
+            // Error de Red: El fetch falló (el servidor está apagado o bloqueado)
+            console.error('Fetch error:', err.message);
+            responseText = '❌ Error de Conexión: No se pudo contactar el servidor. Asegúrate de que el archivo server.js esté corriendo en la terminal.';
+        }
+        
+        geminiAnswer.innerText = responseText;
+    });
+
+    document.getElementById('btnReset').addEventListener('click', () => {
+        location.reload();
+    });
+});
+</script>
+</body>
+</html>
