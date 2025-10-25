@@ -70,7 +70,7 @@
 
 <script>
 /* ----------------------------------------------------------------------------------------- */
-/* HEAVYDIAG - DATOS Y LÓGICA CONSOLIDADA (v2.1) */
+/* HEAVYDIAG - DATOS Y LÓGICA CONSOLIDADA (v2.0) */
 /* ----------------------------------------------------------------------------------------- */
 
 const machines = {
@@ -89,7 +89,7 @@ const failures = {
             alertaSeguridad: "⚠️ CRÍTICO: NO intentar arrancar de nuevo. Esto puede causar una fractura del bloque o cárter.",
             chainReaction: ["Agua entra a la cámara de combustión", "El agua es incompresible (Hydrolock)", "Bielas se doblan o rompen (fuerza extrema)", "Daño al cigüeñal y fisura del bloque"],
             symptoms: ["Motor detenido súbitamente", "No gira al intentar arrancar", "Aceite con aspecto lechoso"],
-            diagnosticSteps: ["1. NO intentar encendido.", "2. Retirar inyectores/bujías y girar motor manualmente para drenar agua.", "3. Revisar aspecto del aceite (emulsión lechosa)."],
+            diagnosticSteps: ["1. NO intentar encendido.", "2. Retirar inyectores/bujías y girar motor manually para drenar agua.", "3. Revisar aspecto del aceite (emulsión lechosa)."],
             solution: ["Desmontaje completo del motor.", "Reemplazo de bielas y pistones.", "Cambio múltiple de aceite y filtros."],
             tiempoDowntime: "120 - 240 horas (por reconstrucción del motor).",
             costoEstimado: "US$ 15,000 - US$ 50,000.", searchTerms: "hydrolock motor diesel maquinaria pesada bielas dobladas",
@@ -188,7 +188,9 @@ function selectMachine(key) {
     list.innerHTML = '';
     failureSection.style.display = 'block';
     diagnosisArea.style.display = 'none';
+
     const machineFailures = failures[key] || [];
+
     if (machineFailures.length === 0) {
         list.innerHTML = `<p style="color: #f5af19; padding: 10px;">Aún no hay fallas definidas para ${machines[key].name}.</p>`;
     } else {
@@ -207,52 +209,61 @@ function showDiagnosis(f) {
     diagnosisArea.style.display = 'block';
     geminiAnswer.style.display = 'none';
     geminiAnswer.innerText = '';
+    
+    // --- CONSTRUCCIÓN DEL HTML DE DIAGNÓSTICO ENRIQUECIDO ---
     diagnosisResult.innerHTML = `
         <div class="alert-safety">
             <h4>⚠️ ALERTA DE SEGURIDAD (HSE)</h4>
             <p>${f.alertaSeguridad}</p>
         </div>
+
         <div class="info-card">
             <h4>SINTOMAS Y CONTEXTO</h4>
             <p><strong>Contexto Inicial:</strong> ${f.initial}</p>
             <ul>${f.symptoms.map(s=>`<li>${s}</li>`).join('')}</ul>
         </div>
+        
         <div class="info-card">
             <h4>CADENA DE FALLA (Efecto Dominó)</h4>
             ${f.chainReaction.map(c=>`<div class="chain-step">${c}</div>`).join('')}
         </div>
+
         <div class="info-card">
             <h4>PASOS DE DIAGNÓSTICO Y REVISIÓN</h4>
             <ol>${f.diagnosticSteps.map(s=>`<li>${s}</li>`).join('')}</ol>
         </div>
+
         <div class="info-card">
             <h4>GESTIÓN Y LOGÍSTICA</h4>
             <p><strong>Costo Estimado de Reparación:</strong> ${f.costoEstimado || 'No disponible'}</p>
             <p><strong>Tiempo de Inactividad (Downtime):</strong> ${f.tiempoDowntime || 'Variable'}</p>
         </div>
+        
         ${f.datoIngeniero ? 
           `<div class="alert-engineer">
               <h4>💡 Dato Técnico del Ingeniero</h4>
               <p>${f.datoIngeniero}</p>
           </div>` : ''
         }
+        
     `;
+    
+    // Asegurar que los botones de acción se puedan vincular
     document.getElementById('btnOpenGoogle').onclick = () => {
         const q = encodeURIComponent(f.searchTerms || f.name);
         window.open(`https://www.google.com/search?q=${q}`, '_blank');
     };
+    // Desplazar al área de diagnóstico
     window.scrollTo({top: diagnosisArea.offsetTop - 50, behavior:'smooth'});
 }
 
 // --- BOTONES DE ACCIÓN (CONEXIÓN EXTERNA) ---
+
 document.addEventListener('DOMContentLoaded', () => {
     initMachines();
     
     document.getElementById('btnGemini').addEventListener('click', async () => {
-        if (!selectedFailure) { 
-            alert('Selecciona una falla primero'); 
-            return; 
-        }
+        if (!selectedFailure) { alert('Selecciona una falla primero'); return; }
         
         const f = selectedFailure;
         const prompt = `Analiza la siguiente falla en maquinaria pesada: ${f.name}. Síntomas: ${f.symptoms.join('; ')}. Pasos de diagnóstico: ${f.diagnosticSteps.join('; ')}. ¿Qué información técnica crítica (ej. presiones, torques, códigos de error) de manuales de servicio se necesita para confirmar la causa raíz?`;
@@ -260,35 +271,29 @@ document.addEventListener('DOMContentLoaded', () => {
         geminiAnswer.style.display = 'block';
         geminiAnswer.innerText = '🕐 Buscando información técnica detallada en Gemini...';
 
-        let responseText = '';
-
         try {
-            // Llama al endpoint de Node.js que creaste:
-            const res = await fetch('/api/gemini', {
+            // Llama al endpoint de Vercel (que está en /api/server)
+            const res = await fetch('/api/server', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ prompt })
             });
             
-            // Intenta leer la respuesta JSON del servidor, incluso si es un error
             const data = await res.json();
 
-            if (res.ok) {
-                // Éxito: El servidor devolvió 200 OK
-                responseText = "🌐 RESPUESTA DE GEMINI:\n\n" + (data.text || 'No se obtuvo respuesta del modelo.');
-            } else {
-                // Error: El servidor devolvió un error (ej. 500, 502, 400)
-                // 'data.error' es el mensaje que enviamos desde server.js
-                responseText = `❌ Error del Servidor: ${data.error || 'Error desconocido del servidor.'}`;
+            if (!res.ok) {
+                // Si la respuesta NO es OK, muestra el error específico que enviamos desde el servidor
+                throw new Error(data.error || 'Error desconocido del servidor');
             }
             
+            const text = data.text || 'No se obtuvo respuesta del modelo. Intenta con Google.';
+            geminiAnswer.innerText = "🌐 RESPUESTA DE GEMINI:\n\n" + text;
+            
         } catch (err) {
-            // Error de Red: El fetch falló (el servidor está apagado o bloqueado)
-            console.error('Fetch error:', err.message);
-            responseText = '❌ Error de Conexión: No se pudo contactar el servidor. Asegúrate de que el archivo server.js esté corriendo en la terminal.';
+            // Este es el error de "no se pudo conectar" O el error que lanzamos arriba
+            geminiAnswer.innerText = `❌ Error del Servidor: ${err.message}`;
+            console.error(err);
         }
-        
-        geminiAnswer.innerText = responseText;
     });
 
     document.getElementById('btnReset').addEventListener('click', () => {
@@ -298,3 +303,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
