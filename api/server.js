@@ -1,20 +1,16 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const fetch = require('node-fetch');
-const cors = require('cors'); // Necesario para Vercel
+const cors = require('cors');
 
-// Cargar variables de entorno (Vercel las manejará de forma segura)
 dotenv.config();
 
 const app = express();
 
-// Habilitar CORS para que la app web pueda llamar a esta API
 app.use(cors()); 
 app.use(express.json());
 
-// Esta es la función principal que Vercel ejecutará
 const handler = async (req, res) => {
-  // Solo permitir solicitudes POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
@@ -23,7 +19,6 @@ const handler = async (req, res) => {
     const prompt = req.body.prompt;
     if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
 
-    // Acceder a la variable de entorno de Vercel
     const API_KEY = process.env.GEMINI_API_KEY;
     if (!API_KEY) {
       console.error('ERROR: GEMINI_API_KEY no encontrada.');
@@ -70,8 +65,7 @@ const handler = async (req, res) => {
   }
 };
 
-// Vercel usará esta ruta: /api/server
-app.post('/api/server', handler);
+app.post('/', handler);
 
-// Exportar la app para Vercel
 module.exports = app;
+
