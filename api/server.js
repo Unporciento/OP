@@ -24,7 +24,9 @@ module.exports = async (req, res) => {
       return res.status(500).json({ error: 'Falta la clave API en el servidor.' });
     }
 
-    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent';
+    // --- ¡ESTE ES EL CAMBIO! ---
+    // Volvemos al modelo 'flash', que es el más compatible.
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent';
 
     const body = {
       "contents": [{ "parts": [{ "text": prompt }] }],
@@ -48,7 +50,7 @@ module.exports = async (req, res) => {
       console.error('Gemini API Error:', response.status, responseData);
       let userError = `Error ${response.status} de la API. `;
       if (response.status === 400 || response.status === 403 || response.status === 429) {
-          userError += 'Verifique que su API Key sea válida, tenga permisos o no haya excedido el límite.';
+          userError += 'Verifique que su API Key sea válida (revísela en Vercel) o no haya excedido el límite.';
       } else {
           userError += 'Error interno de la API de Google.';
       }
