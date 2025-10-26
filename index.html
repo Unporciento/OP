@@ -5,46 +5,70 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🚜 HeavyDiag - Simulador Predictivo de Averías Mineras</title>
 <style>
-  /* --- ESTILOS CSS CONSOLIDADOS --- */
+  /* --- ESTILOS CSS MEJORADOS --- */
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #101820 0%, #1b2730 100%); min-height: 100vh; padding: 20px; color: #fff; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #101820 0%, #1b2730 100%); min-height: 100vh; padding: 20px; color: #e0e0e0; line-height: 1.6; }
   .container { max-width: 1200px; margin: 0 auto; }
-  header { text-align: center; color: #f5af19; margin-bottom: 24px; }
-  header h1 { font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); }
-  .main-content { background: #222e39; border-radius: 12px; padding: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
-  .machines-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 15px 0; }
-  .machine-card { background: linear-gradient(135deg, #f5af19 0%, #f7d794 100%); color: #000; padding: 15px; border-radius: 8px; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; text-align: center; }
-  .machine-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(245, 175, 25, 0.3); }
-  .machine-card.selected { border-color: #e74c3c; background: #fff; box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); }
-  .machine-card strong { display: block; margin-top: 5px; }
-  .failure-section { margin-top: 25px; }
-  .failures-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
-  .failure-btn { background: #4a5d73; color: white; padding: 15px; border-radius: 8px; border: none; text-align: left; cursor: pointer; transition: background 0.2s; }
+  header { text-align: center; color: #f5af19; margin-bottom: 30px; }
+  header h1 { font-size: 2.6rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); margin-bottom: 5px; }
+  header p { font-size: 1.1rem; color: #cccccc; }
+  .main-content { background: #222e39; border-radius: 12px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); }
+
+  h2 { color: #f5af19; margin-bottom: 15px; border-bottom: 2px solid #4a5d73; padding-bottom: 5px; }
+
+  /* Grid de Máquinas */
+  .machines-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 18px; margin-bottom: 25px; }
+  .machine-card { background: linear-gradient(135deg, #f5af19 0%, #f7d794 100%); color: #111; padding: 18px; border-radius: 8px; cursor: pointer; border: 3px solid transparent; transition: all 0.25s ease-in-out; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+  .machine-card:hover { transform: translateY(-6px); box-shadow: 0 8px 20px rgba(245, 175, 25, 0.4); }
+  .machine-card.selected { border-color: #e74c3c; background: #fff; box-shadow: 0 0 20px rgba(231, 76, 60, 0.6); }
+  .machine-card strong { display: block; margin-top: 8px; font-size: 1.1rem; }
+  .machine-card .description { font-size: 0.85rem; color: #333; margin-top: 4px; }
+
+  /* Lista de Fallas */
+  .failure-section { margin-top: 30px; }
+  .failures-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .failure-btn { background: #4a5d73; color: #f0f0f0; padding: 15px; border-radius: 8px; border: none; text-align: left; cursor: pointer; transition: background 0.2s; display: flex; flex-direction: column; }
   .failure-btn:hover { background: #5d728c; }
-  .failure-btn strong { display: block; margin-bottom: 5px; }
-  .diagnosis-area { margin-top: 25px; background: #334455; padding: 20px; border-radius: 8px; }
-  .info-card { background: #3e5163; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
-  .chain-step { background: #4a5d73; padding: 8px; border-radius: 4px; margin: 5px 0; border-left: 4px solid #f5af19; }
-  ol, ul { margin-left: 20px; }
-  .alert-safety { background: #e74c3c; border-left: 4px solid #c0392b; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
-  .alert-engineer { background: #27ae60; border-left: 4px solid #2ecc71; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
-  .action-buttons { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-  /* Estilo modificado para que el 'a' (enlace) se vea como botón */
+  .failure-btn strong { display: block; margin-bottom: 5px; font-size: 1.05rem; }
+  .failure-btn .initial-context { font-size: 0.85rem; color: #b0b0b0; margin-top: 5px; font-style: italic; }
+
+  /* Área de Diagnóstico Mejorada */
+  .diagnosis-area { margin-top: 30px; background: #334455; padding: 25px; border-radius: 8px; }
+  .diagnosis-area h2 { border-bottom-color: #5d728c; }
+  
+  /* Tarjetas de Información */
+  .info-card { background: #3e5163; padding: 18px; border-radius: 6px; margin-bottom: 20px; border-left: 5px solid #f5af19; box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
+  .info-card h4 { color: #f5af19; margin-bottom: 10px; font-size: 1.2rem; }
+  .info-card ul, .info-card ol { margin-left: 20px; padding-left: 10px; color: #d0d0d0; }
+  .info-card li { margin-bottom: 8px; }
+  .info-card p { color: #d0d0d0; margin-bottom: 10px; }
+  
+  /* Estilos Específicos */
+  .chain-step { background: #4a5d73; padding: 10px; border-radius: 4px; margin: 8px 0; border-left: 4px solid #f5af19; color: #e0e0e0; }
+  .alert-safety { background: rgba(231, 76, 60, 0.8); border-left: 5px solid #c0392b; color: #fff; font-weight: bold;}
+  .alert-engineer { background: rgba(39, 174, 96, 0.8); border-left: 5px solid #27ae60; color: #fff; }
+  .codes-list code { background: #2c3e50; padding: 3px 6px; border-radius: 4px; font-family: Consolas, monospace; color: #ecf0f1; margin-right: 5px; }
+
+  /* Botones de Acción */
+  .action-buttons { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
   .search-btn { 
     background: #3498db; 
     color: #fff; 
-    padding: 10px 15px; 
+    padding: 12px 18px; 
     border-radius: 5px; 
     border: none; 
     cursor: pointer; 
     transition: background 0.2s; 
-    text-decoration: none; /* Quitar subrayado del enlace */
-    display: inline-block; /* Alinear con el botón */
-    font-size: 14px; /* Asegurar que el texto sea del mismo tamaño */
-    line-height: 1.5; /* Alinear verticalmente el texto */
+    text-decoration: none; 
+    display: inline-block; 
+    font-size: 1rem; 
+    line-height: 1.5;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
-  .search-btn:hover { background: #2980b9; }
+  .search-btn:hover { background: #2980b9; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
   .reset-btn { background: #95a5a6; }
+  .reset-btn:hover { background: #7f8c8d; }
+
 </style>
 </head>
 <body>
@@ -66,110 +90,247 @@
       </section>
 
       <section id="diagnosisArea" class="diagnosis-area" style="display:none;">
-        <h2>Diagnóstico Completo y Gestión de Falla</h2>
-        <div id="diagnosisResult"></div>
+        <h2 id="diagnosisTitle">Diagnóstico Completo</h2>
+        <div id="diagnosisResult">
+            <!-- El contenido detallado se insertará aquí -->
+        </div>
 
         <div class="action-buttons">
-          <!-- Botón de Gemini ELIMINADO. Dejamos solo Google y Reset -->
-          <a id="btnOpenGoogle" class="search-btn" href="#" target="_blank">🌐 Abrir búsquedas en Google</a>
+          <a id="btnOpenGoogle" class="search-btn" href="#" target="_blank">🌐 Buscar más en Google</a>
           <button id="btnReset" class="search-btn reset-btn">♻️ Reiniciar Todo</button>
         </div>
         
-        <!-- Contenedor de Gemini ELIMINADO -->
-
       </section>
     </div>
   </div>
 
 <script>
 /* ----------------------------------------------------------------------------------------- */
-/* HEAVYDIAG - DATOS Y LÓGICA (Versión Estática SIN API) */
+/* HEAVYDIAG - DATOS Y LÓGICA (v3 - Con Datos de Manuales) */
 /* ----------------------------------------------------------------------------------------- */
 
 const machines = {
+    // Definición de máquinas (igual que antes)
     retroexcavadora: { name: "Retroexcavadora", icon: "🚜", description: "Excavación y carga" },
     excavadora: { name: "Excavadora Hidráulica", icon: "⛏️", description: "Excavación profunda" },
     cargador: { name: "Cargador Frontal", icon: "🏗️", description: "Carga de material" },
     dumper: { name: "Camión Minero (Dumper)", icon: "🚛", description: "Transporte de material" },
     skidsteer: { name: "Cargador Compacto", icon: "🚧", description: "Equipo auxiliar y soporte" },
     camioneta: { name: "Camioneta Minera 4x4", icon: "🚙", description: "Transporte de personal" }
+    // Podríamos añadir motoniveladora aquí también si hay datos
 };
 
-// Esta es tu base de datos de conocimiento. ¡Puedes agregar más fallas aquí!
+// Esta es tu base de datos de conocimiento AUMENTADA con info de los manuales.
+// He agregado muchas más fallas y detalles. ¡Puedes seguir añadiendo!
 const failures = {
     retroexcavadora: [
+        // Komatsu WB93R-5 y CAT 416E / 420F (Combinado y ampliado de manuales)
         {
-            id: 1, name: "Ingreso de agua al motor (Hydrolock)", initial: "Motor se apaga súbitamente tras cruzar un charco.",
-            alertaSeguridad: "⚠️ CRÍTICO: NO intentar arrancar de nuevo. Esto puede causar una fractura del bloque o cárter.",
-            chainReaction: ["Agua entra a la cámara de combustión", "El agua es incompresible (Hydrolock)", "Bielas se doblan o rompen (fuerza extrema)", "Daño al cigüeñal y fisura del bloque"],
-            symptoms: ["Motor detenido súbitamente", "No gira al intentar arrancar", "Aceite con aspecto lechoso"],
-            diagnosticSteps: ["1. NO intentar encendido.", "2. Retirar inyectores/bujías y girar motor manualmente para drenar agua.", "3. Revisar aspecto del aceite (emulsión lechosa)."],
-            solution: ["Desmontaje completo del motor.", "Reemplazo de bielas y pistones.", "Cambio múltiple de aceite y filtros."],
-            tiempoDowntime: "120 - 240 horas (por reconstrucción del motor).",
-            costoEstimado: "US$ 15,000 - US$ 50,000.", searchTerms: "hydrolock motor diesel maquinaria pesada bielas dobladas",
-            datoIngeniero: "La compresión del agua genera picos de presión que superan el límite elástico del acero de la biela en milisegundos."
+            id: 1, name: "Motor no arranca", initial: "El motor no enciende o gira muy lento.",
+            alertaSeguridad: "⚠️ Asegurar freno de parqueo y verificar área circundante antes de diagnosticar.",
+            symptoms: ["No hay giro del motor", "Giro lento (cranking lento)", "Solo se escucha un 'clic'", "Luces del tablero se apagan al intentar arrancar"],
+            causes: ["Batería descargada o terminales sulfatados", "Aire en sistema de combustible (líneas vacías)", "Fusible principal quemado", "Motor de arranque defectuoso", "Sensor de cigüeñal (CKP) húmedo o defectuoso", "Filtro de combustible obstruido", "Baja compresión"],
+            diagnosticSteps: [
+                "1. Verificar voltaje de batería (>12.4V en reposo, >10V durante arranque).",
+                "2. Limpiar terminales de batería.",
+                "3. Purgar sistema de combustible (usar bomba manual si existe).",
+                "4. Revisar fusibles principales (motor, arranque).",
+                "5. Medir voltaje en solenoide del motor de arranque al dar contacto.",
+                "6. Escanear códigos de error (si aplica)."
+            ],
+            solution: ["Cargar o reemplazar batería", "Purgar combustible", "Reemplazar fusibles", "Reparar o reemplazar motor de arranque", "Secar o reemplazar sensor CKP"],
+            costoEstimado: "US$ 100 (batería) - US$ 1,200 (motor de arranque)",
+            searchTerms: "retroexcavadora motor no arranca purgar combustible",
+            codes: ["E01 (Komatsu)", "MID 036 (CAT)"]
         },
         {
-            id: 2, name: "Drift o Hundimiento del Brazo (Arm Drift)", initial: "El brazo de excavación desciende lentamente al dejarlo en posición extendida.",
-            alertaSeguridad: "Máquina operable, pero riesgo de caída de carga. Asegurar área de trabajo.",
-            chainReaction: ["Fuga interna en el cilindro de brazo (sellos de pistón).", "Válvula de Bloqueo (Lock Valve) defectuosa en el banco de válvulas.", "Pérdida de eficiencia por necesidad de potencia constante."],
-            symptoms: ["Brazo no mantiene posición", "Movimiento lento o errático"],
-            diagnosticSteps: ["1. Calentar aceite a temperatura de operación.", "2. Medir tasa de caída (drift rate) con carga.", "3. Medir presión en el lado de bloqueo del cilindro para aislar cilindro vs. válvula."],
-            solution: ["Reemplazo de sellos internos de pistón.", "Reemplazo del cartucho de la Válvula de Bloqueo."],
-            tiempoDowntime: "10 - 30 horas (si el problema es un cilindro).",
-            costoEstimado: "US$ 1,500 - US$ 8,000.", searchTerms: "hydraulic arm drift excavator lock valve cylinder seal failure"
-        }
-    ],
-    dumper: [
-        {
-            id: 3, name: "Fallo Sensor de Velocidad de Transmisión (DTC 281-04)", initial: "Transmisión no hace cambios, o se bloquea en una marcha fija.",
-            alertaSeguridad: "Maquina inoperativa (modo Limp Home). Riesgo bajo, pero inmovilizar el equipo.",
-            chainReaction: ["ECU no recibe señal de velocidad (G69).", "Sistema entra en modo de protección (Limp Home).", "Se puede recalentar la transmisión a largo plazo."],
-            symptoms: ["Transmisión bloqueada", "Luz de 'Check Trans' encendida", "Velocímetro errático o nulo"],
-            diagnosticSteps: ["1. Escanear código 281-04 o similar.", "2. Revisar visualmente el sensor G69.", "3. Comprobar continuidad y aislamiento del arnés (cableado)."],
-            solution: ["Reparación o reemplazo del arnés del sensor G69.", "Reemplazo del sensor de velocidad."],
-            tiempoDowntime: "4 - 12 horas.",
-            costoEstimado: "US$ 500 - US$ 1,500.", searchTerms: "DTC 281-04 sensor velocidad transmisión allison G69"
+            id: 2, name: "Pérdida de potencia del motor", initial: "La máquina se siente débil, no sube pendientes o el motor humea.",
+            alertaSeguridad: "Verificar temperaturas antes de abrir componentes.",
+            symptoms: ["Humo negro excesivo", "Humo blanco/azul", "No alcanza RPM máximas", "Consumo elevado de combustible", "Sobrecalentamiento bajo carga"],
+            causes: ["Filtro de aire obstruido (muy común)", "Filtro de combustible saturado", "Inyectores sucios o desgastados", "Turbocompresor con fugas o atascado", "Válvula EGR carbonizada", "Bomba de inyección defectuosa", "Baja compresión", "Intercooler obstruido"],
+            diagnosticSteps: [
+                "1. Reemplazar filtro de aire y combustible.",
+                "2. Verificar presión de turbo (boost).",
+                "3. Escanear códigos de error (DTCs).",
+                "4. Realizar prueba de retorno de inyectores.",
+                "5. Verificar juego de válvulas.",
+                "6. Medir compresión del motor."
+            ],
+            solution: ["Cambio de filtros", "Limpieza o reemplazo de inyectores", "Reparación o reemplazo de turbo", "Limpieza de EGR e intercooler", "Ajuste de válvulas", "Reparación mayor si hay baja compresión"],
+            costoEstimado: "US$ 50 (filtros) - US$ 5,000+ (turbo/inyectores/motor)",
+            searchTerms: "perdida potencia motor diesel retroexcavadora humo negro",
+            codes: ["P0087", "P0299", "P0401"]
         },
         {
-            id: 4, name: "Sobrecalentamiento Transmisión (Frenado Excesivo)", initial: "Luz de advertencia de alta temperatura de transmisión; olor a quemado.",
-            alertaSeguridad: "APAGAR INMEDIATAMENTE. Alto riesgo de incendio o falla catastrófica.",
-            chainReaction: ["Degradación rápida del aceite (ATF).", "Daño por calor en sellos y discos de embrague.", "Fallo del Convertidor de Par."],
-            symptoms: ["Temperatura alta", "Cambios bruscos", "Olor a aceite quemado"],
-            diagnosticSteps: ["1. Revisar nivel y olor/color del aceite.", "2. Inspeccionar el enfriador de aceite (obstrucción).", "3. Escanear códigos de falla de alta temperatura (ej. DTC 190-XX)."],
-            solution: ["Limpieza/reparación del enfriador.", "Cambio de aceite y filtros.", "Si hay daño: reconstrucción total de la caja."],
-            tiempoDowntime: "24 - 48 horas (limpieza/reparación menor); 160+ horas (reconstrucción).",
-            costoEstimado: "US$ 2,500 - US$ 80,000.", searchTerms: "sobrecalentamiento transmision dumper camion minero retardador"
-        }
-    ],
-    camioneta: [
-        {
-            id: 5, name: "Vibración Severa del Eje de Transmisión", initial: "Vibración muy fuerte al acelerar o a cierta velocidad.",
-            alertaSeguridad: "Máquina inoperativa. Detener el vehículo inmediatamente. El eje puede desbalancearse.",
-            chainReaction: ["Fractura o fisura en eje (propeller shaft).", "Desgaste o daño en crucetas (U-Joints).", "Daño al piñón y corona del diferencial por estrés."],
-            symptoms: ["Ruido metálico (clunk) al cambiar", "Vibración que aumenta con la velocidad"],
-            diagnosticSteps: ["1. Inspeccionar visualmente el eje por golpes.", "2. Verificar holgura en las crucetas/juntas universales.", "3. Revisar soportes de motor y transmisión."],
-            solution: ["Reemplazo del eje de transmisión.", "Cambio de crucetas/juntas universales y re-balanceo."],
-            tiempoDowntime: "4 - 8 horas.",
-            costoEstimado: "US$ 1,500 - US$ 4,000.", searchTerms: "fractura eje de transmisión camioneta minera vibración 4x4"
-        }
+            id: 7, name: "Sobrecalentamiento del motor", initial: "Indicador de temperatura en zona roja, vapor visible.",
+            alertaSeguridad: "⚠️ ¡NO ABRIR TAPA DEL RADIADOR EN CALIENTE! Riesgo de quemaduras graves.",
+            symptoms: ["Temperatura >105°C", "Pérdida de refrigerante", "Ventilador no acopla o gira lento", "Mangueras hinchadas"],
+            causes: ["Nivel bajo de refrigerante", "Radiador obstruido (externa o internamente)", "Termostato atascado cerrado (común)", "Bomba de agua defectuosa", "Correa del ventilador floja o rota", "Tapa del radiador no mantiene presión", "Fuga en junta de culata (casos graves)"],
+            diagnosticSteps: [
+                "1. Dejar enfriar. Verificar nivel de refrigerante.",
+                "2. Inspeccionar radiador por suciedad externa.",
+                "3. Revisar tensión y estado de la correa del ventilador.",
+                "4. Verificar si el ventilador acopla (viscoso o hidráulico).",
+                "5. Probar termostato en agua caliente (debe abrir ~82°C).",
+                "6. Realizar prueba de presión al sistema de enfriamiento para detectar fugas.",
+                "7. Verificar si hay burbujas en el refrigerante (indica fuga de culata)."
+             ],
+            solution: ["Rellenar refrigerante (tipo correcto)", "Limpieza de radiador", "Reemplazo de termostato", "Reemplazo de bomba de agua", "Ajuste o cambio de correa", "Cambio de tapa de radiador", "Reparación de junta de culata"],
+            costoEstimado: "US$ 30 (tapa) - US$ 3,000+ (junta culata)",
+            searchTerms: "motor retroexcavadora sobrecalienta termostato radiador",
+            codes: ["E230-2 (CAT)", "E03 (Komatsu)"]
+        },
+         {
+            id: 8, name: "Movimientos hidráulicos lentos", initial: "El brazo, balancín o cucharón se mueven muy despacio.",
+            alertaSeguridad: "Verificar que la máquina esté estable antes de pruebas.",
+            symptoms: ["Todos los movimientos son lentos", "Solo un movimiento es lento", "Ruido en la bomba hidráulica (chillido o golpeteo)", "Aceite hidráulico sobrecalentado (>85°C)", "Espuma en el aceite hidráulico"],
+            causes: ["Nivel bajo de aceite hidráulico (más común)", "Filtro hidráulico (succión o retorno) obstruido", "Aire en el sistema (cavitación)", "Bomba hidráulica desgastada", "Válvula de alivio principal mal ajustada o atascada", "Aceite hidráulico incorrecto o degradado", "Fuga interna en un cilindro o válvula"],
+            diagnosticSteps: [
+                "1. Verificar nivel de aceite hidráulico (con máquina nivelada y fría).",
+                "2. Revisar indicador de restricción del filtro (si existe) o reemplazar filtros.",
+                "3. Escuchar la bomba: ruido indica cavitación (aire o filtro tapado).",
+                "4. Medir presión hidráulica principal con manómetro (ej: 3000-3600 PSI).",
+                "5. Medir temperatura del aceite hidráulico.",
+                "6. Purgar aire del sistema si se sospecha cavitación.",
+                "7. Realizar prueba de caída (drift) en cilindros para detectar fugas internas."
+             ],
+            solution: ["Rellenar aceite hidráulico (ISO VG 46 o especificado)", "Cambiar filtros hidráulicos", "Purgar aire", "Reparar o reemplazar bomba hidráulica", "Ajustar o limpiar válvula de alivio", "Cambiar aceite hidráulico completo", "Reparar cilindro con fuga interna"],
+            costoEstimado: "US$ 100 (filtros) - US$ 10,000+ (bomba nueva)",
+            searchTerms: "hidraulico lento retroexcavadora bomba ruido cavitacion",
+            codes: ["094-03 (CAT)", "E04 (Komatsu)"]
+        },
+        // ... (Más fallas de retroexcavadoras de los manuales) ...
     ],
     excavadora: [
+        // CAT 320D/E/F y Komatsu PC200 (Combinado y ampliado de manuales)
         {
-            id: 6, name: "Falla en Circuito Piloto (Movimientos Lentos)", initial: "Todos los movimientos hidráulicos son lentos y débiles.",
-            alertaSeguridad: "Operable, pero con riesgo de control impreciso. Proceder a diagnóstico con la cabina bloqueada.",
-            chainReaction: ["Presión Piloto insuficiente (debajo de 4100 kPa/595 psi).", "Carretes de la válvula principal no se desplazan completamente.", "Pérdida de fuerza de la bomba por regulación incorrecta."],
-            symptoms: ["Velocidad de ciclo muy lenta", "Palancas de control suaves", "Dificultad en combinar movimientos"],
-            diagnosticSteps: ["1. Conectar manómetro a toma de presión piloto.", "2. Verificar que la presión esté en el rango **4100 kPa (595 psi) ± 200 kPa**.", "3. Revisar la Válvula Reductora de Presión Piloto."],
-            solution: ["Ajuste de la válvula de alivio piloto.", "Limpieza/reemplazo del filtro piloto."],
-            tiempoDowntime: "8 - 24 horas.",
-            costoEstimado: "US$ 1,500 - US$ 6,000.", searchTerms: "presión nominal sistema piloto excavadora 4100 kPa",
-            datoIngeniero: "La presión piloto es de 'baja presión' y actúa como la señal nerviosa del sistema; si es baja, el sistema principal no actúa, aunque la bomba principal esté sana."
-        }
+            id: 9, name: "Bomba Hidráulica Principal Ruidosa", initial: "Ruido de gemido, chillido o golpeteo constante desde la bomba.",
+            alertaSeguridad: "⚠️ Peligro de alta presión. No desconectar mangueras sin despresurizar.",
+            symptoms: ["Ruido anormal (gemido, chillido, martilleo)", "Movimientos lentos o erráticos", "Temperatura aceite hidráulico >80°C", "Vibración excesiva", "Espuma en el aceite"],
+            causes: ["Cavitación (aire en el sistema por nivel bajo o filtro succión tapado)", "Desgaste interno severo (pistones, plato oscilante)", "Aceite contaminado con agua o partículas", "Viscosidad del aceite incorrecta", "Filtro piloto obstruido", "Acoplamiento bomba-motor desgastado"],
+            diagnosticSteps: [
+                "1. ¡Verificar nivel de aceite hidráulico INMEDIATAMENTE!",
+                "2. Inspeccionar filtro de succión por colapso u obstrucción.",
+                "3. Medir temperatura del aceite.",
+                "4. Escuchar atentamente el tipo de ruido (gemido=cavitación, golpeteo=daño mecánico).",
+                "5. Medir presión principal y piloto.",
+                "6. Tomar muestra de aceite para análisis (conteo de partículas)."
+             ],
+            solution: ["Corregir nivel de aceite", "Reemplazar filtro de succión", "Purgar aire", "Cambio completo de aceite y filtros si está contaminado", "Reparación mayor (Overhaul) de la bomba si hay daño interno", "Reemplazo de bomba"],
+            costoEstimado: "US$ 150 (filtro) - US$ 30,000+ (bomba nueva)",
+            searchTerms: "bomba hidraulica excavadora ruido cavitacion sobrecalentamiento",
+            codes: ["094-03 (CAT)", "E04 (Komatsu)"]
+        },
+        {
+            id: 10, name: "Motor de Giro (Swing) sin Fuerza o Lento", initial: "La torreta gira despacio, no puede girar con carga o se detiene.",
+            alertaSeguridad: "Asegurar área de trabajo antes de probar giro.",
+            symptoms: ["Giro lento (< 7 RPM con carga)", "No gira en pendientes", "Ruido metálico en motor de giro o corona", "Freno de giro no libera", "Sobrecalentamiento del motor de giro"],
+            causes: ["Desgaste interno del motor hidráulico de giro", "Freno de giro trabado o mal ajustado", "Presión hidráulica insuficiente en circuito de giro", "Válvula de alivio cruzado (cross-over relief) defectuosa", "Rodamiento de la corona de giro dañado", "Bajo nivel de aceite en caja reductora de giro"],
+            diagnosticSteps: [
+                "1. Medir presión del circuito de giro bajo carga.",
+                "2. Verificar si el freno de giro libera (eléctrica o hidráulicamente).",
+                "3. Medir velocidad de giro (RPM).",
+                "4. Escuchar ruidos en la corona y motor de giro.",
+                "5. Verificar nivel y estado del aceite de la caja reductora de giro.",
+                "6. Inspeccionar el piñón de giro por desgaste."
+             ],
+            solution: ["Ajuste o reparación del freno de giro", "Reparación (Overhaul) del motor de giro", "Reemplazo de motor de giro", "Ajuste o reemplazo de válvulas de alivio", "Reemplazo del rodamiento de la corona (trabajo mayor)", "Cambio de aceite de caja reductora"],
+            costoEstimado: "US$ 500 (ajuste freno) - US$ 20,000+ (corona/motor)",
+            searchTerms: "motor giro excavadora lento sin fuerza freno trabado",
+            codes: ["E05 (Komatsu)", "MID 027 (CAT)"]
+        },
+        // ... (Más fallas de excavadoras) ...
     ],
-    // Puedes agregar más fallas a 'cargador' y 'skidsteer' aquí
-    cargador: [], 
-    skidsteer: [] 
+    cargador: [
+        // CAT 950/966 y Komatsu WA380 (Combinado y ampliado de manuales)
+        {
+            id: 11, name: "Transmisión Powershift Desliza o Patea", initial: "RPM suben pero la máquina no avanza, o los cambios son muy bruscos.",
+            alertaSeguridad: "Pruebas de transmisión requieren espacio seguro y calzos.",
+            symptoms: ["Deslizamiento (RPM altas, poca velocidad)", "Golpe fuerte al cambiar de marcha", "Olor a aceite quemado", "Temperatura de transmisión alta (>120°C)", "Modo de protección activado (Limp Mode)"],
+            causes: ["Discos de embrague (clutch packs) desgastados o quemados", "Nivel bajo de aceite de transmisión", "Aceite incorrecto o degradado (¡usar solo TO-4!)", "Filtro de transmisión obstruido", "Solenoides de cambio defectuosos", "Válvula de modulación descalibrada o trabada", "Convertidor de par dañado", "Enfriador de aceite obstruido"],
+            diagnosticSteps: [
+                "1. Verificar nivel y condición del aceite (motor caliente, neutro). ¡Olerlo!",
+                "2. Escanear códigos de error con herramienta de diagnóstico (ET/KOMTRAX).",
+                "3. Realizar prueba de calado (stall test) para verificar deslizamiento.",
+                "4. Medir presiones de los paquetes de embrague con manómetros.",
+                "5. Verificar temperatura de operación.",
+                "6. Inspeccionar enfriador por obstrucción."
+            ],
+            solution: ["Cambio de aceite y filtro (usar TO-4)", "Reemplazo de solenoides", "Calibración electrónica de la modulación", "Reparación mayor (Overhaul) de la transmisión (cambio de discos)", "Reemplazo del convertidor de par", "Limpieza del enfriador"],
+            costoEstimado: "US$ 500 (aceite/filtro) - US$ 50,000+ (Overhaul completo)",
+            searchTerms: "transmision cargador frontal desliza patea cambios bruscos",
+            codes: ["077-03 (CAT)", "E04 (Komatsu)"]
+        },
+        // ... (Más fallas de cargadores frontales) ...
+    ],
+    dumper: [
+         // CAT 777/785 y Komatsu HD785 (Combinado y ampliado de manuales)
+         {
+            id: 12, name: "Frenos Sobrecalentados / Freno Débil", initial: "Olor a quemado, discos al rojo, camión no frena bien en pendiente.",
+            alertaSeguridad: "⚠️ ¡PELIGRO EXTREMO! Falla de frenos puede ser fatal. NO operar si se sospecha.",
+            symptoms: ["Discos de freno visibles al rojo vivo (>600°C)", "Olor intenso a quemado", "Pedal esponjoso o va al fondo", "Distancia de frenado muy larga", "Retardador no funciona o es insuficiente", "Vibración severa al frenar"],
+            causes: ["Uso excesivo de frenos de servicio (¡NO usar retardador!)", "Retardador hidráulico inoperativo o mal usado", "Fugas en el sistema de aire (si son neumáticos) o hidráulico", "Nivel bajo de aceite de enfriamiento de frenos (si aplica)", "Discos y pastillas desgastados por debajo del límite", "Pistones de caliper trabados", "Aire en el sistema hidráulico"],
+            diagnosticSteps: [
+                "1. ¡DETENER OPERACIÓN INMEDIATAMENTE!",
+                "2. Dejar enfriar los frenos (puede tomar horas).",
+                "3. Inspeccionar visualmente discos (color, grietas) y pastillas (espesor).",
+                "4. Verificar funcionamiento del RETARDADOR HIDRÁULICO.",
+                "5. Revisar niveles de fluidos (hidráulico, enfriamiento de frenos).",
+                "6. Purgar sistema si se sospecha aire.",
+                "7. Medir presiones del sistema de frenos y retardador.",
+                "8. Escanear códigos de error."
+            ],
+            solution: ["Reparación URGENTE del retardador", "Reemplazo de discos y pastillas", "Rebuild de calipers", "Purgado del sistema", "Cambio de fluido de enfriamiento de frenos", "Capacitación al operador sobre uso correcto del retardador"],
+            costoEstimado: "US$ 5,000 (pastillas) - US$ 100,000+ (sistema completo)",
+            searchTerms: "frenos camion minero sobrecalentados retardador no funciona",
+            codes: ["E07 (Komatsu)", "MID 068 (CAT)"]
+        },
+        // ... (Más fallas de camiones mineros) ...
+    ],
+    camioneta: [
+        // Toyota Hilux / Mitsubishi L200 (Combinado y ampliado de manuales)
+        {
+            id: 13, name: "Sistema 4x4 No Acopla o Parpadea", initial: "La luz 4WD parpadea en el tablero y la tracción no entra.",
+            alertaSeguridad: "No forzar el sistema si no acopla.",
+            symptoms: ["Luz 4WD parpadea", "No se siente el acople (sin 'clunk')", "A veces entra, a veces no", "Ruido al intentar acoplar"],
+            causes: ["Actuador eléctrico del diferencial delantero (ADD) defectuoso (muy común)", "Switch de vacío o solenoides de vacío (VSV) fallando", "Fuga en mangueras de vacío", "Sensor de posición de la transfer defectuoso", "Módulo de control 4WD (ECU) fallando", "Bajo nivel de aceite en diferencial delantero o transfer"],
+            diagnosticSteps: [
+                "1. Escanear códigos de error del sistema 4WD.",
+                "2. Verificar fusibles relacionados con 4WD.",
+                "3. Probar actuador ADD: aplicar 12V directamente para ver si se mueve.",
+                "4. Revisar mangueras de vacío por grietas o desconexiones.",
+                "5. Probar solenoides de vacío (VSV) con multímetro o aplicando 12V.",
+                "6. Verificar señal de sensores de posición."
+             ],
+            solution: ["Reemplazo del actuador ADD", "Reemplazo de solenoides VSV", "Reparación de mangueras de vacío", "Reemplazo de sensor de transfer", "Cambio de aceite de diferenciales y transfer"],
+            costoEstimado: "US$ 50 (mangueras) - US$ 800 (actuador/ECU)",
+            searchTerms: "luz 4x4 parpadea hilux l200 actuador ADD",
+            codes: ["C1241", "P17xx"]
+        },
+        // ... (Más fallas de camionetas) ...
+    ],
+    skidsteer: [
+         // Bobcat / CAT Compactos (General)
+        {
+            id: 14, name: "Sistema de Bloqueo de Brazo (Interlock) No Desactiva", initial: "Máquina arranca pero los brazos/balde no se mueven.",
+            alertaSeguridad: "⚠️ NO intentar puentear sistemas de seguridad. Riesgo de accidente grave.",
+            symptoms: ["Luz de advertencia de 'Seat Bar' o cinturón encendida", "Brazos y balde bloqueados", "A veces funciona intermitentemente"],
+            causes: ["Sensor de la barra de seguridad (Seat Bar) defectuoso o desajustado", "Sensor del cinturón de seguridad fallando", "Solenoide de bloqueo hidráulico (BICS) atascado o quemado", "Problema de cableado hacia los sensores o solenoide", "ECU con falla"],
+            diagnosticSteps: [
+                "1. Asegurarse de que la barra de seguridad esté completamente bajada.",
+                "2. Verificar que el cinturón de seguridad esté abrochado.",
+                "3. Revisar fusibles del sistema BICS/Interlock.",
+                "4. Probar sensores de barra y cinturón (continuidad con multímetro).",
+                "5. Medir voltaje en el solenoide de bloqueo hidráulico (debe recibir 12V).",
+                "6. Escanear códigos de error si la máquina lo permite."
+             ],
+            solution: ["Ajuste o reemplazo del sensor de la barra de seguridad", "Reemplazo del sensor del cinturón", "Reemplazo del solenoide BICS", "Reparación del cableado"],
+            costoEstimado: "US$ 100 (sensor) - US$ 1,000 (solenoide/ECU)",
+            searchTerms: "skid steer brazos no mueven interlock BICS",
+            codes: ["Revisar manual específico de marca"]
+        },
+        // ... (Más fallas de skid steer) ...
+    ]
 };
 
 // --- UI / LÓGICA ---
@@ -179,6 +340,7 @@ const grid = document.getElementById('machinesGrid');
 const failureSection = document.getElementById('failureSection');
 const diagnosisArea = document.getElementById('diagnosisArea');
 const diagnosisResult = document.getElementById('diagnosisResult');
+const diagnosisTitle = document.getElementById('diagnosisTitle'); // Para actualizar el título
 
 function initMachines(){
     grid.innerHTML = '';
@@ -186,7 +348,8 @@ function initMachines(){
         const m = machines[key];
         const card = document.createElement('div');
         card.className = 'machine-card';
-        card.innerHTML = `<div style="font-size:28px">${m.icon}</div><strong>${m.name}</strong><div style="font-size:12px;margin-top:6px">${m.description}</div>`;
+        // Añadida clase description para el texto pequeño
+        card.innerHTML = `<div style="font-size:32px">${m.icon}</div><strong>${m.name}</strong><div class="description">${m.description}</div>`;
         card.onclick = () => {
             document.querySelectorAll('.machine-card').forEach(c=>c.classList.remove('selected'));
             card.classList.add('selected');
@@ -201,56 +364,70 @@ function selectMachine(key) {
     const list = document.getElementById('failuresList');
     list.innerHTML = '';
     failureSection.style.display = 'block';
-    diagnosisArea.style.display = 'none';
+    diagnosisArea.style.display = 'none'; // Ocultar diagnóstico al cambiar de máquina
 
     const machineFailures = failures[key] || [];
 
     if (machineFailures.length === 0) {
-        list.innerHTML = `<p style="color: #f5af19; padding: 10px;">Aún no hay fallas definidas para ${machines[key].name}.</p>`;
+        list.innerHTML = `<p style="color: #f5af19; padding: 10px; text-align: center;">Aún no hay fallas definidas para ${machines[key].name}. ¡Añade más!</p>`;
     } else {
         machineFailures.forEach(f => {
             const btn = document.createElement('button');
             btn.className = 'failure-btn';
-            btn.innerHTML = `<strong>${f.name}</strong><div style="font-size:12px;margin-top:6px;color:#ccc">${f.initial}</div>`;
+            // Añadida clase initial-context para el texto pequeño
+            btn.innerHTML = `<strong>${f.name}</strong><div class="initial-context">${f.initial}</div>`;
             btn.onclick = () => showDiagnosis(f);
             list.appendChild(btn);
         });
     }
+     // Desplazar a la sección de fallas
+     window.scrollTo({top: failureSection.offsetTop - 20, behavior:'smooth'});
 }
 
 function showDiagnosis(f) {
     selectedFailure = f;
     diagnosisArea.style.display = 'block';
+    diagnosisTitle.innerText = `Diagnóstico: ${f.name}`; // Título dinámico
     
-    // --- CONSTRUCCIÓN DEL HTML DE DIAGNÓSTICO ENRIQUECIDO ---
+    // --- CONSTRUCCIÓN DEL HTML DE DIAGNÓSTICO MEJORADO ---
+    // Usamos plantillas literales para construir el HTML de forma más limpia
     diagnosisResult.innerHTML = `
-        <div class="alert-safety">
-            <h4>⚠️ ALERTA DE SEGURIDAD (HSE)</h4>
-            <p>${f.alertaSeguridad}</p>
-        </div>
+        ${f.alertaSeguridad ? `<div class="alert-safety"><h4>⚠️ ALERTA DE SEGURIDAD (HSE)</h4><p>${f.alertaSeguridad}</p></div>` : ''}
 
         <div class="info-card">
-            <h4>SINTOMAS Y CONTEXTO</h4>
-            <p><strong>Contexto Inicial:</strong> ${f.initial}</p>
+            <h4><i class="fas fa-exclamation-triangle"></i> Síntomas Comunes</h4>
             <ul>${f.symptoms.map(s=>`<li>${s}</li>`).join('')}</ul>
+            <p style="margin-top:10px;"><strong>Contexto Inicial:</strong> ${f.initial}</p>
         </div>
         
         <div class="info-card">
-            <h4>CADENA DE FALLA (Efecto Dominó)</h4>
-            ${f.chainReaction.map(c=>`<div class="chain-step">${c}</div>`).join('')}
+            <h4><i class="fas fa-project-diagram"></i> Causas Probables</h4>
+             <ul>${f.causes.map(c=>`<li>${c}</li>`).join('')}</ul>
         </div>
-
+        
         <div class="info-card">
-            <h4>PASOS DE DIAGNÓSTICO Y REVISIÓN</h4>
+            <h4><i class="fas fa-stethoscope"></i> Pasos de Diagnóstico</h4>
             <ol>${f.diagnosticSteps.map(s=>`<li>${s}</li>`).join('')}</ol>
         </div>
 
         <div class="info-card">
-            <h4>GESTIÓN Y LOGÍSTICA</h4>
-            <p><strong>Costo Estimado de Reparación:</strong> ${f.costoEstimado || 'No disponible'}</p>
-            <p><strong>Tiempo de Inactividad (Downtime):</strong> ${f.tiempoDowntime || 'Variable'}</p>
+            <h4><i class="fas fa-wrench"></i> Soluciones Recomendadas</h4>
+             <ul>${f.solution.map(s=>`<li>${s}</li>`).join('')}</ul>
+        </div>
+
+        <div class="info-card">
+            <h4><i class="fas fa-dollar-sign"></i> Gestión y Logística</h4>
+            <p><strong>Costo Estimado de Reparación:</strong> ${f.costoEstimado || 'Variable'}</p>
+            ${f.tiempoDowntime ? `<p><strong>Tiempo de Inactividad (Downtime):</strong> ${f.tiempoDowntime}</p>` : ''}
         </div>
         
+        ${f.codes ? 
+          `<div class="info-card codes-list">
+              <h4><i class="fas fa-laptop-code"></i> Códigos de Error Comunes</h4>
+              <p>${f.codes.map(c=>`<code>${c}</code>`).join(' ')}</p>
+          </div>` : ''
+        }
+
         ${f.datoIngeniero ? 
           `<div class="alert-engineer">
               <h4>💡 Dato Técnico del Ingeniero</h4>
@@ -262,11 +439,10 @@ function showDiagnosis(f) {
     // Asignar dinámicamente el enlace de búsqueda de Google
     const googleBtn = document.getElementById('btnOpenGoogle');
     const q = encodeURIComponent(f.searchTerms || f.name);
-    // El 'href' se actualiza cada vez que se selecciona una falla
-    googleBtn.href = `https://www.google.com/search?q=${q}`;
+    googleBtn.href = `https://www.google.com/search?q=${q}+${machines[selectedMachineKey].name}`; // Añade nombre de máquina a la búsqueda
 
     // Desplazar al área de diagnóstico
-    window.scrollTo({top: diagnosisArea.offsetTop - 50, behavior:'smooth'});
+    window.scrollTo({top: diagnosisArea.offsetTop - 20, behavior:'smooth'});
 }
 
 // --- BOTONES DE ACCIÓN ---
@@ -276,9 +452,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Lógica del botón de Reset
     document.getElementById('btnReset').addEventListener('click', () => {
-        location.reload();
+        // location.reload(); // Recarga completa
+        // Ocultar secciones y deseleccionar
+        failureSection.style.display = 'none';
+        diagnosisArea.style.display = 'none';
+        document.querySelectorAll('.machine-card').forEach(c=>c.classList.remove('selected'));
+        selectedMachineKey = null;
+        selectedFailure = null;
+        window.scrollTo({top: 0, behavior:'smooth'}); // Volver al inicio
     });
 });
+
+// Añadir íconos (requiere Font Awesome) - Opcional
+// Añadir al <head>: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </script>
 </body>
 </html>
