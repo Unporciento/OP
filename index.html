@@ -3,469 +3,579 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🚜 HeavyDiag - Simulador Predictivo de Averías Mineras</title>
+<title>🛠️ HeavyDiag - Manual Interactivo de Averías Mineras</title>
+<!-- Font Awesome para iconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 <style>
-  /* --- ESTILOS CSS MEJORADOS --- */
+  /* --- ESTILOS CSS (v13 - Sin cambios respecto a v12) --- */
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #101820 0%, #1b2730 100%); min-height: 100vh; padding: 20px; color: #e0e0e0; line-height: 1.6; }
-  .container { max-width: 1200px; margin: 0 auto; }
-  header { text-align: center; color: #f5af19; margin-bottom: 30px; }
-  header h1 { font-size: 2.6rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); margin-bottom: 5px; }
-  header p { font-size: 1.1rem; color: #cccccc; }
-  .main-content { background: #222e39; border-radius: 12px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #1f2833 0%, #2c3e50 100%); min-height: 100vh; padding: 20px; color: #e0e0e0; line-height: 1.6; }
+  .container { max-width: 1300px; margin: 0 auto; }
+  header { text-align: center; color: #f5b74f; margin-bottom: 30px; }
+  header h1 { font-size: 2.8rem; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); margin-bottom: 8px; }
+  header p { font-size: 1.15rem; color: #bdc3c7; }
+  .main-content { background: #34495e; border-radius: 12px; padding: 30px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6); }
 
-  h2 { color: #f5af19; margin-bottom: 15px; border-bottom: 2px solid #4a5d73; padding-bottom: 5px; }
+  h2 { color: #f5b74f; margin-bottom: 20px; border-bottom: 2px solid #566573; padding-bottom: 8px; font-size: 1.8rem; display: flex; align-items: center;}
+  h2 i.section-icon, h2 span.section-icon { margin-right: 12px; font-size: 1.5rem; width: 30px; text-align: center;} /* Acepta span para emojis */
 
-  /* Grid de Máquinas */
-  .machines-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 18px; margin-bottom: 25px; }
-  .machine-card { background: linear-gradient(135deg, #f5af19 0%, #f7d794 100%); color: #111; padding: 18px; border-radius: 8px; cursor: pointer; border: 3px solid transparent; transition: all 0.25s ease-in-out; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
-  .machine-card:hover { transform: translateY(-6px); box-shadow: 0 8px 20px rgba(245, 175, 25, 0.4); }
-  .machine-card.selected { border-color: #e74c3c; background: #fff; box-shadow: 0 0 20px rgba(231, 76, 60, 0.6); }
-  .machine-card strong { display: block; margin-top: 8px; font-size: 1.1rem; }
-  .machine-card .description { font-size: 0.85rem; color: #333; margin-top: 4px; }
+  .selection-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+  .selection-card { background: linear-gradient(145deg, #f5b74f 0%, #f7d794 100%); color: #1a1a1a; padding: 20px; border-radius: 10px; cursor: pointer; border: 3px solid transparent; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); text-align: center; box-shadow: 0 5px 10px rgba(0,0,0,0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 160px;}
+  .selection-card:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 10px 25px rgba(245, 183, 79, 0.4); }
+  .selection-card.selected { border-color: #e74c3c; background: #fff; box-shadow: 0 0 25px rgba(231, 76, 60, 0.7); transform: scale(1.02); }
+  .selection-card .icon { font-size: 3rem; margin-bottom: 12px; line-height: 1; } /* Ajuste line-height */
+  .selection-card strong { display: block; margin-top: 8px; font-size: 1.25rem; }
+  .selection-card .description { font-size: 0.9rem; color: #444; margin-top: 5px; }
 
-  /* Lista de Fallas */
-  .failure-section { margin-top: 30px; }
-  .failures-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
-  .failure-btn { background: #4a5d73; color: #f0f0f0; padding: 15px; border-radius: 8px; border: none; text-align: left; cursor: pointer; transition: background 0.2s; display: flex; flex-direction: column; }
-  .failure-btn:hover { background: #5d728c; }
-  .failure-btn strong { display: block; margin-bottom: 5px; font-size: 1.05rem; }
-  .failure-btn .initial-context { font-size: 0.85rem; color: #b0b0b0; margin-top: 5px; font-style: italic; }
+  .section { margin-top: 35px; }
+  .hidden { display: none; }
 
-  /* Área de Diagnóstico Mejorada */
-  .diagnosis-area { margin-top: 30px; background: #334455; padding: 25px; border-radius: 8px; }
-  .diagnosis-area h2 { border-bottom-color: #5d728c; }
-  
-  /* Tarjetas de Información */
-  .info-card { background: #3e5163; padding: 18px; border-radius: 6px; margin-bottom: 20px; border-left: 5px solid #f5af19; box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
-  .info-card h4 { color: #f5af19; margin-bottom: 10px; font-size: 1.2rem; }
-  .info-card ul, .info-card ol { margin-left: 20px; padding-left: 10px; color: #d0d0d0; }
-  .info-card li { margin-bottom: 8px; }
-  .info-card p { color: #d0d0d0; margin-bottom: 10px; }
-  
-  /* Estilos Específicos */
-  .chain-step { background: #4a5d73; padding: 10px; border-radius: 4px; margin: 8px 0; border-left: 4px solid #f5af19; color: #e0e0e0; }
-  .alert-safety { background: rgba(231, 76, 60, 0.8); border-left: 5px solid #c0392b; color: #fff; font-weight: bold;}
-  .alert-engineer { background: rgba(39, 174, 96, 0.8); border-left: 5px solid #27ae60; color: #fff; }
-  .codes-list code { background: #2c3e50; padding: 3px 6px; border-radius: 4px; font-family: Consolas, monospace; color: #ecf0f1; margin-right: 5px; }
+  #filterInput { width: 100%; padding: 12px 15px; margin-bottom: 20px; border: 2px solid #566573; border-radius: 6px; background-color: #2c3e50; color: #ecf0f1; font-size: 1rem; outline: none; transition: border-color 0.2s; }
+  #filterInput:focus { border-color: #f5b74f; }
+  .failures-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; }
+  .failure-btn { background: #566573; color: #ecf0f1; padding: 18px; border-radius: 8px; border: none; text-align: left; cursor: pointer; transition: background 0.2s, transform 0.1s; display: flex; flex-direction: column; box-shadow: 0 3px 5px rgba(0,0,0,0.2); min-height: 110px; }
+  .failure-btn:hover { background: #6c7a89; transform: translateY(-2px); }
+  .failure-btn strong { display: block; margin-bottom: 6px; font-size: 1.15rem; color: #f5b74f; }
+  .failure-btn .initial-context { font-size: 0.9rem; color: #bdc3c7; margin-top: 6px; font-style: italic; flex-grow: 1; }
+  .failure-btn .models { font-size: 0.85rem; color: #95a5a6; margin-top: 8px; font-style: italic;}
 
-  /* Botones de Acción */
-  .action-buttons { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
-  .search-btn { 
-    background: #3498db; 
-    color: #fff; 
-    padding: 12px 18px; 
-    border-radius: 5px; 
-    border: none; 
-    cursor: pointer; 
-    transition: background 0.2s; 
-    text-decoration: none; 
-    display: inline-block; 
-    font-size: 1rem; 
-    line-height: 1.5;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  }
-  .search-btn:hover { background: #2980b9; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+  .diagnosis-area { margin-top: 35px; background: #2c3e50; padding: 30px; border-radius: 10px; box-shadow: inset 0 0 15px rgba(0,0,0,0.4); }
+  .diagnosis-area h2 { border-bottom-color: #7f8c8d; display: flex; align-items: center;}
+  .diagnosis-area h2 i.section-icon, .diagnosis-area h2 span.section-icon { margin-right: 12px; font-size: 1.5rem; width: 30px; text-align: center;}
+
+  .info-card { background: #34495e; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 6px solid #f5b74f; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+  .info-card h4 { color: #f5b74f; margin-bottom: 12px; font-size: 1.35rem; display: flex; align-items: center; }
+  .info-card h4 i { margin-right: 12px; width: 22px; text-align: center;}
+  .info-card ul, .info-card ol { margin-left: 25px; padding-left: 15px; color: #ecf0f1; }
+  .info-card li { margin-bottom: 10px; }
+  .info-card p { color: #ecf0f1; margin-bottom: 12px; }
+  .info-card strong { color: #f5b74f; }
+
+  .chain-step { background: #566573; padding: 12px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #f5b74f; color: #ecf0f1; box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); }
+  .alert-safety { background: rgba(231, 76, 60, 0.9); border-left: 6px solid #c0392b; color: #fff; font-weight: bold; }
+  .alert-engineer { background: rgba(39, 174, 96, 0.9); border-left: 6px solid #27ae60; color: #fff; }
+  .codes-list code { background: #233140; padding: 4px 8px; border-radius: 4px; font-family: Consolas, 'Courier New', monospace; color: #95a5a6; margin: 0 5px 5px 0; display: inline-block; border: 1px solid #4a5d73; }
+  .model-info { font-size: 0.9rem; color: #bdc3c7; margin-top: -15px; margin-bottom: 15px; font-style: italic; text-align: right; }
+
+  .action-buttons { display: flex; gap: 15px; margin-top: 25px; flex-wrap: wrap; }
+  .search-btn { background: #3498db; color: #fff; padding: 12px 20px; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; font-size: 1rem; box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
+  .search-btn i { margin-right: 8px; }
+  .search-btn:hover { background: #2980b9; box-shadow: 0 5px 10px rgba(0,0,0,0.3); transform: translateY(-1px);}
   .reset-btn { background: #95a5a6; }
   .reset-btn:hover { background: #7f8c8d; }
+  .back-btn { background: #f39c12; }
+  .back-btn:hover { background: #e67e22; }
 
 </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>🚜 HeavyDiag - Simulador Predictivo de Averías Mineras</h1>
-      <p>Selecciona la máquina y la falla para obtener diagnóstico técnico y gestión de costos.</p>
+      <h1><i class="fas fa-wrench"></i> HeavyDiag</h1>
+      <p>Manual Interactivo de Diagnóstico para Maquinaria Pesada y Minera</p>
     </header>
 
     <div class="main-content">
-      <section>
-        <h2>Selecciona el tipo de maquinaria</h2>
-        <div id="machinesGrid" class="machines-grid"></div>
+      <!-- PASO 1: SELECCIÓN DE TIPO DE MAQUINARIA -->
+      <section id="machineTypeSection" class="section">
+        <h2><span class="section-icon">⚙️</span> Paso 1: Selecciona el tipo de maquinaria</h2>
+        <div id="machineTypesGrid" class="selection-grid"></div>
       </section>
 
-      <section id="failureSection" class="failure-section" style="display:none;">
-        <h2>Selecciona una avería</h2>
+      <!-- PASO 2: SELECCIÓN DE MARCA/MODELO -->
+      <section id="brandModelSection" class="section hidden">
+        <h2><i class="fas fa-tags section-icon"></i> Paso 2: Selecciona la Marca/Modelo</h2>
+        <button id="backToTypesBtn" class="search-btn back-btn" style="margin-bottom: 20px;"><i class="fas fa-arrow-left"></i> Volver a Tipos</button>
+        <div id="brandsGrid" class="selection-grid"></div>
+      </section>
+
+      <!-- PASO 3: SELECCIÓN DE FALLA -->
+      <section id="failureSection" class="section hidden">
+        <h2><i class="fas fa-search section-icon"></i> Paso 3: Selecciona una avería (o filtra)</h2>
+         <button id="backToBrandsBtn" class="search-btn back-btn" style="margin-bottom: 20px;"><i class="fas fa-arrow-left"></i> Volver a Marcas</button>
+        <input type="text" id="filterInput" placeholder="Escribe para filtrar fallas (ej: 'inyector', 'hidraulico', 'freno')...">
         <div id="failuresList" class="failures-list"></div>
       </section>
 
-      <section id="diagnosisArea" class="diagnosis-area" style="display:none;">
-        <h2 id="diagnosisTitle">Diagnóstico Completo</h2>
-        <div id="diagnosisResult">
-            <!-- El contenido detallado se insertará aquí -->
+      <!-- PASO 4: DIAGNÓSTICO -->
+      <section id="diagnosisArea" class="section hidden">
+         <button id="backToFailuresBtn" class="search-btn back-btn" style="margin-bottom: 20px;"><i class="fas fa-arrow-left"></i> Volver a Fallas</button>
+        <h2 id="diagnosisTitle"><i class="fas fa-clipboard-list section-icon"></i> Diagnóstico Detallado</h2>
+        <div id="diagnosisResult"></div>
+        <div class="action-buttons">
+          <a id="btnOpenGoogle" class="search-btn" href="#" target="_blank"><i class="fab fa-google"></i> Buscar más en Google</a>
+          <button id="btnReset" class="search-btn reset-btn"><i class="fas fa-undo"></i> Reiniciar Todo</button>
         </div>
 
-        <div class="action-buttons">
-          <a id="btnOpenGoogle" class="search-btn" href="#" target="_blank">🌐 Buscar más en Google</a>
-          <button id="btnReset" class="search-btn reset-btn">♻️ Reiniciar Todo</button>
-        </div>
-        
       </section>
     </div>
   </div>
 
 <script>
 /* ----------------------------------------------------------------------------------------- */
-/* HEAVYDIAG - DATOS Y LÓGICA (v3 - Con Datos de Manuales) */
+/* HEAVYDIAG - DATOS Y LÓGICA (v13 - FINAL DEFINITIVO! Datos Completos Verificados + Emojis) */
 /* ----------------------------------------------------------------------------------------- */
 
-const machines = {
-    // Definición de máquinas (igual que antes)
-    retroexcavadora: { name: "Retroexcavadora", icon: "🚜", description: "Excavación y carga" },
-    excavadora: { name: "Excavadora Hidráulica", icon: "⛏️", description: "Excavación profunda" },
-    cargador: { name: "Cargador Frontal", icon: "🏗️", description: "Carga de material" },
-    dumper: { name: "Camión Minero (Dumper)", icon: "🚛", description: "Transporte de material" },
-    skidsteer: { name: "Cargador Compacto", icon: "🚧", description: "Equipo auxiliar y soporte" },
-    camioneta: { name: "Camioneta Minera 4x4", icon: "🚙", description: "Transporte de personal" }
-    // Podríamos añadir motoniveladora aquí también si hay datos
+const machineTypes = {
+    camioneta: { name: "Camioneta Minera", icon: "🛻", description: "Hilux, Ranger, L200..." },
+    retroexcavadora: { name: "Retroexcavadora", icon: "🚜", description: "Komatsu, CAT, JCB..." },
+    excavadora: { name: "Excavadora", icon: "<i class='fas fa-mountain-city'></i>", description: "CAT, Komatsu, Volvo..." },
+    cargador: { name: "Cargador Frontal", icon: "<i class='fas fa-cubes-stacked'></i>", description: "CAT, Komatsu, Volvo..." },
+    dumper: { name: "Camión Minero", icon: "<i class='fas fa-truck-monster'></i>", description: "CAT, Komatsu..." },
+    bulldozer: { name: "Bulldozer", icon: "<i class='fas fa-tractor'></i>", description: "CAT, Komatsu..." },
+    motoniveladora: { name: "Motoniveladora", icon: "<i class='fas fa-road'></i>", description: "CAT, Komatsu..." },
+    pala: { name: "Pala Hidráulica", icon: "<i class='fas fa-person-digging'></i>", description: "CAT, Komatsu, Liebherr..." },
 };
 
-// Esta es tu base de datos de conocimiento AUMENTADA con info de los manuales.
-// He agregado muchas más fallas y detalles. ¡Puedes seguir añadiendo!
-const failures = {
+const brandsAndModels = {
+    camioneta: [
+        { key: "hilux", name: "Toyota Hilux", icon: "🛻", models: ["2.4L", "2.8L Diesel"] },
+        { key: "ranger", name: "Ford Ranger", icon: "🛻", models: ["3.2L", "2.0L Bi-Turbo"] },
+        { key: "l200", name: "Mitsubishi L200", icon: "🛻", models: ["2.4L MIVEC"] },
+        { key: "np300", name: "Nissan NP300/Navara", icon: "🛻", models: ["2.3L Bi-Turbo"] },
+        { key: "amarok", name: "Volkswagen Amarok", icon: "🛻", models: ["2.0L TDI", "3.0L V6 TDI"] },
+        { key: "bt50", name: "Mazda BT-50", icon: "🛻", models: ["3.0L", "3.2L Diesel"] },
+        { key: "colorado", name: "Chevrolet Colorado/S10", icon: "🛻", models: ["2.5L", "2.8L Duramax"] },
+        { key: "dmax", name: "Isuzu D-Max", icon: "🛻", models: ["3.0L Diesel"] },
+    ],
     retroexcavadora: [
-        // Komatsu WB93R-5 y CAT 416E / 420F (Combinado y ampliado de manuales)
-        {
-            id: 1, name: "Motor no arranca", initial: "El motor no enciende o gira muy lento.",
-            alertaSeguridad: "⚠️ Asegurar freno de parqueo y verificar área circundante antes de diagnosticar.",
-            symptoms: ["No hay giro del motor", "Giro lento (cranking lento)", "Solo se escucha un 'clic'", "Luces del tablero se apagan al intentar arrancar"],
-            causes: ["Batería descargada o terminales sulfatados", "Aire en sistema de combustible (líneas vacías)", "Fusible principal quemado", "Motor de arranque defectuoso", "Sensor de cigüeñal (CKP) húmedo o defectuoso", "Filtro de combustible obstruido", "Baja compresión"],
-            diagnosticSteps: [
-                "1. Verificar voltaje de batería (>12.4V en reposo, >10V durante arranque).",
-                "2. Limpiar terminales de batería.",
-                "3. Purgar sistema de combustible (usar bomba manual si existe).",
-                "4. Revisar fusibles principales (motor, arranque).",
-                "5. Medir voltaje en solenoide del motor de arranque al dar contacto.",
-                "6. Escanear códigos de error (si aplica)."
-            ],
-            solution: ["Cargar o reemplazar batería", "Purgar combustible", "Reemplazar fusibles", "Reparar o reemplazar motor de arranque", "Secar o reemplazar sensor CKP"],
-            costoEstimado: "US$ 100 (batería) - US$ 1,200 (motor de arranque)",
-            searchTerms: "retroexcavadora motor no arranca purgar combustible",
-            codes: ["E01 (Komatsu)", "MID 036 (CAT)"]
-        },
-        {
-            id: 2, name: "Pérdida de potencia del motor", initial: "La máquina se siente débil, no sube pendientes o el motor humea.",
-            alertaSeguridad: "Verificar temperaturas antes de abrir componentes.",
-            symptoms: ["Humo negro excesivo", "Humo blanco/azul", "No alcanza RPM máximas", "Consumo elevado de combustible", "Sobrecalentamiento bajo carga"],
-            causes: ["Filtro de aire obstruido (muy común)", "Filtro de combustible saturado", "Inyectores sucios o desgastados", "Turbocompresor con fugas o atascado", "Válvula EGR carbonizada", "Bomba de inyección defectuosa", "Baja compresión", "Intercooler obstruido"],
-            diagnosticSteps: [
-                "1. Reemplazar filtro de aire y combustible.",
-                "2. Verificar presión de turbo (boost).",
-                "3. Escanear códigos de error (DTCs).",
-                "4. Realizar prueba de retorno de inyectores.",
-                "5. Verificar juego de válvulas.",
-                "6. Medir compresión del motor."
-            ],
-            solution: ["Cambio de filtros", "Limpieza o reemplazo de inyectores", "Reparación o reemplazo de turbo", "Limpieza de EGR e intercooler", "Ajuste de válvulas", "Reparación mayor si hay baja compresión"],
-            costoEstimado: "US$ 50 (filtros) - US$ 5,000+ (turbo/inyectores/motor)",
-            searchTerms: "perdida potencia motor diesel retroexcavadora humo negro",
-            codes: ["P0087", "P0299", "P0401"]
-        },
-        {
-            id: 7, name: "Sobrecalentamiento del motor", initial: "Indicador de temperatura en zona roja, vapor visible.",
-            alertaSeguridad: "⚠️ ¡NO ABRIR TAPA DEL RADIADOR EN CALIENTE! Riesgo de quemaduras graves.",
-            symptoms: ["Temperatura >105°C", "Pérdida de refrigerante", "Ventilador no acopla o gira lento", "Mangueras hinchadas"],
-            causes: ["Nivel bajo de refrigerante", "Radiador obstruido (externa o internamente)", "Termostato atascado cerrado (común)", "Bomba de agua defectuosa", "Correa del ventilador floja o rota", "Tapa del radiador no mantiene presión", "Fuga en junta de culata (casos graves)"],
-            diagnosticSteps: [
-                "1. Dejar enfriar. Verificar nivel de refrigerante.",
-                "2. Inspeccionar radiador por suciedad externa.",
-                "3. Revisar tensión y estado de la correa del ventilador.",
-                "4. Verificar si el ventilador acopla (viscoso o hidráulico).",
-                "5. Probar termostato en agua caliente (debe abrir ~82°C).",
-                "6. Realizar prueba de presión al sistema de enfriamiento para detectar fugas.",
-                "7. Verificar si hay burbujas en el refrigerante (indica fuga de culata)."
-             ],
-            solution: ["Rellenar refrigerante (tipo correcto)", "Limpieza de radiador", "Reemplazo de termostato", "Reemplazo de bomba de agua", "Ajuste o cambio de correa", "Cambio de tapa de radiador", "Reparación de junta de culata"],
-            costoEstimado: "US$ 30 (tapa) - US$ 3,000+ (junta culata)",
-            searchTerms: "motor retroexcavadora sobrecalienta termostato radiador",
-            codes: ["E230-2 (CAT)", "E03 (Komatsu)"]
-        },
-         {
-            id: 8, name: "Movimientos hidráulicos lentos", initial: "El brazo, balancín o cucharón se mueven muy despacio.",
-            alertaSeguridad: "Verificar que la máquina esté estable antes de pruebas.",
-            symptoms: ["Todos los movimientos son lentos", "Solo un movimiento es lento", "Ruido en la bomba hidráulica (chillido o golpeteo)", "Aceite hidráulico sobrecalentado (>85°C)", "Espuma en el aceite hidráulico"],
-            causes: ["Nivel bajo de aceite hidráulico (más común)", "Filtro hidráulico (succión o retorno) obstruido", "Aire en el sistema (cavitación)", "Bomba hidráulica desgastada", "Válvula de alivio principal mal ajustada o atascada", "Aceite hidráulico incorrecto o degradado", "Fuga interna en un cilindro o válvula"],
-            diagnosticSteps: [
-                "1. Verificar nivel de aceite hidráulico (con máquina nivelada y fría).",
-                "2. Revisar indicador de restricción del filtro (si existe) o reemplazar filtros.",
-                "3. Escuchar la bomba: ruido indica cavitación (aire o filtro tapado).",
-                "4. Medir presión hidráulica principal con manómetro (ej: 3000-3600 PSI).",
-                "5. Medir temperatura del aceite hidráulico.",
-                "6. Purgar aire del sistema si se sospecha cavitación.",
-                "7. Realizar prueba de caída (drift) en cilindros para detectar fugas internas."
-             ],
-            solution: ["Rellenar aceite hidráulico (ISO VG 46 o especificado)", "Cambiar filtros hidráulicos", "Purgar aire", "Reparar o reemplazar bomba hidráulica", "Ajustar o limpiar válvula de alivio", "Cambiar aceite hidráulico completo", "Reparar cilindro con fuga interna"],
-            costoEstimado: "US$ 100 (filtros) - US$ 10,000+ (bomba nueva)",
-            searchTerms: "hidraulico lento retroexcavadora bomba ruido cavitacion",
-            codes: ["094-03 (CAT)", "E04 (Komatsu)"]
-        },
-        // ... (Más fallas de retroexcavadoras de los manuales) ...
+        { key: "komatsu_wb", name: "Komatsu WB93/97", icon: "🚜", models: ["WB93R-5", "WB97"] },
+        { key: "cat_retro", name: "CAT 416/420/430", icon: "🚜", models: ["416E", "420F", "430F"] },
+        { key: "jcb_3cx", name: "JCB 3CX/4CX", icon: "🚜", models: ["3CX", "4CX"] },
+        { key: "case_580", name: "Case 580/590", icon: "🚜", models: ["580N", "590SN"] },
+        { key: "nh_retro", name: "New Holland", icon: "🚜", models: ["B90B", "B95B"] },
     ],
     excavadora: [
-        // CAT 320D/E/F y Komatsu PC200 (Combinado y ampliado de manuales)
-        {
-            id: 9, name: "Bomba Hidráulica Principal Ruidosa", initial: "Ruido de gemido, chillido o golpeteo constante desde la bomba.",
-            alertaSeguridad: "⚠️ Peligro de alta presión. No desconectar mangueras sin despresurizar.",
-            symptoms: ["Ruido anormal (gemido, chillido, martilleo)", "Movimientos lentos o erráticos", "Temperatura aceite hidráulico >80°C", "Vibración excesiva", "Espuma en el aceite"],
-            causes: ["Cavitación (aire en el sistema por nivel bajo o filtro succión tapado)", "Desgaste interno severo (pistones, plato oscilante)", "Aceite contaminado con agua o partículas", "Viscosidad del aceite incorrecta", "Filtro piloto obstruido", "Acoplamiento bomba-motor desgastado"],
-            diagnosticSteps: [
-                "1. ¡Verificar nivel de aceite hidráulico INMEDIATAMENTE!",
-                "2. Inspeccionar filtro de succión por colapso u obstrucción.",
-                "3. Medir temperatura del aceite.",
-                "4. Escuchar atentamente el tipo de ruido (gemido=cavitación, golpeteo=daño mecánico).",
-                "5. Medir presión principal y piloto.",
-                "6. Tomar muestra de aceite para análisis (conteo de partículas)."
-             ],
-            solution: ["Corregir nivel de aceite", "Reemplazar filtro de succión", "Purgar aire", "Cambio completo de aceite y filtros si está contaminado", "Reparación mayor (Overhaul) de la bomba si hay daño interno", "Reemplazo de bomba"],
-            costoEstimado: "US$ 150 (filtro) - US$ 30,000+ (bomba nueva)",
-            searchTerms: "bomba hidraulica excavadora ruido cavitacion sobrecalentamiento",
-            codes: ["094-03 (CAT)", "E04 (Komatsu)"]
-        },
-        {
-            id: 10, name: "Motor de Giro (Swing) sin Fuerza o Lento", initial: "La torreta gira despacio, no puede girar con carga o se detiene.",
-            alertaSeguridad: "Asegurar área de trabajo antes de probar giro.",
-            symptoms: ["Giro lento (< 7 RPM con carga)", "No gira en pendientes", "Ruido metálico en motor de giro o corona", "Freno de giro no libera", "Sobrecalentamiento del motor de giro"],
-            causes: ["Desgaste interno del motor hidráulico de giro", "Freno de giro trabado o mal ajustado", "Presión hidráulica insuficiente en circuito de giro", "Válvula de alivio cruzado (cross-over relief) defectuosa", "Rodamiento de la corona de giro dañado", "Bajo nivel de aceite en caja reductora de giro"],
-            diagnosticSteps: [
-                "1. Medir presión del circuito de giro bajo carga.",
-                "2. Verificar si el freno de giro libera (eléctrica o hidráulicamente).",
-                "3. Medir velocidad de giro (RPM).",
-                "4. Escuchar ruidos en la corona y motor de giro.",
-                "5. Verificar nivel y estado del aceite de la caja reductora de giro.",
-                "6. Inspeccionar el piñón de giro por desgaste."
-             ],
-            solution: ["Ajuste o reparación del freno de giro", "Reparación (Overhaul) del motor de giro", "Reemplazo de motor de giro", "Ajuste o reemplazo de válvulas de alivio", "Reemplazo del rodamiento de la corona (trabajo mayor)", "Cambio de aceite de caja reductora"],
-            costoEstimado: "US$ 500 (ajuste freno) - US$ 20,000+ (corona/motor)",
-            searchTerms: "motor giro excavadora lento sin fuerza freno trabado",
-            codes: ["E05 (Komatsu)", "MID 027 (CAT)"]
-        },
-        // ... (Más fallas de excavadoras) ...
+        { key: "cat_320", name: "CAT 320", icon: "<i class='fas fa-mountain-city'></i>", models: ["320D", "320E", "320F"] },
+        { key: "komatsu_pc200", name: "Komatsu PC200/210", icon: "<i class='fas fa-mountain-city'></i>", models: ["PC200-8", "PC210LC-10"] },
+        { key: "volvo_ec210", name: "Volvo EC210/240", icon: "<i class='fas fa-mountain-city'></i>", models: ["EC210B", "EC240C"] },
+        { key: "hitachi_zx200", name: "Hitachi ZX200", icon: "<i class='fas fa-mountain-city'></i>", models: ["ZX200-5G"] },
     ],
-    cargador: [
-        // CAT 950/966 y Komatsu WA380 (Combinado y ampliado de manuales)
-        {
-            id: 11, name: "Transmisión Powershift Desliza o Patea", initial: "RPM suben pero la máquina no avanza, o los cambios son muy bruscos.",
-            alertaSeguridad: "Pruebas de transmisión requieren espacio seguro y calzos.",
-            symptoms: ["Deslizamiento (RPM altas, poca velocidad)", "Golpe fuerte al cambiar de marcha", "Olor a aceite quemado", "Temperatura de transmisión alta (>120°C)", "Modo de protección activado (Limp Mode)"],
-            causes: ["Discos de embrague (clutch packs) desgastados o quemados", "Nivel bajo de aceite de transmisión", "Aceite incorrecto o degradado (¡usar solo TO-4!)", "Filtro de transmisión obstruido", "Solenoides de cambio defectuosos", "Válvula de modulación descalibrada o trabada", "Convertidor de par dañado", "Enfriador de aceite obstruido"],
-            diagnosticSteps: [
-                "1. Verificar nivel y condición del aceite (motor caliente, neutro). ¡Olerlo!",
-                "2. Escanear códigos de error con herramienta de diagnóstico (ET/KOMTRAX).",
-                "3. Realizar prueba de calado (stall test) para verificar deslizamiento.",
-                "4. Medir presiones de los paquetes de embrague con manómetros.",
-                "5. Verificar temperatura de operación.",
-                "6. Inspeccionar enfriador por obstrucción."
-            ],
-            solution: ["Cambio de aceite y filtro (usar TO-4)", "Reemplazo de solenoides", "Calibración electrónica de la modulación", "Reparación mayor (Overhaul) de la transmisión (cambio de discos)", "Reemplazo del convertidor de par", "Limpieza del enfriador"],
-            costoEstimado: "US$ 500 (aceite/filtro) - US$ 50,000+ (Overhaul completo)",
-            searchTerms: "transmision cargador frontal desliza patea cambios bruscos",
-            codes: ["077-03 (CAT)", "E04 (Komatsu)"]
-        },
-        // ... (Más fallas de cargadores frontales) ...
+     cargador: [
+        { key: "cat_950_966", name: "CAT 950/966/972", icon: "<i class='fas fa-cubes-stacked'></i>", models: ["950H", "966H", "972H", "992K", "993K"] }, // Añadidos gigantes
+        { key: "komatsu_wa380", name: "Komatsu WA", icon: "<i class='fas fa-cubes-stacked'></i>", models: ["WA380-6", "WA470-6", "WA900", "WA1200"] }, // Nombre genérico
+        { key: "volvo_l120_l150", name: "Volvo L", icon: "<i class='fas fa-cubes-stacked'></i>", models: ["L120F", "L150G", "L180"] }, // Nombre genérico
+        { key: "liebherr_l586", name: "Liebherr L586", icon: "<i class='fas fa-cubes-stacked'></i>", models: ["L586 XPower"] },
     ],
-    dumper: [
-         // CAT 777/785 y Komatsu HD785 (Combinado y ampliado de manuales)
-         {
-            id: 12, name: "Frenos Sobrecalentados / Freno Débil", initial: "Olor a quemado, discos al rojo, camión no frena bien en pendiente.",
-            alertaSeguridad: "⚠️ ¡PELIGRO EXTREMO! Falla de frenos puede ser fatal. NO operar si se sospecha.",
-            symptoms: ["Discos de freno visibles al rojo vivo (>600°C)", "Olor intenso a quemado", "Pedal esponjoso o va al fondo", "Distancia de frenado muy larga", "Retardador no funciona o es insuficiente", "Vibración severa al frenar"],
-            causes: ["Uso excesivo de frenos de servicio (¡NO usar retardador!)", "Retardador hidráulico inoperativo o mal usado", "Fugas en el sistema de aire (si son neumáticos) o hidráulico", "Nivel bajo de aceite de enfriamiento de frenos (si aplica)", "Discos y pastillas desgastados por debajo del límite", "Pistones de caliper trabados", "Aire en el sistema hidráulico"],
-            diagnosticSteps: [
-                "1. ¡DETENER OPERACIÓN INMEDIATAMENTE!",
-                "2. Dejar enfriar los frenos (puede tomar horas).",
-                "3. Inspeccionar visualmente discos (color, grietas) y pastillas (espesor).",
-                "4. Verificar funcionamiento del RETARDADOR HIDRÁULICO.",
-                "5. Revisar niveles de fluidos (hidráulico, enfriamiento de frenos).",
-                "6. Purgar sistema si se sospecha aire.",
-                "7. Medir presiones del sistema de frenos y retardador.",
-                "8. Escanear códigos de error."
-            ],
-            solution: ["Reparación URGENTE del retardador", "Reemplazo de discos y pastillas", "Rebuild de calipers", "Purgado del sistema", "Cambio de fluido de enfriamiento de frenos", "Capacitación al operador sobre uso correcto del retardador"],
-            costoEstimado: "US$ 5,000 (pastillas) - US$ 100,000+ (sistema completo)",
-            searchTerms: "frenos camion minero sobrecalentados retardador no funciona",
-            codes: ["E07 (Komatsu)", "MID 068 (CAT)"]
-        },
-        // ... (Más fallas de camiones mineros) ...
+     dumper: [
+         { key: "cat_777_785", name: "CAT Dumper", icon: "<i class='fas fa-truck-monster'></i>", models: ["777D/F", "785D", "793F", "797F (Mecánico)"] }, // Nombre genérico
+         { key: "komatsu_hd785", name: "Komatsu Dumper", icon: "<i class='fas fa-truck-monster'></i>", models: ["HD785-7 (Mecánico)", "930E", "980E (Eléctrico)"] }, // Nombre genérico
+         { key: "volvo_a40", name: "Volvo A40G", icon: "<i class='fas fa-truck-moving'></i>", models: ["A40G (Articulado)"] },
+         { key: "liebherr_t284", name: "Liebherr T284", icon: "<i class='fas fa-truck-monster'></i>", models: ["T284 (Eléctrico)"] },
+     ],
+     bulldozer: [
+        { key: "cat_d11", name: "CAT D11", icon: "<i class='fas fa-tractor'></i>", models: ["D11T", "D11R"] },
+        { key: "komatsu_d475", name: "Komatsu D475", icon: "<i class='fas fa-tractor'></i>", models: ["D475A"] },
+        { key: "liebherr_pr776", name: "Liebherr PR776", icon: "<i class='fas fa-tractor'></i>", models: ["PR776"] },
+     ],
+     motoniveladora: [
+         { key: "cat_16_24", name: "CAT Grader", icon: "<i class='fas fa-road'></i>", models: ["16M", "24M"] }, // Nombre genérico
+         { key: "komatsu_gd955", name: "Komatsu GD955", icon: "<i class='fas fa-road'></i>", models: ["GD955"] },
+     ],
+     pala: [
+        { key: "cat_pala", name: "CAT Pala", icon: "<i class='fas fa-person-digging'></i>", models: ["6060FS", "6090FS"] }, // Nombre genérico
+        { key: "komatsu_pala", name: "Komatsu Pala", icon: "<i class='fas fa-person-digging'></i>", models: ["PC8000-6"] }, // Nombre genérico
+        { key: "liebherr_pala", name: "Liebherr Pala", icon: "<i class='fas fa-person-digging'></i>", models: ["R9800"] }, // Nombre genérico
+        { key: "hitachi_pala", name: "Hitachi Pala", icon: "<i class='fas fa-person-digging'></i>", models: ["EX8000-6"] }, // Nombre genérico
+     ]
+};
+
+// BASE DE DATOS DE FALLAS (v13 - FINAL DEFINITIVO CON TODOS LOS DATOS EXTRAÍDOS)
+const failures = {
+    // --- CAMIONETAS ---
+    hilux: [
+        { id: 101, name: "Sistema Inyección Diesel", initial: "Pérdida de potencia, humo negro/blanco, arranque difícil.", modelosAplicables: ["Toyota Hilux 2.4L/2.8L"], alertaSeguridad: "No manipular inyectores con motor en marcha (alta presión).", symptoms: ["Pérdida potencia progresiva", "Humo negro (acelerar)", "Humo blanco (arranque frío)", "Consumo >12L/100km", "Arranque difícil frío", "Ralentí inestable"], causes: ["Inyectores obstruidos/desgastados", "Filtro combustible saturado", "Bomba alta presión (HP) defectuosa", "Sensor MAF sucio", "Válvula EGR carbonizada", "Turbo con juego excesivo", "Combustible contaminado"], diagnosticSteps: ["1. Escanear códigos OBD2.", "2. Verificar presión riel común (1350-1800 bar).", "3. Prueba retorno inyectores (<1.5L/min total).", "4. Medir resistencia inyectores (0.3-0.5 ohms).", "5. Verificar señal MAF (2.5-3.5V ralentí).", "6. Inspeccionar juego turbo (<0.05mm radial)."], solution: ["Limpieza/reemplazo inyectores", "Cambio filtro combustible", "Reemplazo bomba HP", "Limpieza MAF/EGR", "Reparación/reemplazo turbo", "Calibración con escáner Toyota"], costoEstimado: "US$ 100 (filtro) - US$ 3,000+ (inyectores/bomba)", searchTerms: "toyota hilux diesel inyector perdida potencia humo negro", codes: ["P0087", "P0093", "P0191", "P0201-P0204", "P2146"], datoIngeniero: "La presión Common Rail en Hilux es muy alta, cualquier contaminación afecta el rendimiento." },
+        { id: 102, name: "Transmisión Automática", initial: "Cambios bruscos, deslizamiento, sobrecalentamiento.", modelosAplicables: ["Toyota Hilux (Automática)"], symptoms: ["Golpe al cambiar P->D o R", "Deslizamiento en subidas", "No entra marcha después de calentar", "Temperatura ATF >120°C", "Ruido zumbido"], causes: ["Nivel bajo ATF", "Filtro ATF obstruido", "Solenoides cambio defectuosos", "Clutch desgastado", "Módulo TCM fallando", "Enfriador ATF tapado"], diagnosticSteps: ["1. Verificar nivel ATF (motor caliente, neutro).", "2. Revisar color/olor ATF (rojo limpio vs café quemado).", "3. Medir temperatura con escáner.", "4. Prueba presión línea (10-12 bar).", "5. Escanear códigos TCM.", "6. Prueba stall (<2500 RPM)."], solution: ["Cambio ATF + filtro (usar Toyota ATF WS)", "Reemplazo solenoides", "Limpieza enfriador", "Overhaul si hay daño interno"], costoEstimado: "US$ 200 (cambio aceite) - US$ 4,000 (Overhaul)", searchTerms: "transmision automatica hilux cambios bruscos patina", codes: ["P0734", "P0750", "P0841", "P0715"] },
+        { id: 103, name: "Sistema 4WD no activa", initial: "Luz 4WD parpadea, no entra 4x4.", modelosAplicables: ["Toyota Hilux 4x4"], symptoms: ["Luz 4WD parpadea", "No acopla 4x4", "Vibración al girar (si queda trabado)", "Mensaje error tablero"], causes: ["Actuador diferencial delantero (ADD) defectuoso", "Sensor velocidad rueda fallando", "Acoplador transfer desgastado", "Cableado roto", "Módulo 4WD ECU"], diagnosticSteps: ["1. Escanear códigos 4WD.", "2. Verificar fusibles.", "3. Probar actuador ADD (aplicar 12V).", "4. Revisar cableado y conectores.", "5. Probar sensores ABS/velocidad."], solution: ["Reemplazo actuador ADD", "Cambio aceite transfer", "Revisar sensores ABS"], costoEstimado: "US$ 200 - US$ 600", searchTerms: "hilux 4x4 no funciona luz parpadea actuador ADD", codes: ["C1241", "C1249"] },
+        { id: 110, name: "Chasis Fisurado (Zona Trasera)", initial:"Ruido ('clack') al pasar baches, posible desnivel.", modelosAplicables: ["Toyota Hilux"], alertaSeguridad:"Inspección estructural URGENTE. Riesgo de colapso.", symptoms:["Ruido estructural", "Desnivel caja carga", "Fisuras visibles cerca soportes ballestas"], causes:["Fatiga material por sobrecarga/torsión constante", "Corrosión"], diagnosticSteps:["1. Limpieza profunda chasis.", "2. Inspección visual detallada (especialmente sobre eje trasero).", "3. Prueba líquidos penetrantes si se sospecha fisura fina."], solution:["Reparación estructural por soldador calificado (seguir procedimiento Toyota)", "Instalar kit refuerzo chasis"], costoEstimado:"US$ 500 - $3,000+", searchTerms:"chasis fisurado hilux reparacion", codes:[] },
     ],
-    camioneta: [
-        // Toyota Hilux / Mitsubishi L200 (Combinado y ampliado de manuales)
-        {
-            id: 13, name: "Sistema 4x4 No Acopla o Parpadea", initial: "La luz 4WD parpadea en el tablero y la tracción no entra.",
-            alertaSeguridad: "No forzar el sistema si no acopla.",
-            symptoms: ["Luz 4WD parpadea", "No se siente el acople (sin 'clunk')", "A veces entra, a veces no", "Ruido al intentar acoplar"],
-            causes: ["Actuador eléctrico del diferencial delantero (ADD) defectuoso (muy común)", "Switch de vacío o solenoides de vacío (VSV) fallando", "Fuga en mangueras de vacío", "Sensor de posición de la transfer defectuoso", "Módulo de control 4WD (ECU) fallando", "Bajo nivel de aceite en diferencial delantero o transfer"],
-            diagnosticSteps: [
-                "1. Escanear códigos de error del sistema 4WD.",
-                "2. Verificar fusibles relacionados con 4WD.",
-                "3. Probar actuador ADD: aplicar 12V directamente para ver si se mueve.",
-                "4. Revisar mangueras de vacío por grietas o desconexiones.",
-                "5. Probar solenoides de vacío (VSV) con multímetro o aplicando 12V.",
-                "6. Verificar señal de sensores de posición."
-             ],
-            solution: ["Reemplazo del actuador ADD", "Reemplazo de solenoides VSV", "Reparación de mangueras de vacío", "Reemplazo de sensor de transfer", "Cambio de aceite de diferenciales y transfer"],
-            costoEstimado: "US$ 50 (mangueras) - US$ 800 (actuador/ECU)",
-            searchTerms: "luz 4x4 parpadea hilux l200 actuador ADD",
-            codes: ["C1241", "P17xx"]
-        },
-        // ... (Más fallas de camionetas) ...
+    ranger: [
+        { id: 201, name: "Enfriador EGR Fisurado (3.2L)", initial: "Pérdida de refrigerante, riesgo sobrecalentamiento.", modelosAplicables: ["Ford Ranger 3.2L"], alertaSeguridad: "Verificar nivel refrigerante. No operar si recalienta.", symptoms:["Baja nivel refrigerante sin fuga visible", "Humo blanco (si fuga es grande)", "Sobrecalentamiento"], causes:["Fisura interna enfriador EGR"], diagnosticSteps:["1. Prueba presión sistema enfriamiento.", "2. Verificar si hay refrigerante en admisión/escape.", "3. Desmontar e inspeccionar enfriador EGR."], solution:["Reemplazo del enfriador EGR"], costoEstimado:"US$ 400 - $800", searchTerms:"ford ranger 3.2 egr cooler leak perdida refrigerante", codes:["P0401", "P0402"] },
+        { id: 202, name: "DPF Saturado (2.0L/3.2L)", initial: "Luz DPF, pérdida potencia, modo emergencia.", modelosAplicables: ["Ford Ranger (con DPF)"], alertaSeguridad:"Regeneración forzada genera altas temperaturas.", symptoms:["Luz DPF", "Modo Limp", "Consumo alto", "Regeneraciones frecuentes"], causes:["Trayectos cortos", "Regeneraciones interrumpidas", "Aceite incorrecto", "Sensor presión DPF"], diagnosticSteps:["1. Escanear nivel saturación.", "2. Medir presión diferencial.", "3. Verificar historial regeneraciones."], solution:["Regeneración forzada", "Limpieza DPF", "Asegurar viajes carretera", "Usar aceite Low SAPS", "Reemplazo DPF"], costoEstimado:"US$ 300 (limpieza) - US$ 2,500 (reemplazo)", searchTerms:"ford ranger dpf saturado regeneracion forzada", codes:["P2463", "P242F"] },
+        { id: 203, name: "Sensores ABS/Control Tracción", initial: "Luces ABS/TC encendidas, sistema inactivo.", modelosAplicables: ["Ford Ranger"], alertaSeguridad:"Frenado puede ser menos estable.", symptoms:["Luces ABS/TC/Estabilidad", "Sistema ABS no funciona"], causes:["Sensor rueda sucio/dañado (polvo, barro)", "Cableado sensor roto", "Anillo reluctor dañado"], diagnosticSteps:["1. Escanear códigos ABS.", "2. Inspeccionar/limpiar sensores rueda.", "3. Verificar cableado sensores.", "4. Verificar anillos reluctores."], solution:["Limpieza/reemplazo sensor rueda"], costoEstimado:"US$ 100 - $300 por sensor", searchTerms:"ford ranger luz abs control traccion sensor rueda", codes:["C1145", "C1155", "..."] },
+        { id: 107, name: "Inyectores con Fugas Internas (3.2L)", initial: "Arranque difícil, humo blanco, nivel aceite SUBE.", modelosAplicables: ["Ford Ranger 3.2L", "Mazda BT-50 3.2L"], alertaSeguridad: "⚠️ Si nivel aceite sube, ¡NO ARRANCAR! Riesgo motor desbocado.", symptoms: ["Arranque difícil (especialmente caliente)", "Humo blanco excesivo", "Nivel aceite sube", "Aceite huele a diesel", "Ralentí inestable"], causes: ["Sellos internos inyector desgastados (Delphi)", "Alto kilometraje (+150k km)"], diagnosticSteps: ["1. ¡Verificar nivel y OLOR aceite!", "2. Prueba retorno inyectores.", "3. Escanear códigos.", "4. Análisis aceite (dilución)."], solution: ["Reemplazo URGENTE inyectores fugando", "Cambio aceite+filtro", "Usar inyectores Bosch (opcional, más fiables)"], costoEstimado: "US$ 400 - US$ 700 por inyector", searchTerms: "inyector ford ranger 3.2 fuga interna nivel aceite sube", codes: ["P0201-P0205", "P0267"] },
+        { id: 204, name: "Transmisión Automática (6R80/10R80)", initial:"Desgaste prematuro, falla mecatrónica.", modelosAplicables: ["Ford Ranger (Automática)"], alertaSeguridad:"Pérdida de tracción inesperada.", symptoms:["Cambios bruscos", "Patinamiento", "Sobrecalentamiento"], causes:["Uso extremo", "Aceite contaminado", "Falla cuerpo válvulas/mecatrónica"], diagnosticSteps:["1. Escanear códigos TCM.", "2. Verificar nivel/condición aceite.", "3. Medir temperatura."], solution:["Overhaul", "Reemplazo mecatrónica", "Cambio aceite+filtro"], costoEstimado:"US$ 2,000 - $6,000+", searchTerms:"transmision automatica ford ranger 6r80 10r80 falla", codes:["P07xx"] },
+        { id: 205, name: "Falla Turbo (2.0L Bi-Turbo)", initial:"Pérdida potencia, ruido turbo.", modelosAplicables: ["Ford Ranger 2.0L Bi-Turbo"], alertaSeguridad:"Detener si hay ruido metálico fuerte.", symptoms:["Pérdida potencia", "Ruido silbido/metálico", "Humo"], causes:["Estrés térmico", "Lubricación deficiente", "Falla actuador"], diagnosticSteps:["1. Escanear códigos.", "2. Inspeccionar turbos (juego, daño aspas).", "3. Verificar presión boost."], solution:["Reemplazo conjunto turbos"], costoEstimado:"US$ 2,500 - $5,000+", searchTerms:"ford ranger 2.0 biturbo falla perdida potencia", codes:["P0299", "P0234"] }
     ],
-    skidsteer: [
-         // Bobcat / CAT Compactos (General)
-        {
-            id: 14, name: "Sistema de Bloqueo de Brazo (Interlock) No Desactiva", initial: "Máquina arranca pero los brazos/balde no se mueven.",
-            alertaSeguridad: "⚠️ NO intentar puentear sistemas de seguridad. Riesgo de accidente grave.",
-            symptoms: ["Luz de advertencia de 'Seat Bar' o cinturón encendida", "Brazos y balde bloqueados", "A veces funciona intermitentemente"],
-            causes: ["Sensor de la barra de seguridad (Seat Bar) defectuoso o desajustado", "Sensor del cinturón de seguridad fallando", "Solenoide de bloqueo hidráulico (BICS) atascado o quemado", "Problema de cableado hacia los sensores o solenoide", "ECU con falla"],
-            diagnosticSteps: [
-                "1. Asegurarse de que la barra de seguridad esté completamente bajada.",
-                "2. Verificar que el cinturón de seguridad esté abrochado.",
-                "3. Revisar fusibles del sistema BICS/Interlock.",
-                "4. Probar sensores de barra y cinturón (continuidad con multímetro).",
-                "5. Medir voltaje en el solenoide de bloqueo hidráulico (debe recibir 12V).",
-                "6. Escanear códigos de error si la máquina lo permite."
-             ],
-            solution: ["Ajuste o reemplazo del sensor de la barra de seguridad", "Reemplazo del sensor del cinturón", "Reemplazo del solenoide BICS", "Reparación del cableado"],
-            costoEstimado: "US$ 100 (sensor) - US$ 1,000 (solenoide/ECU)",
-            searchTerms: "skid steer brazos no mueven interlock BICS",
-            codes: ["Revisar manual específico de marca"]
-        },
-        // ... (Más fallas de skid steer) ...
+    l200: [
+        { id: 301, name: "Bujes Suspensión Delantera", initial:"Ruido (golpe seco) en caminos irregulares.", modelosAplicables:["Mitsubishi L200"], alertaSeguridad:"Pérdida de control si desgaste es severo.", symptoms:["Ruido 'clunk' al pasar baches", "Desgaste irregular neumáticos del."], causes:["Desgaste normal acelerado por uso rudo", "Bujes de mala calidad"], diagnosticSteps:["1. Inspección visual bujes (grietas, deformación).", "2. Verificar holgura con palanca."], solution:["Reemplazo de bujes", "Reemplazo de bandeja completa si alojamiento dañado"], costoEstimado:"US$ 150 - $400", searchTerms:"mitsubishi l200 bujes parrilla superior ruido", codes:[] },
+        { id: 302, name: "Paquetes Resorte Traseros", initial:"Parte trasera baja, topa fácilmente.", modelosAplicables:["Mitsubishi L200"], symptoms:["Altura trasera disminuida", "Ballestas planas o invertidas", "Hojas rotas", "Rebote excesivo"], causes:["Carga constante excesiva", "Fatiga material", "Corrosión"], diagnosticSteps:["1. Inspección visual paquetes resorte.", "2. Medir altura chasis.", "3. Verificar estado bujes ballesta."], solution:["Reemplazo paquetes resorte (originales o reforzados)", "Añadir hoja de refuerzo ('macho')"], costoEstimado:"US$ 300 - $800", searchTerms:"mitsubishi l200 ballestas vencidas reforzar", codes:[] },
+        { id: 104, name: "Filtro Partículas DPF Obstruido", initial:"Luz DPF encendida, pérdida potencia severa.", modelosAplicables: ["Mitsubishi L200 (con DPF)"], alertaSeguridad: "No ignorar luz DPF, puede causar daños mayores.", symptoms: ["Luz DPF fija o parpadeando", "Pérdida potencia (Modo Limp)", "Consumo elevado", "No supera 60-80 km/h", "Regeneraciones muy frecuentes"], causes: ["Uso urbano (trayectos cortos)", "Regeneraciones interrumpidas", "Combustible baja calidad", "Sensor presión diferencial DPF fallando", "Aceite incorrecto (NO Low SAPS)", "Inyectores goteando"], diagnosticSteps: ["1. Escanear nivel saturación DPF.", "2. Medir presión diferencial (antes/después DPF).", "3. Revisar historial regeneraciones.", "4. Verificar temperatura gases escape.", "5. Comprobar inyectores."], solution: ["Regeneración forzada con escáner", "Limpieza profesional DPF", "Asegurar viajes carretera (>30 min @ >80km/h)", "Usar aceite 5W-30 ACEA C3/C4 (Low SAPS)", "Reemplazo DPF si muy dañado"], costoEstimado: "US$ 300 (limpieza) - US$ 2,500 (reemplazo)", searchTerms: "mitsubishi l200 dpf obstruido regeneracion forzada", codes: ["P2002", "P2453", "P242F"] },
+        { id: 303, name: "Actuadores 4WD (Super-Select)", initial:"Luz 4WD parpadea, no acopla.", modelosAplicables:["Mitsubishi L200 (con Super-Select)"], symptoms:["Luz 4WD parpadea", "No entra 4H/4L", "A veces funciona intermitente", "Ruido al intentar acoplar"], causes:["Contaminación (barro/agua) en actuadores/sensores transfer", "Falla solenoide vacío", "Cableado dañado", "Fugas vacío"], diagnosticSteps:["1. Escanear códigos 4WD.", "2. Verificar fusibles.", "3. Probar actuadores/solenoides (aplicar vacío/voltaje).", "4. Revisar mangueras vacío.", "5. Limpiar conectores."], solution:["Reemplazo actuadores/solenoides", "Limpieza/reparación conectores", "Reparación mangueras vacío"], costoEstimado:"US$ 250 - $700", searchTerms:"mitsubishi l200 super select parpadea no acopla 4x4", codes:["C14xx"] },
+        { id: 304, name: "Fuga Retén Trasero Cigüeñal", initial:"Mancha de aceite entre motor y caja.", modelosAplicables:["Mitsubishi L200"], symptoms:["Goteo aceite motor bajo la campana de embrague/convertidor", "Nivel aceite motor baja"], causes:["Desgaste normal retén acelerado por polvo", "Vibración excesiva", "Instalación incorrecta previa"], diagnosticSteps:["1. Confirmar que la fuga es aceite de motor.", "2. Requiere inspección visual quitando tapas inferiores.", "3. Desmontaje parcial puede ser necesario."], solution:["Reemplazo retén trasero cigüeñal (requiere bajar caja cambios/transfer)"], costoEstimado:"US$ 50 (retén) + US$ 500-1000 (mano obra)", searchTerms:"mitsubishi l200 fuga aceite reten cigueñal trasero", codes:[] }
+    ],
+     np300: [
+        { id: 401, name: "Suspensión Trasera Multilink", initial:"Parte trasera baja con carga.", modelosAplicables:["Nissan NP300/Navara (con Multilink)"], symptoms:["Altura trasera disminuida", "Topa fácilmente", "Inestable con carga", "Rebote excesivo"], causes:["Espirales ceden bajo carga constante (no diseñados para minería pesada)", "Amortiguadores desgastados"], diagnosticSteps:["1. Medir altura chasis (comparar con especificación).", "2. Inspección visual espirales/amortiguadores."], solution:["Reemplazar espirales por versión reforzada heavy-duty", "Reemplazar amortiguadores por versión de carga"], costoEstimado:"US$ 300 - $600 (espirales)", searchTerms:"nissan np300 navara suspension trasera baja multilink", codes:[] },
+        { id: 402, name: "Volante Bi-Masa (Manual)", initial:"Vibración/ruido al pasar cambios.", modelosAplicables:["Nissan NP300/Navara (Manual)"], symptoms:["Vibración pedal embrague", "Ruido al embragar/desembragar", "Cambios difíciles", "Olor a embrague quemado"], causes:["Desgaste resortes internos volante bimasa", "Disco embrague gastado", "Collarín dañado"], diagnosticSteps:["1. Probar embrague en diferentes condiciones.", "2. Escuchar ruidos.", "3. Diagnóstico requiere desmontaje."], solution:["Reemplazo kit embrague + volante bimasa"], costoEstimado:"US$ 800 - $1,500", searchTerms:"nissan np300 volante bimasa ruido vibracion embrague", codes:[] },
+        { id: 403, name: "Fugas Aceite Motor (2.3L)", initial:"Manchas aceite en tapa válvulas o enfriador.", modelosAplicables:["Nissan NP300/Navara 2.3L"], symptoms:["Goteo aceite", "Olor aceite quemado", "Nivel aceite baja"], causes:["Empaquetadura tapa válvulas", "Sellos enfriador aceite", "Retén cigüeñal"], diagnosticSteps:["1. Limpiar motor.", "2. Identificar origen fuga tras operar."], solution:["Reemplazo empaquetaduras/sellos", "Reemplazo retén (si aplica)"], costoEstimado:"US$ 100 - $400", searchTerms:"nissan np300 2.3 fuga aceite tapa valvulas enfriador", codes:[] },
+        { id: 404, name: "Falla Sistema Bi-Turbo (2.3L)", initial:"Pérdida potencia, ruido.", modelosAplicables:["Nissan NP300/Navara 2.3L"], alertaSeguridad:"Detener si hay ruido metálico fuerte.", symptoms:["Pérdida potencia", "Ruido silbido/metálico", "Humo", "Check engine"], causes:["Falla actuador", "Falla uno de los turbos", "Contaminación aceite", "Fugas mangueras"], diagnosticSteps:["1. Escanear códigos.", "2. Inspeccionar turbos.", "3. Verificar presión boost.", "4. Verificar actuador."], solution:["Reemplazo actuador/conjunto turbos", "Reparación fugas"], costoEstimado:"US$ 500 - $4,000+", searchTerms:"nissan np300 2.3 biturbo falla perdida potencia", codes:["P0299", "P0234"] }
+    ],
+    amarok: [
+        { id: 501, name: "Válvula EGR Carbonizada", initial: "Pérdida de potencia, humo negro, modo seguro.", modelosAplicables: ["Volkswagen Amarok 2.0L/3.0L TDI"], symptoms: ["Pérdida potencia", "Humo negro", "Modo Limp", "Ralentí irregular", "Consumo alto"], causes: ["Carbonización (trayectos cortos)", "Aceite incorrecto", "DPF saturado"], diagnosticSteps: ["1. Escanear códigos P04xx.", "2. Inspección visual EGR.", "3. Medir apertura EGR (0-100%).", "4. Verificar presión admisión."], solution: ["Limpieza química EGR", "Reemplazo EGR", "Limpieza múltiple admisión", "Usar aceite Low SAPS VW 507.00"], costoEstimado: "US$ 200 (limpieza) - US$ 800 (reemplazo)", searchTerms: "volkswagen amarok egr carbonizada perdida potencia", codes: ["P0401", "P0403", "P04DB"] },
+        { id: 502, name: "Caja DSG (Doble Embrague)", initial: "Tirones al cambiar, vibración, olor quemado.", modelosAplicables: ["Volkswagen Amarok (Automática DSG)"], symptoms: ["Tirones", "Vibración arranque", "Olor quemado", "Cambios duros", "Patinamiento"], causes: ["Embragues desgastados", "Aceite DSG viejo", "Mecatrónica defectuosa", "Software"], diagnosticSteps: ["1. Escanear códigos transmisión.", "2. Medir temp. aceite DSG.", "3. Realizar adaptaciones (VCDS).", "4. Revisar nivel aceite (VW G052182)."], solution: ["Cambio aceite DSG (cada 60k km)", "Actualización software", "Reemplazo embragues", "Reemplazo mecatrónica"], costoEstimado: "US$ 300 (aceite) - US$ 3,500+ (embragues/mecatrónica)", searchTerms: "volkswagen amarok caja dsg tirones mecatronica", codes: ["P17xx", "P18xx"] }
+    ],
+    bt50: [
+        { id: 601, name: "Sincronización Distribución (3.2L)", initial: "Check engine, pérdida potencia, arranque difícil.", modelosAplicables: ["Mazda BT-50 3.2L (similar Ranger)"], symptoms: ["Check engine", "Pérdida potencia", "Arranque difícil", "Humo anormal", "Ruido cadena"], causes: ["Cadena distribución estirada", "Tensores defectuosos", "Sensores CMP/CKP"], diagnosticSteps: ["1. Escanear códigos.", "2. Verificar sincronización (osciloscopio).", "3. Revisar holgura cadena.", "4. Verificar presión aceite."], solution: ["Reemplazo kit distribución completo", "Verificar bomba aceite", "Usar aceite 5W-30 sintético"], costoEstimado: "US$ 700 - US$ 1,200 + mano obra", searchTerms: "mazda bt-50 3.2 cadena distribucion ruido", codes: ["P0016", "P0340", "P0335"] },
+        // Falla Inyectores 3.2L - similar a Ranger
+        { id: 107, name: "Inyectores con Fugas Internas (3.2L)", initial: "Arranque difícil, humo blanco, nivel aceite SUBE.", modelosAplicables: ["Ford Ranger 3.2L", "Mazda BT-50 3.2L"], alertaSeguridad: "⚠️ Si nivel aceite sube, ¡NO ARRANCAR! Riesgo motor desbocado.", symptoms: ["Arranque difícil (especialmente caliente)", "Humo blanco excesivo", "Nivel aceite sube", "Aceite huele a diesel", "Ralentí inestable"], causes: ["Sellos internos inyector desgastados (Delphi)", "Alto kilometraje (+150k km)"], diagnosticSteps: ["1. ¡Verificar nivel y OLOR aceite!", "2. Prueba retorno inyectores.", "3. Escanear códigos.", "4. Análisis aceite (dilución)."], solution: ["Reemplazo URGENTE inyectores fugando", "Cambio aceite+filtro", "Usar inyectores Bosch (opcional, más fiables)"], costoEstimado: "US$ 400 - US$ 700 por inyector", searchTerms: "inyector mazda bt-50 3.2 fuga interna nivel aceite sube", codes: ["P0201-P0205", "P0267"] }
+    ],
+    colorado: [
+        { id: 701, name: "Sistema SCR y AdBlue", initial: "Luz AdBlue, countdown, no arranca.", modelosAplicables: ["Chevrolet Colorado/S10 2.8L Duramax"], alertaSeguridad: "Countdown 0 = NO ARRANCA.", symptoms: ["Luz AdBlue", "Countdown", "Modo seguro", "No arranca", "Consumo AdBlue anormal"], causes: ["Calentador AdBlue", "Inyector AdBlue obstruido", "Sensores NOx", "Cristalización", "Bomba AdBlue"], diagnosticSteps: ["1. Escanear códigos.", "2. Verificar nivel/calidad AdBlue.", "3. Probar inyector AdBlue.", "4. Verificar calentador.", "5. Probar sensores NOx."], solution: ["Reemplazo calentador", "Limpieza/reemplazo inyector", "Usar AdBlue (ISO 22241)", "Reemplazo sensores NOx", "Reemplazo bomba"], costoEstimado: "US$ 200 (calentador) - US$ 800+ (sensor NOx)", searchTerms: "chevrolet colorado s10 adblue scr falla no arranca", codes: ["P20E8", "P204F"] }
+    ],
+    dmax: [
+        { id: 801, name: "Bomba de Vacío Defectuosa", initial: "Pedal de freno duro, turbo no responde bien.", modelosAplicables: ["Isuzu D-Max 3.0L"], alertaSeguridad: "Frenado reducido.", symptoms: ["Pedal freno duro", "Turbo lag", "EGR no funciona"], causes: ["Desgaste interno bomba vacío", "Aceite contaminado", "Alto kilometraje"], diagnosticSteps: ["1. Medir vacío en línea servofreno (< -0.6 bar).", "2. Inspeccionar bomba por fugas.", "3. Verificar líneas vacío."], solution: ["Reemplazo bomba vacío", "Verificar/limpiar líneas vacío", "Cambio aceite regular"], costoEstimado: "US$ 150 - US$ 300", searchTerms: "isuzu dmax bomba vacio freno duro", codes: [] }
+    ],
+    // --- RETROEXCAVADORAS ---
+    komatsu_wb: [
+         { id: 201, name: "Bomba Hidráulica Tándem", initial:"Movimientos lentos, cargador sin fuerza, ruido bomba.", modelosAplicables: ["WB93R-5", "WB97"], alertaSeguridad: "Alta presión hidráulica.", symptoms: ["Movimientos lentos (brazo/cargador)", "Ruido cavitación/chillido", "Temperatura aceite >85°C", "Espuma aceite"], causes: ["Desgaste interno bomba (A o B)", "Filtro succión colapsado", "Aceite incorrecto/viejo", "Aire en sistema", "Válvula alivio mal calibrada"], diagnosticSteps: ["1. Medir presiones (Implementos: 3135 PSI, Dirección: 2175 PSI).", "2. Verificar caudal (44 L/min c/u @ 2200 RPM).", "3. Medir temp. aceite.", "4. Inspeccionar filtro succión/retorno.", "5. Verificar nivel aceite."], solution: ["Overhaul/reemplazo bomba tándem", "Cambio aceite (Komatsu Genuine/ISO 46)", "Cambio filtro succión", "Calibrar válvulas", "Limpieza tanque", "Purgar aire"], costoEstimado: "US$ 3,000 (Overhaul) - US$ 9,000 (Nueva)", searchTerms: "komatsu wb93r bomba hidraulica lenta ruido", codes: ["E04"] },
+         { id: 202, name: "Transmisión Powershift", initial:"No entra reversa, desliza 2da/3ra, kickdown no funciona.", modelosAplicables: ["WB93R-5", "WB97"], symptoms: ["No entra R", "Desliza en FWD", "Kickdown inoperante", "Cambios bruscos", "Sobrecalentamiento (>100°C)"], causes: ["Clutch packs desgastados", "Aceite quemado/bajo", "Solenoides cambio", "Válvula moduladora", "Convertidor torque", "Sensores velocidad"], diagnosticSteps: ["1. Escanear códigos (KOMTRAX).", "2. Verificar nivel/condición aceite.", "3. Medir temp.", "4. Prueba stall (1ra: 2100 RPM, R: 2000 RPM).", "5. Verificar presión modulación."], solution: ["Cambio aceite+filtro (Komatsu TO-4)", "Reemplazo solenoide", "Overhaul transmisión", "Reemplazo convertidor", "Ajuste modulación"], costoEstimado: "US$ 400 (aceite) - US$ 18,000 (Overhaul)", searchTerms: "komatsu wb93r transmision patina no entra reversa", codes: ["E04", "E05", "E06"] },
+         { id: 501, name: "Mandos Finales Ruidosos", initial:"Ruido metálico/vibración en ruedas traseras.", modelosAplicables:["Komatsu WB93R-5", "WB97"], symptoms:["Ruido metálico (clunk, grrr)", "Vibración", "Pérdida tracción", "Fuga aceite cubos", "Sobrecalentamiento cubos"], causes:["Rodamientos planetarios desgastados", "Engranajes picados", "Aceite bajo/contaminado", "Sellos cubo dañados"], diagnosticSteps:["1. Levantar y girar ruedas (escuchar).", "2. Verificar nivel aceite (85W-140 GL-5).", "3. Revisar aceite drenado (metal).", "4. Medir temp. cubos."], solution:["Reemplazo rodamientos", "Reemplazo kit planetarios", "Rebuild mando final", "Cambio aceite", "Reemplazo sellos"], costoEstimado:"US$ 300 (aceite/sellos) - US$ 4,500 (Rebuild)", searchTerms:"komatsu wb93r mando final ruido planetario", codes:[] },
+         { id: 2001, name: "Motor Komatsu - No arranca", initial: "El motor gira pero no enciende.", modelosAplicables: ["WB93R-5"], symptoms: ["Motor gira", "No hay humo", "No arranca"], causes: ["Batería descargada", "Aire en sistema combustible", "Fusible principal fundido", "Falla sensor cigüeñal"], diagnosticSteps: ["1. Verificar voltaje batería (>12.4V).", "2. Purgar sistema combustible.", "3. Revisar fusibles.", "4. Verificar señal sensor cigüeñal."], solution: ["Cargar/reemplazar batería", "Purgar combustible", "Reemplazar fusible", "Reemplazar sensor"], costoEstimado: "US$ 5 (fusible) - US$ 300 (batería)", searchTerms: "komatsu wb93r no arranca motor gira", codes: [] },
+         { id: 2002, name: "Motor Komatsu - Pérdida Potencia", initial: "Máquina débil, no sube pendientes, lenta.", modelosAplicables: ["WB93R-5"], symptoms: ["Sin fuerza", "Lenta", "Humo negro/blanco", "RPM no suben"], causes: ["Filtro aire obstruido", "Filtro combustible obstruido", "Inyectores sucios", "Bomba inyección defectuosa", "Turbo fallando"], diagnosticSteps: ["1. Revisar filtro aire.", "2. Reemplazar filtro combustible.", "3. Verificar presión inyección.", "4. Probar turbo (presión boost)."], solution: ["Limpiar/reemplazar filtros", "Limpiar/calibrar inyectores", "Revisar/reemplazar bomba", "Reparar/reemplazar turbo"], costoEstimado: "US$ 50 (filtros) - US$ 2,000+ (bomba/turbo)", searchTerms: "komatsu wb93r perdida potencia sin fuerza", codes: [] },
+    ],
+    cat_retro: [
+         { id: 203, name: "Bomba Hidráulica Pistones", initial:"Movimientos lentos, pérdida fuerza, ruido bomba.", modelosAplicables: ["416E", "420F", "430F"], symptoms: ["Lentitud general", "Sin fuerza excavación", "Ruido chillón/golpeteo", "Aceite caliente (>90°C)", "Espuma aceite"], causes: ["Desgaste interno bomba", "Filtro hidráulico saturado", "Aceite incorrecto/viejo (Usar HYDO Adv 10)", "Cavitación", "Válvula alivio mal calibrada", "Acople bomba-motor"], diagnosticSteps: ["1. Medir presión principal (3000-3600 PSI).", "2. Medir presión piloto (500-700 PSI).", "3. Verificar temp. aceite.", "4. Inspeccionar filtros (partículas metal).", "5. Prueba carga.", "6. Verificar RPM motor."], solution: ["Overhaul/reemplazo bomba", "Cambio aceite (CAT HYDO Adv 10) + filtros", "Limpieza tanque", "Purgar aire", "Calibrar válvula alivio"], costoEstimado: "US$ 3,000 (Overhaul) - US$ 10,000 (Nueva)", searchTerms: "caterpillar 416e 420f bomba hidraulica lenta ruido", codes: ["094-03", "100-03"] },
+         { id: 204, name: "Cilindros Hidráulicos con Fugas", initial:"Brazos caen solos, fugas aceite en vástagos.", modelosAplicables: ["416E", "420F", "430F"], symptoms: ["Drift (caída)", "Fugas externas", "Pérdida posición", "Consumo aceite hidráulico"], causes: ["Sellos internos desgastados", "Vástago rayado/picado", "Camisa dañada", "Aceite contaminado", "Sobrecalentamiento"], diagnosticSteps: ["1. Prueba drift (<50mm en 5 min aceptable).", "2. Inspección visual vástagos.", "3. Verificar temp. cilindros.", "4. Revisar mangueras."], solution: ["Reemplazo kit sellos", "Cromado/pulido vástago", "Reemplazo cilindro", "Cambio aceite hidráulico"], costoEstimado: "US$ 200 (sellos) - US$ 3,000 (cilindro nuevo)", searchTerms: "caterpillar 416e cilindro hidraulico fuga cae solo", codes: ["N/A"] },
+         { id: 502, name: "Transmisión Powershift CAT", initial:"No entra velocidad, cambios duros, desliza.", modelosAplicables:["CAT 416E", "420F", "430F"], symptoms:["No entra F/R", "Golpe al cambiar", "Deslizamiento", "Sobrecalentamiento", "Ruido"], causes:["Nivel aceite bajo", "Filtro obstruido", "Clutch desgastado", "Solenoides cambio", "ECM transmisión"], diagnosticSteps:["1. Verificar nivel aceite (CAT TO-4).", "2. Escanear códigos (CAT ET).", "3. Prueba stall.", "4. Medir presiones clutch.", "5. Verificar temp."], solution:["Cambio aceite+filtro", "Reemplazo solenoide", "Overhaul transmisión", "Actualizar software ECM"], costoEstimado:"US$ 400 (aceite) - US$ 15,000 (Overhaul)", searchTerms:"caterpillar 416e transmision powershift falla", codes:["077-03", "036-03"] },
+         { id: 15, name: "Frenos débiles o esponjosos", initial: "El pedal de freno se siente suave o va al fondo.", modelosAplicables: ["CAT 416E/420F", "Case 580N", "Komatsu WB93R-5"], symptoms: ["Pedal esponjoso", "Frenado débil", "Requiere bombear", "Fugas líquido"], causes: ["Aire en sistema", "Cilindro maestro defectuoso", "Fugas en líneas/cilindros rueda", "Líquido frenos viejo/contaminado"], diagnosticSteps: ["1. Verificar nivel líquido frenos.", "2. Inspeccionar fugas.", "3. Probar dureza pedal.", "4. Verificar espesor pastillas/discos (si aplica)."], solution: ["Purgar sistema frenos", "Reemplazo cilindro maestro", "Reparar fugas", "Cambio líquido frenos (DOT 3/4)"], costoEstimado: "US$ 100 (purga) - US$ 800 (cilindro maestro)", searchTerms: "retroexcavadora frenos esponjosos purgar", codes: [] },
+         { id: 2101, name: "Motor CAT - No arranca", initial: "Motor no enciende, gira normal o lento.", modelosAplicables: ["CAT 416E", "420F"], symptoms: ["No arranca", "Gira lento", "Sin humo", "Batería OK"], causes: ["Aire en sistema combustible", "Filtros combustible obstruidos", "Bomba de levante fallando", "Solenoide corte combustible", "Falla sensor CKP/CMP"], diagnosticSteps: ["1. Purgar sistema combustible.", "2. Reemplazar filtros.", "3. Verificar bomba levante.", "4. Probar solenoide corte.", "5. Escanear códigos (ET)."], solution: ["Purgar", "Cambiar filtros", "Reemplazar bomba levante/solenoide", "Reemplazar sensor"], costoEstimado: "US$ 80 (filtros) - US$ 500 (bomba/sensor)", searchTerms: "caterpillar 416e no arranca", codes: [] },
+         { id: 2102, name: "Motor CAT - Sobrecalentamiento", initial: "Temperatura sube a zona roja, pierde refrigerante.", modelosAplicables: ["CAT 416E", "420F"], symptoms: ["Temperatura alta (>105°C)", "Pérdida refrigerante", "Humo blanco (vapor)", "Baja potencia"], causes: ["Radiador obstruido (externo/interno)", "Termostato trabado", "Bomba agua", "Tapa radiador (7 PSI)", "Correa ventilador floja"], diagnosticSteps: ["1. Limpiar radiador.", "2. Probar termostato (abre 82°C).", "3. Inspeccionar bomba agua.", "4. Probar tapa radiador.", "5. Verificar correa."], solution: ["Limpiar/reemplazar radiador", "Reemplazar termostato/bomba/tapa", "Ajustar/reemplazar correa", "Flush sistema (CAT ELC)"], costoEstimado: "US$ 50 (tapa) - US$ 1,500 (radiador)", searchTerms: "caterpillar 416e sobrecalentamiento", codes: ["E230-2"] }
+    ],
+    jcb_3cx: [
+        { id: 205, name: "Bomba Hidráulica Triple", initial:"Movimientos lentos, dirección pesada, ruido bomba.", modelosAplicables: ["JCB 3CX", "4CX"], symptoms: ["Lentitud general", "Dirección dura", "Ruido chillón", "Aceite caliente (>90°C)"], causes: ["Desgaste bombas internas", "Válvula alivio descalibrada (3625 PSI)", "Filtro succión", "Aceite incorrecto (Usar JCB HP)", "Cavitación"], diagnosticSteps: ["1. Medir presiones (Servicios: 3625 PSI, Dirección: 2755 PSI, Transm: 465 PSI).", "2. Verificar caudal (143 L/min total).", "3. Medir temp.", "4. Inspeccionar filtro.", "5. Medir presión carga (380 PSI)."], solution: ["Overhaul/reemplazo bomba triple", "Cambio aceite (JCB HP 46) + filtros", "Calibrar válvulas", "Limpieza tanque", "Purgar"], costoEstimado: "US$ 4,000 (Overhaul) - US$ 11,000 (Nueva)", searchTerms: "jcb 3cx bomba hidraulica ruido lenta direccion dura", codes: ["Revisar manual JCB"] },
+        { id: 1001, name: "Transmisión Powershift JCB", initial:"No entra ninguna velocidad, presión baja.", modelosAplicables:["JCB 3CX", "4CX"], symptoms:["No entra F/R", "Presión baja", "Solenoide ruidoso", "Display muestra 'N'"], causes:["Solenoide electroválvula", "Filtro tapado", "Sensor marcha", "Clutch quemado", "Válvula secuenciadora", "ECU transmisión"], diagnosticSteps:["1. Escanear (JCB Service Master).", "2. Verificar presión (140-160 PSI).", "3. Medir voltaje solenoides (12V).", "4. Revisar nivel aceite."], solution:["Reemplazo solenoide", "Cambio aceite+filtro (JCB Special)", "Reemplazo sensor", "Overhaul", "Reprogramar ECU"], costoEstimado:"US$ 400 (solenoide) - $20,000 (Overhaul)", searchTerms:"jcb 3cx transmision no entra marcha solenoide", codes:["5228", "5225", "5230"] },
+        { id: 1002, name: "Kingpost con Juego Excesivo", initial:"Movimiento lateral excavadora, ruido 'clonk'.", modelosAplicables:["JCB 3CX", "4CX"], symptoms:["Juego lateral >5mm", "Ruido", "Desgaste neumáticos", "Inestabilidad"], causes:["Bujes kingpost", "Rodamiento thrust", "Falta lubricación", "Perno central flojo"], diagnosticSteps:["1. Medir juego.", "2. Inspeccionar grietas.", "3. Verificar lubricación.", "4. Revisar apriete perno (1150 Nm)."], solution:["Reemplazo bujes", "Reemplazo rodamiento", "Rebuild kingpost", "Re-torque perno"], costoEstimado:"US$ 600 (bujes) - $7,000 (Rebuild)", searchTerms:"jcb 3cx kingpost juego holgura", codes:[] },
+         { id: 2003, name: "Motor JCB EcoMax - DPF Saturado", initial: "Luz DPF, pérdida potencia, regeneraciones frecuentes.", modelosAplicables: ["JCB 3CX", "4CX (EcoMax)"], symptoms: ["Luz DPF", "Modo Limp", "Regeneraciones frecuentes", "Consumo alto", "No pasa 1500 RPM"], causes: ["Uso urbano", "Regeneraciones fallidas", "Aceite no Low SAPS", "Sensor presión DPF"], diagnosticSteps: ["1. Leer saturación DPF (Service Master).", "2. Verificar historial.", "3. Medir presión diferencial.", "4. Verificar inyector 5to."], solution: ["Regeneración forzada", "Limpieza DPF", "Asegurar viajes carretera", "Usar aceite Low SAPS (10W40 E9)", "Reemplazo DPF"], costoEstimado: "US$ 500 (limpieza) - US$ 4,000 (reemplazo)", searchTerms: "jcb 3cx ecomax dpf saturado", codes: ["3606", "3607", "3610"] }
+    ],
+     case_580: [
+        { id: 1101, name: "Transmisión Carraro", initial:"Deslizamiento, cambios duros, no avanza.", modelosAplicables:["Case 580N", "590SN"], symptoms:["Desliza", "Cambios duros", "Ruido", "Sobrecalentamiento", "No avanza"], causes:["Clutch packs", "Aceite (Hy-Tran Ultra bajo/quemado)", "Convertidor", "Filtro", "Bomba transmisión", "Válvula prioridad"], diagnosticSteps:["1. Verificar nivel/condición aceite.", "2. Medir temp.", "3. Prueba stall (1ra: 2200 RPM, R: 2100 RPM).", "4. Escanear (CNH EST).", "5. Medir presiones clutch (170-185 PSI)."], solution:["Cambio aceite+filtro (Hy-Tran Ultra)", "Reemplazo clutch", "Overhaul", "Reemplazo convertidor", "Rebuild bomba"], costoEstimado:"US$ 500 (aceite) - $25,000 (Overhaul)", searchTerms:"case 580n transmision carraro patina", codes:["Consultar CNH EST"] },
+        { id: 1102, name: "Bomba Hidráulica Dual con Cavitación", initial:"Ruido chillón/golpeteo, movimientos erráticos.", modelosAplicables:["Case 580N", "590SN"], symptoms:["Ruido", "Movimientos erráticos", "Pérdida fuerza", "Temp. >85°C", "Espuma aceite"], causes:["Filtro succión", "Nivel aceite bajo", "Aceite frío/viscoso", "Aire", "Desgaste bombas", "Acoples sueltos"], diagnosticSteps:["1. Medir presiones (3300-3625 PSI).", "2. Verificar caudal (38 L/min c/u).", "3. Medir temp.", "4. Inspeccionar filtro succión.", "5. Verificar nivel."], solution:["Overhaul/reemplazo bomba", "Cambio aceite (Hy-Tran/ISO 46) + filtros", "Limpieza tanque", "Purgar aire"], costoEstimado:"US$ 3,000 (Overhaul) - $10,000 (Nueva)", searchTerms:"case 580n bomba hidraulica ruido cavitacion", codes:[] },
+        { id: 2201, name: "Motor Cummins 4BT - Sobrecalentamiento", initial: "Temperatura excede 105°C, ebullición.", modelosAplicables: ["Case 580N", "590SN"], symptoms: ["Temp. >105°C", "Pérdida potencia", "Ebullición", "Ventilador constante"], causes: ["Radiador obstruido", "Termostato trabado (82°C)", "Bomba agua", "Tapa radiador (15 PSI)", "Correa floja", "Junta culata"], diagnosticSteps: ["1. Verificar temp. (ET/Escáner).", "2. Probar termostato.", "3. Medir presión sistema.", "4. Inspeccionar radiador/bomba.", "5. Probar tapa.", "6. Tensión correa.", "7. Prueba gases en refrigerante."], solution: ["Limpiar/reemplazar radiador", "Reemplazar termostato/bomba/tapa/correa", "Flush sistema (Fleetguard ES)", "Reemplazar junta culata"], costoEstimado: "US$ 50 (termostato) - US$ 3,000 (junta culata)", searchTerms: "case 580n cummins 4bt sobrecalentamiento", codes: [] },
+         { id: 2202, name: "Kingpost con Juego Excesivo", initial: "Movimiento lateral excavadora > 5mm, ruido.", modelosAplicables: ["Case 580N", "590SN"], symptoms: ["Juego > 3-5mm", "Ruido", "Desgaste neumáticos", "Inestabilidad"], causes: ["Bujes", "Rodamiento thrust", "Perno central", "Falta lubricación"], diagnosticSteps: ["1. Medir juego.", "2. Verificar lubricación.", "3. Revisar apriete perno (950-1050 Nm).", "4. Inspeccionar grietas."], solution: ["Reemplazo bujes/rodamiento", "Reemplazo perno", "Rebuild kingpost", "Re-torque perno"], costoEstimado: "US$ 500 (bujes) - US$ 6,500 (Rebuild)", searchTerms: "case 580n kingpost juego holgura", codes: [] }
+    ],
+    nh_retro: [
+         { id: 3001, name: "Motor FPT (Iveco) - Sistema EGR Carbonizado", initial: "Pérdida potencia, humo negro, modo seguro.", modelosAplicables: ["New Holland B90B", "B95B", "B110B"], symptoms: ["Pérdida potencia", "Humo negro", "Modo Limp", "Ralentí inestable", "Consumo alto", "Check engine"], causes: ["Válvula EGR carbonizada", "Enfriador EGR obstruido", "Aceite incorrecto (Low SAPS)", "Sensor MAP sucio", "Turbo back-pressure", "DPF saturado"], diagnosticSteps: ["1. Escanear (CNH EST).", "2. Verificar apertura EGR (0-100%).", "3. Medir temp. gases EGR.", "4. Medir presión admisión.", "5. Inspeccionar EGR.", "6. Verificar DPF."], solution: ["Limpieza química EGR/enfriador", "Reemplazo EGR", "Limpieza múltiple", "Reemplazo sensor MAP", "Regenerar DPF", "Usar aceite Low SAPS"], costoEstimado: "US$ 300 (limpieza) - US$ 1,200 (reemplazo)", searchTerms: "new holland b90b fpt iveco egr falla", codes: ["P0401", "P0403", "P0405"] },
+         { id: 3002, name: "Cilindros Estabilizadores (Outriggers) con Fugas", initial: "Estabilizadores se retraen solos, fugas.", modelosAplicables: ["New Holland B90B", "B95B", "B110B"], symptoms: ["Se retraen", "Fugas vástago", "Máquina se hunde", "Inestable"], causes: ["Sellos vástago/pistón", "Vástago rayado", "Válvula retención", "Mangueras"], diagnosticSteps: ["1. Prueba retención bajo carga (no debe bajar en 10 min).", "2. Inspección vástagos.", "3. Verificar válvulas retención."], solution: ["Reemplazo kit sellos", "Cromado vástago", "Reemplazo cilindro", "Rebuild válvula", "Reemplazo mangueras"], costoEstimado: "US$ 150 (sellos) - US$ 2,200 (cilindro)", searchTerms: "new holland b90b estabilizador fuga cae", codes: [] },
+         { id: 3003, name: "Bomba Hidráulica Rexroth - Pérdida Caudal", initial: "Movimientos lentos, aceite caliente.", modelosAplicables: ["New Holland B90B", "B95B", "B110B"], symptoms: ["Lentitud", "Cargador sin fuerza", "Temp. >85°C", "Ruido cavitación", "Dirección pesada"], causes: ["Desgaste bomba (plato/pistones)", "Válvula compensadora", "Filtro succión", "Aceite degradado", "Entrada aire"], diagnosticSteps: ["1. Medir presiones (Impl: 3625 PSI, Dir: 2610 PSI).", "2. Verificar caudal (140 L/min).", "3. Medir temp.", "4. Inspeccionar filtro.", "5. Medir presión carga (380 PSI)."], solution: ["Overhaul/reemplazo bomba", "Cambio aceite (NH 410B/ISO 46) + filtros", "Calibrar compensadora", "Limpieza tanque", "Purgar"], costoEstimado: "US$ 4,000 (Overhaul) - US$ 12,000 (Nueva)", searchTerms: "new holland b90b bomba hidraulica rexroth lenta", codes: [] }
+    ],
+    // --- EXCAVADORAS ---
+    cat_320: [
+         { id: 9, name: "Bomba Hidráulica Principal Ruidosa", initial:"Ruido fuerte (gemido, chillido, martilleo).", modelosAplicables: ["320D", "320E", "320F"], symptoms: ["Ruido bomba", "Lentitud", "Aceite caliente >80°C", "Cavitación", "Movimientos irregulares", "Espuma"], causes: ["Desgaste interno", "Filtro piloto obstruido", "Aceite incorrecto/viejo", "Regulador descalibrado", "Entrada aire", "Acople motor"], diagnosticSteps: ["1. Medir presiones (P1/P2: 5075 PSI, Piloto: 570 PSI).", "2. Verificar caudal (245 L/min c/u).", "3. Medir temp.", "4. Inspeccionar filtro retorno (metal).", "5. Medir presión carga (550 PSI).", "6. Analizar aceite."], solution: ["Overhaul/reemplazo bomba", "Cambio aceite (HYDO Adv 10) + filtros", "Limpieza tanque", "Calibrar regulador", "Purgar", "Ajustar acople"], costoEstimado: "US$ 6,000 (Overhaul) - $18,000 (Nueva)", searchTerms: "caterpillar 320d bomba hidraulica ruido lenta", codes: ["094-03"] },
+         { id: 10, name: "Motor de Giro (Swing) sin Fuerza", initial:"Torreta gira despacio, no gira con carga.", modelosAplicables: ["320D", "320E", "320F"], symptoms: ["Giro lento (<7 RPM)", "No gira con carga", "Ruido metálico", "Fugas motor swing", "Sobrecalentamiento", "Freno trabado"], causes: ["Desgaste motor", "Freno swing trabado", "Válvula control swing", "Filtro swing", "Presión baja", "Rodamiento piñón"], diagnosticSteps: ["1. Medir presión swing (5075 PSI).", "2. Verificar velocidad giro.", "3. Inspeccionar freno (gap 2-3mm).", "4. Revisar nivel aceite motor swing.", "5. Medir temp."], solution: ["Overhaul/reemplazo motor swing", "Ajuste/rebuild freno", "Rebuild válvula control", "Reemplazo piñón", "Cambio aceite/filtro"], costoEstimado: "US$ 4,000 (Overhaul) - $14,000 (Nuevo)", searchTerms: "caterpillar 320d motor giro swing lento sin fuerza", codes: [] },
+         { id: 16, name: "Tren de Rodaje Ruidoso o Flojo", initial:"Ruido metálico al avanzar, cadenas golpean.", modelosAplicables: ["320D", "320E", "320F"], symptoms: ["Ruido", "Vibración", "Cadenas flojas/tensas", "Rodillos con juego/fugas", "Sprockets afilados", "Zapatas desgastadas"], causes: ["Falta lubricación", "Tensión incorrecta", "Desgaste rodillos/ruedas/sprockets", "Terreno abrasivo", "Alto horaje"], diagnosticSteps: ["1. Medir tensión cadena (30-55mm flecha).", "2. Inspeccionar rodillos (fugas, juego <3mm).", "3. Medir desgaste sprockets.", "4. Inspeccionar zapatas (garra >35mm).", "5. Verificar ruedas guía.", "6. Revisar tensor."], solution: ["Ajustar tensión", "Reemplazo rodillos/ruedas/sprockets", "Reemplazo cadenas", "Reemplazo zapatas", "Overhaul tensor"], costoEstimado: "US$ 500 (rodillo) - $55,000 (Overhaul completo)", searchTerms: "caterpillar 320d tren rodaje cadena rodillo desgaste", codes: [] },
+         { id: 601, name: "Motor Diesel C6.6/C7.1 - Inyectores", initial:"Humo blanco, pérdida potencia, ralentí irregular, dilución aceite.", modelosAplicables:["CAT 320D2", "320E", "320F"], alertaSeguridad: "⚠️ Si nivel aceite sube, PARAR.", symptoms: ["Humo blanco (arranque)", "Pérdida potencia", "Ralentí inestable", "Consumo alto", "Arranque difícil frío", "Nivel aceite sube"], causes: ["Inyectores common rail (fuga interna)", "Sellos inyector", "Bomba HP", "Combustible contaminado"], diagnosticSteps: ["1. Escanear códigos (ET).", "2. Prueba balance cilindros.", "3. Medir retorno inyectores.", "4. ¡VERIFICAR NIVEL ACEITE!", "5. Revisar filtros (agua/metal)."], solution: ["Reemplazo inyectores", "Calibración con ET", "Cambio aceite si diluido", "Cambio filtros", "Limpieza sistema si contaminado"], costoEstimado: "US$ 700 - $1,400 por inyector", searchTerms: "cat 320d inyector falla humo blanco dilucion aceite", codes: ["253-02", "349-03", "1347-03", "1569-31"] },
+         { id: 1201, name: "Válvula Control Principal con Fugas Internas", initial:"Movimientos múltiples, brazos caen, aceite caliente.", modelosAplicables:["CAT 320D", "320E", "320F"], symptoms:["Movimientos cruzados", "Drift brazos (>50mm/5min crítico)", "Pérdida fuerza", "Sobrecalentamiento"], causes:["Spools desgastados", "Sellos spool", "Resortes débiles", "Cuerpo rayado", "Contaminación"], diagnosticSteps:["1. Prueba drift.", "2. Verificar movimientos cruzados.", "3. Medir temp.", "4. Analizar aceite.", "5. Revisar presiones puerto."], solution:["Overhaul válvula", "Reemplazo válvula", "Cambio aceite+filtros", "Flush sistema"], costoEstimado:"US$ 8,000 (Overhaul) - $40,000 (Nueva)", searchTerms:"cat 320d valvula control principal fuga interna drift", codes:[] }
+    ],
+    komatsu_pc200: [
+        { id: 701, name: "Bomba Hidráulica K3V con Cavitación", initial:"Ruido golpeteo, movimientos erráticos, aceite caliente/espumoso.", modelosAplicables:["PC200-8", "PC210LC-10"], alertaSeguridad:"Parar si ruido es fuerte.", symptoms:["Ruido martilleo", "Movimientos erráticos", "Temp. >85°C", "Espuma aceite", "Lentitud"], causes:["Filtro succión colapsado", "Nivel aceite bajo", "Aceite muy frío/viscoso", "Entrada aire", "Respiradero tanque tapado"], diagnosticSteps:["1. Inspeccionar filtro succión.", "2. Verificar nivel aceite.", "3. Medir temp. aceite.", "4. Verificar respiradero.", "5. Revisar aceite por espuma."], solution:["Reemplazo filtro succión", "Corregir nivel aceite (Komatsu HO/ISO 46)", "Limpiar respiradero", "Cambio aceite si degradado", "Overhaul bomba si dañada"], costoEstimado:"US$ 150 (filtro) - US$ 17,000 (bomba)", searchTerms:"komatsu pc200 bomba hidraulica cavitacion ruido", codes:[] },
+        { id: 702, name: "Motor Giro con Freno Trabado", initial:"No gira o muy lento, ruido arrastre.", modelosAplicables:["PC200-8", "PC210LC-10"], symptoms:["No gira/lento", "Ruido arrastre", "Sobrecalentamiento motor giro", "Olor quemado", "Motor se detiene al intentar girar"], causes:["Pistones freno oxidados", "Resortes freno rotos", "Falta presión liberación", "Válvula liberación", "Disco freno desgastado", "Solenoide freno"], diagnosticSteps:["1. Verificar presión liberación freno (20-30 bar).", "2. Medir corriente solenoide (12V).", "3. Inspeccionar pistones freno.", "4. Medir gap disco (0.3-0.5mm)."], solution:["Limpieza/lubricación pistones", "Reemplazo kit freno", "Reemplazo solenoide", "Rebuild válvula", "Ajuste gap"], costoEstimado:"US$ 400 (kit freno) - US$ 5,500 (Overhaul motor)", searchTerms:"komatsu pc200 freno giro trabado no gira", codes:[] },
+        { id: 1301, name: "Motor Komatsu SAA6D107E - Turbo VGT", initial:"Pérdida potencia variable, modo seguro, humo negro intermitente.", modelosAplicables:["PC200-8", "PC210LC-10"], symptoms:["Pérdida potencia", "Modo Limp", "Humo negro", "Código turbo", "Actuador ruidoso"], causes:["Actuador VGT", "Mecanismo VGT carbonizado", "Sensor posición", "Aletas trabadas", "Calibración perdida"], diagnosticSteps:["1. Escanear (KOMTRAX).", "2. Verificar posición actuador (0-100%).", "3. Medir boost (180-220 kPa).", "4. Prueba actuador.", "5. Inspección visual."], solution:["Limpieza mecanismo VGT", "Reemplazo actuador", "Reemplazo sensor", "Calibración", "Reemplazo turbo"], costoEstimado:"US$ 600 (actuador) - $7,000 (turbo)", searchTerms:"komatsu pc200 turbo vgt falla actuador", codes:["E209", "E210", "E211"] }
+    ],
+    volvo_ec210: [
+        { id: 1401, name: "Sistema Hidráulico ACS - Pérdida Eficiencia", initial:"Movimientos lentos bajo carga, consumo alto.", modelosAplicables:["Volvo EC210B", "EC240C"], symptoms:["Lentitud", "Consumo alto", "Temp. >80°C", "Ventilador siempre activo"], causes:["Modo trabajo incorrecto", "Bomba no regula", "Válvulas ACS descalibradas", "Sensores presión", "Software ECU"], diagnosticSteps:["1. Escanear (VCADS).", "2. Verificar modo trabajo.", "3. Medir presiones/temp.", "4. Prueba funciones.", "5. Verificar calibración."], solution:["Recalibrar ACS (VCADS)", "Actualizar software", "Reemplazo sensores", "Overhaul bomba", "Cambio aceite (Volvo Hyd Oil)"], costoEstimado:"US$ 300 (calibración) - $9,000 (bomba)", searchTerms:"volvo ec210 acs hidraulico lento", codes:["Consultar VCADS"] },
+        { id: 1402, name: "Motor Volvo D6E/D7E - Sistema SCR/AdBlue", initial:"Luz AdBlue, countdown, pérdida potencia, no arranca.", modelosAplicables:["Volvo EC210B", "EC240C", "A40G"], alertaSeguridad:"Countdown 0 = NO ARRANCA.", symptoms:["Luz AdBlue", "Countdown", "Potencia reducida", "No arranca", "Consumo AdBlue anormal", "Cristalización"], causes:["Tanque vacío", "AdBlue mala calidad", "Inyector obstruido", "Calentador", "Sensores NOx", "Bomba AdBlue"], diagnosticSteps:["1. Escanear (VCADS).", "2. Leer countdown.", "3. Verificar nivel/calidad AdBlue.", "4. Probar dosificación.", "5. Inspeccionar inyector.", "6. Verificar calentador/sensores."], solution:["Rellenar (ISO 22241)", "Reemplazo inyector", "Limpieza sistema", "Reemplazo calentador", "Reemplazo sensores NOx", "Reemplazo bomba", "Reset countdown (VCADS)"], costoEstimado:"US$ 5 (AdBlue) - $4,000+ (Sensores NOx)", searchTerms:"volvo ec210 adblue scr falla countdown", codes:["P20E8", "P204F", "..."] }
+    ],
+    hitachi_zx200: [
+         { id: 4001, name: "Hidráulico - Lentitud / Brusquedad", initial:"Máquina lenta o movimientos bruscos.", modelosAplicables:["Hitachi ZX200-5G"], symptoms:["Lenta", "Brusca", "No suave"], causes:["Desgaste válvulas control flujo", "Bombas piloto", "Aceite incorrecto"], diagnosticSteps:["1. Medir tiempos ciclo.", "2. Verificar presiones piloto.", "3. Calibrar válvulas (si aplica).", "4. Analizar aceite."], solution:["Calibración/reemplazo válvulas control", "Revisar/reemplazar bombas piloto", "Cambio aceite (Hitachi Genuine/ISO 46)"], costoEstimado:"$1,000 - $5,000+", searchTerms:"hitachi zx200 hidraulico lento brusco", codes:[] },
+         { id: 4002, name: "Enfriadores Aceite Hidráulico", initial:"Aceite hidráulico se sobrecalienta.", modelosAplicables:["Hitachi ZX200-5G"], symptoms:["Temp. aceite > 85°C", "Alarma temperatura", "Pérdida viscosidad aceite"], causes:["Enfriadores (radiadores) tapados con polvo/barro", "Ventilador no funciona", "Bypass enfriador trabado"], diagnosticSteps:["1. Inspección visual enfriadores.", "2. Verificar funcionamiento ventilador.", "3. Medir temp. entrada/salida enfriador."], solution:["Limpieza a presión enfriadores", "Reparar/reemplazar ventilador", "Revisar válvula bypass"], costoEstimado:"$200 - $1,500", searchTerms:"hitachi zx200 sobrecalentamiento aceite hidraulico", codes:[] }
+         // Faltan datos más específicos para Hitachi en los manuales proporcionados
+    ],
+    // --- CARGADORES ---
+    cat_950_966: [
+        { id: 11, name: "Transmisión Powershift Desliza", initial:"RPM suben pero máquina no avanza, cambios bruscos.", modelosAplicables: ["950H", "966H", "972H"], symptoms: ["Deslizamiento (slip)", "Cambios bruscos", "Olor quemado", "Temp. >120°C", "Modo Limp"], causes: ["Clutch packs", "Aceite (TO-4 bajo/quemado)", "Filtro", "Modulación incorrecta", "Convertidor", "Solenoides"], diagnosticSteps: ["1. Escanear (ET).", "2. Verificar temp/presión/RPM/slippage.", "3. Prueba stall.", "4. Verificar nivel/condición aceite.", "5. Medir modulación."], solution: ["Cambio aceite+filtros (CAT TO-4)", "Reemplazo clutch pack", "Overhaul transmisión", "Reemplazo convertidor", "Flush enfriador", "Reemplazo solenoide", "Calibrar (ET)"], costoEstimado: "US$ 800 (aceite) - $45,000 (Overhaul)", searchTerms: "caterpillar 966h transmision patina desliza", codes: ["Consultar ET"] },
+        { id: 801, name: "Bomba Hidráulica Implementos Ruidosa", initial:"Ruido agudo/chillido, levante lento.", modelosAplicables:["950H", "966H", "972H"], symptoms:["Ruido bomba", "Levante/Tilt lento", "Aceite caliente (>90°C)", "Cavitación", "Espuma aceite"], causes:["Desgaste interno bomba", "Filtro carga obstruido", "Aceite incorrecto (HYDO Adv 10)", "Válvula alivio mal calibrada (5000 PSI)", "Entrada aire", "Nivel bajo"], diagnosticSteps:["1. Medir presiones (Lift/Tilt: 5000 PSI).", "2. Verificar caudal (285-380 L/min).", "3. Medir temp.", "4. Inspeccionar filtro carga.", "5. Verificar presión carga (420-520 PSI).", "6. Revisar nivel."], solution:["Overhaul/reemplazo bomba", "Cambio aceite (HYDO Adv 10) + filtros", "Limpieza tanque", "Calibrar válvula", "Purgar"], costoEstimado:"US$ 6,000 (Overhaul) - US$ 22,000 (Nueva)", searchTerms:"caterpillar 966h bomba hidraulica ruido lenta", codes:[] },
+        { id: 1501, name: "Motor C11/C13 - Sistema Combustible", initial:"Pérdida potencia, humo, consumo alto, arranque difícil.", modelosAplicables:["CAT 966H", "972H"], alertaSeguridad:"⚠️ Metal en filtro = PARAR.", symptoms:["Pérdida potencia", "Humo blanco/negro", "Consumo >30 L/h", "Arranque difícil", "Ralentí inestable", "Check engine"], causes:["Inyectores (fuga/sucios)", "Bomba HP", "Filtros", "Combustible contaminado", "Sensor presión", "Válvula FCV"], diagnosticSteps:["1. Escanear (ET).", "2. Prueba balance cilindros.", "3. Medir retorno inyectores.", "4. ¡Revisar filtros (metal/agua)!", "5. Medir presión riel."], solution:["Reemplazo inyectores + calibración", "Reemplazo bomba HP", "Cambio filtros", "Limpieza sistema si contaminado"], costoEstimado:"US$ 800/inyector - $15,000+ (si hay metal)", searchTerms:"cat 966h c11 c13 inyector falla bomba hp", codes:["253-02", "349-03", "1347-03", "94-03"] },
+        { id: 2301, name: "Eje Delantero Ruidoso", initial:"Ruido metálico al girar, vibración volante.", modelosAplicables:["CAT 950H", "966H", "972H"], symptoms:["Ruido giro", "Vibración", "Desgaste neumáticos", "Juego dirección", "Fugas cubos", "Sobrecalentamiento"], causes:["Rodamientos planetarios", "Engranajes diferencial", "Rodamientos rueda", "Aceite eje bajo/sucio", "Articulación central"], diagnosticSteps:["1. Levantar y girar ruedas.", "2. Verificar nivel aceite (CAT GO 50/80W90).", "3. Revisar aceite drenado (metal).", "4. Medir temp.", "5. Verificar articulación."], solution:["Reemplazo rodamientos", "Reemplazo kit diferencial", "Overhaul eje", "Cambio aceite", "Reemplazo sellos"], costoEstimado:"US$ 500 (rodamiento) - $30,000 (Overhaul)", searchTerms:"cat 966h eje delantero ruido diferencial", codes:[] },
+        { id: 4101, name: "Transmisión ECPC - Cambios Bruscos", initial:"'Golpes' al pasar cambios (1ra-2da).", modelosAplicables:["CAT 992K", "993K"], symptoms:["Golpe cambio", "Patinamiento leve"], causes:["Descalibración válvulas ECPC", "Desgaste discos"], diagnosticSteps:["1. Calibración transmisión con ET.", "2. Revisar presiones clutch.", "3. Análisis aceite."], solution:["Calibración", "Overhaul transmisión si persiste"], costoEstimado:"$500 (calibración) - $50,000+ (Overhaul)", searchTerms:"cat 992k 993k transmision ecpc golpe cambio", codes:[] },
+        { id: 4102, name: "Radiador Modular AMOCS/NGMR - Fugas", initial:"Fuga refrigerante en una sección.", modelosAplicables:["CAT 992K", "993K"], symptoms:["Pérdida refrigerante", "Sobrecalentamiento"], causes:["Vibración", "Ciclos térmicos", "Corrosión"], diagnosticSteps:["1. Identificar sección con fuga.", "2. Prueba presión sistema."], solution:["Reemplazo sección (panel) radiador dañada"], costoEstimado:"$2,000 - $5,000 por sección", searchTerms:"cat 992k radiador amocs ngmr fuga", codes:[] }
+    ],
+    komatsu_wa380: [
+        { id: 2401, name: "Transmisión HST - Pérdida Potencia", initial:"Velocidad máxima reducida, sin fuerza en pendientes.", modelosAplicables:["WA320", "WA380", "WA470"], symptoms:["Lento", "Sin fuerza", "Ruido whine", "Temp. HST >110°C", "Espuma aceite"], causes:["Bomba HST", "Motor HST", "Válvula carga", "Aceite (TO-4 bajo/quemado)", "Filtro HST", "Enfriador", "Válvula alivio"], diagnosticSteps:["1. Escanear (KOMTRAX).", "2. Verificar temp/presión HST/carga.", "3. Prueba velocidad.", "4. Verificar nivel/condición aceite."], solution:["Overhaul/reemplazo bomba/motor HST", "Cambio aceite+filtro (Komatsu TO-4)", "Limpieza enfriador", "Calibrar válvula", "Rebuild válvula carga"], costoEstimado:"US$ 800 (aceite) - $25,000+ (bomba/motor)", searchTerms:"komatsu wa380 hst perdida potencia lenta", codes:["Consultar KOMTRAX"] },
+        { id: 2402, name: "Bomba Hidráulica Tándem Trabajos", initial:"Ruido cavitación, levante/tilt lentos.", modelosAplicables:["WA320", "WA380", "WA470"], symptoms:["Ruido", "Lentitud", "Temp. >85°C", "Movimientos erráticos", "Espuma"], causes:["Desgaste bomba", "Filtro piloto", "Aceite degradado", "Válvula reguladora", "Entrada aire", "Nivel bajo"], diagnosticSteps:["1. Medir presiones (Implementos: 4970 PSI, Steering: 2990 PSI).", "2. Verificar caudal.", "3. Medir temp.", "4. Inspeccionar filtro piloto.", "5. Verificar presión carga."], solution:["Overhaul/reemplazo bomba", "Cambio aceite (Komatsu Hyd/ISO 46) + filtros", "Limpieza tanque", "Calibrar válvulas"], costoEstimado:"US$ 7,000 (Overhaul) - $24,000 (Nueva)", searchTerms:"komatsu wa380 bomba hidraulica ruido lenta", codes:[] },
+        { id: 4201, name: "Monitor VHMS / Sensores Transmisión", initial:"Fallas monitor cabina, sensores erráticos.", modelosAplicables:["Komatsu WA900", "WA1200"], symptoms:["Monitor apagado/errático", "Códigos sensores", "Transmisión modo seguro"], causes:["Polvo", "Vibración", "Humedad"], diagnosticSteps:["1. Escanear (KOMTRAX).", "2. Verificar conexiones sensores/monitor.", "3. Medir señales sensores."], solution:["Reemplazo sensor", "Reemplazo monitor", "Limpieza conectores"], costoEstimado:"$300 (sensor) - $5,000+ (monitor)", searchTerms:"komatsu wa900 monitor vhms falla sensor", codes:[] },
+        { id: 4202, name: "Transmisión Powershift Komatsu (Grande)", initial:"Falla paquetes embrague, patina.", modelosAplicables:["Komatsu WA900", "WA1200"], symptoms:["Patina", "Pierde marcha", "Sobrecalienta"], causes:["Desgaste normal acelerado"], diagnosticSteps:["1. Prueba stall.", "2. Analizar aceite.", "3. Medir presiones."], solution:["Overhaul transmisión (reemplazo por Reman)"], costoEstimado:"$60,000 - $100,000+", searchTerms:"komatsu wa900 wa1200 transmision falla", codes:[] }
+    ],
+    volvo_l120_l150: [
+        { id: 2901, name: "Transmisión Volvo - Sobrecalentamiento", initial:"Temperatura >120°C, pérdida potencia.", modelosAplicables:["Volvo A40G", "L120F", "L150G", "L180"], symptoms:["Temp. >120°C", "Pérdida potencia", "Olor quemado", "Modo seguro", "Aceite oscuro"], causes:["Enfriador obstruido", "Convertidor torque", "Clutch deslizando", "Aceite degradado", "Nivel bajo"], diagnosticSteps:["1. Escanear (VCADS).", "2. Verificar temp.", "3. Prueba stall.", "4. Verificar nivel/condición aceite.", "5. Inspeccionar enfriador."], solution:["Limpieza enfriador", "Cambio aceite+filtro (Volvo Trans Oil)", "Overhaul", "Reemplazo convertidor", "Flush sistema"], costoEstimado:"US$ 500 (limpieza) - $55,000+ (Overhaul)", searchTerms:"volvo l120 l150 transmision sobrecalentamiento", codes:["MID 130 PID 177"] },
+        { id: 4301, name: "Sistema Optishift - Fallas Cambio", initial:"No cambia automático, brusco, patina.", modelosAplicables:["Volvo L120F", "L150G", "L180"], symptoms:["No cambia auto", "Brusco", "Queda en marcha", "Error display", "Patinamiento"], causes:["Software ECU", "Sensores velocidad", "Solenoide trabado", "Calibración perdida", "Modo incorrecto"], diagnosticSteps:["1. Escanear (VCADS).", "2. Verificar modo.", "3. Revisar calibración.", "4. Probar sensores/solenoides."], solution:["Actualizar software", "Recalibrar", "Reemplazo sensores/solenoides"], costoEstimado:"$300 (software) - $1,500+ (sensor/solenoide)", searchTerms:"volvo l150 optishift falla cambio", codes:["Consultar VCADS"] }
+    ],
+    liebherr_l586: [
+        { id: 4401, name: "Tren Potencia Hidrostático - Falla Bomba/Motor", initial:"Falla catastrófica, pérdida total tracción.", modelosAplicables:["Liebherr L586 XPower", "PR776"], alertaSeguridad:"Pérdida súbita movimiento.", symptoms:["Pérdida tracción total", "Ruido extremo", "Aceite hidráulico contaminado (metal brillante)"], causes:["Contaminación SEVERA aceite hidráulico"], diagnosticSteps:["1. ¡ANALIZAR ACEITE URGENTE!", "2. Inspeccionar filtros (metal)."], solution:["Reemplazo bomba/motor afectado", "FLUSHING COMPLETO de TODO el sistema hidráulico"], costoEstimado:"$80,000 - $150,000+ por componente + Flushing", searchTerms:"liebherr l586 hidrostático falla bomba motor", codes:[] },
+        { id: 4402, name: "Enfriamiento (Radiadores)", initial:"Radiadores tapados, sobrecalentamiento.", modelosAplicables:["Liebherr L586 XPower"], symptoms:["Sobrecalienta motor/hidráulico", "Ventilador 100%"], causes:["Polvo fino obstruye radiadores traseros"], diagnosticSteps:["1. Inspección visual.", "2. Medir temperaturas."], solution:["Limpieza a presión regular", "Verificar ventilador reversible"], costoEstimado:"Mantenimiento", searchTerms:"liebherr l586 radiador tapado sobrecalentamiento", codes:[] }
+    ],
+    // --- DUMPERS ---
+    cat_777_785: [
+        { id: 12, name: "Frenos Sobrecalentados / Débiles", initial:"Olor a quemado, discos rojos, camión no frena.", modelosAplicables: ["777D/F", "785D", "793F"], alertaSeguridad: "¡RIESGO CRÍTICO! Detener inmediatamente.", symptoms: ["Discos al rojo", "Olor quemado", "Pérdida frenado", "Desgaste acelerado", "Fluido hirviendo", "Pedal esponjoso"], causes: ["Uso excesivo (no usar retarder)", "Frenos drag", "Retarder inoperante", "Pistones trabados", "Mangueras colapsadas", "Sistema refrigeración discos insuficiente", "Sobrecarga"], diagnosticSteps: ["1. Medir temp. discos (>600°C crítico).", "2. Inspeccionar discos (grietas, alabeo <0.4mm).", "3. Medir espesor discos (mín 70-75mm).", "4. Inspeccionar pastillas (mín 15mm).", "5. Verificar retarder.", "6. Revisar liberación frenos.", "7. Verificar presión aire."], solution: ["Reemplazo discos/pastillas", "Rebuild calipers", "Reemplazo mangueras", "Flush fluido", "Reparar retarder", "Mejorar refrigeración"], costoEstimado: "US$ 10,000 (disco) - $100,000+ (sistema completo)", searchTerms: "camion cat 777 frenos sobrecalentados retarder", codes: ["Consultar ET"] },
+        { id: 901, name: "Suspensión con Fugas / Desnivelada", initial:"Camión inclinado, suspensión blanda/dura, fugas.", modelosAplicables:["777D/F", "785D", "793F"], symptoms:["Camión ladeado", "Suspensión irregular", "Fugas aceite cilindros", "Vibración", "Desgaste neumáticos"], causes:["Cilindros suspensión fugando (sellos)", "Acumuladores N2 sin presión", "Válvulas control", "Aceite contaminado", "Sensores nivel descalibrados"], diagnosticSteps:["1. Medir presión acumuladores (120-140 bar).", "2. Inspeccionar cilindros (fugas).", "3. Verificar nivel camión.", "4. Escanear códigos (ET).", "5. Revisar sensores nivel."], solution:["Recarga acumuladores N2", "Rebuild cilindros", "Reemplazo acumuladores", "Cambio aceite", "Calibrar sensores", "Reemplazo válvulas"], costoEstimado:"US$ 500 (recarga) - $6,000+ (cilindro)", searchTerms:"camion cat 777 suspension desnivelada fuga nitrogeno", codes:[] },
+        { id: 1601, name: "Transmisión Electrónica CAT", initial:"No entra marcha, display error, modo seguro.", modelosAplicables:["777D/F", "785D", "793F"], symptoms:["No entra F/R", "Error display", "Modo Limp (10 km/h)", "Códigos múltiples"], causes:["Sensor velocidad", "Solenoide cambio", "ECM transmisión", "Presión clutch baja", "Cableado"], diagnosticSteps:["1. Escanear (ET).", "2. Verificar presiones/sensores/solenoides.", "3. Pruebas solenoides.", "4. Verificar voltaje ECM.", "5. Revisar cableado."], solution:["Reemplazo sensor/solenoide/ECM", "Reparar cableado", "Recalibrar (ET)"], costoEstimado:"US$ 500 (sensor) - $7,000 (ECM)", searchTerms:"camion cat 777 transmision falla electronica", codes:["Consultar ET"] },
+        { id: 2501, name: "Motor C27/C32 - Sobrecalentamiento", initial:"Temperatura >105°C, pérdida potencia.", modelosAplicables:["CAT 777D/F", "785D", "793F"], alertaSeguridad:"Riesgo daño motor severo.", symptoms:["Temp. >105°C", "Pérdida potencia", "Alarma", "Ebullición", "Ventilador 100%"], causes:["Radiador obstruido", "Bomba agua", "Termostatos (82°C)", "Ventilador hidráulico", "Tapa radiador (15 PSI)", "Intercooler", "Junta culata"], diagnosticSteps:["1. Verificar temp (ET).", "2. Inspeccionar radiador.", "3. Verificar bomba/termostatos/tapa.", "4. Probar ventilador.", "5. Prueba gases en refrigerante."], solution:["Limpieza/reemplazo radiador", "Reemplazo bomba/termostatos/tapa", "Rebuild motor ventilador", "Flush sistema (CAT ELC)", "Reemplazo junta culata"], costoEstimado:"US$ 500 (limpieza) - $30,000+ (junta/radiador)", searchTerms:"camion cat 777 c27 c32 sobrecalentamiento", codes:["E230-2"] },
+         { id: 4501, name: "Diferencial / Mandos Finales (Mecánico)", initial:"Falla catastrófica, ruido extremo, pérdida tracción.", modelosAplicables:["CAT 793F", "797F"], alertaSeguridad:"Pérdida súbita tracción.", symptoms:["Ruido extremo", "Pérdida tracción", "Fuga aceite"], causes:["Fatiga extrema", "Impacto", "Contaminación aceite"], diagnosticSteps:["1. Revisar aceite (metal).", "2. Escuchar.", "3. Medir temp."], solution:["Reemplazo diferencial / mando final completo"], costoEstimado:"$100,000 - $300,000+", searchTerms:"cat 797f 793f diferencial mando final falla", codes:[] }
+    ],
+    komatsu_hd785: [ // HD785 es mecánico, 930E/980E son eléctricos
+        { id: 2601, name: "Motor Komatsu SA12V140 - Turbo Compound", initial:"Pérdida potencia, humo negro, temp. escape alta.", modelosAplicables:["HD785-7", "930E"], symptoms:["Pérdida potencia >20%", "Humo negro", "Temp. escape >650°C", "Ruido turbos", "Lento"], causes:["Turbo principal", "Power turbine", "Actuadores VGT", "Intercooler", "Filtro aire", "Escape restricto"], diagnosticSteps:["1. Escanear (KOMTRAX).", "2. Verificar boost (250-280 kPa) / temp. escape.", "3. Inspección turbos (juego/daño).", "4. Medir restricción aire/escape."], solution:["Rebuild/reemplazo turbos/power turbine", "Reemplazo actuadores", "Limpieza intercooler/escape", "Cambio filtro aire"], costoEstimado:"US$ 4,000 (power turbine rebuild) - $20,000+ (turbo nuevo)", searchTerms:"komatsu hd785 sa12v140 turbo compound falla", codes:["Consultar KOMTRAX"] },
+        { id: 2602, name: "Sistema Frenos Retarder Inoperante", initial:"No frena en bajadas, sobrecalienta frenos servicio.", modelosAplicables:["HD785-7", "930E", "980E"], alertaSeguridad:"¡RIESGO CRÍTICO! No operar sin retarder.", symptoms:["No frena", "Sobrecalienta frenos", "Olor quemado", "Luz retarder", "Velocidad excesiva"], causes:["Aceite transmisión bajo/quemado", "Estator/rotor retarder", "Válvula control", "Sensor velocidad", "ECM retarder", "Enfriador obstruido"], diagnosticSteps:["1. Escanear (KOMTRAX).", "2. Verificar nivel/condición aceite.", "3. Prueba funcional (niveles 1-6).", "4. Inspeccionar aceite.", "5. Verificar enfriador."], solution:["Cambio aceite (Komatsu TO-4 50)", "Overhaul retarder", "Rebuild válvula", "Reemplazo sensor/ECM", "Limpieza enfriador"], costoEstimado:"US$ 2,500 (aceite) - $28,000 (Overhaul)", searchTerms:"komatsu hd785 retarder no funciona", codes:["Consultar KOMTRAX"] },
+         { id: 2801, name: "Tracción Eléctrica AC (Komatsu)", initial:"Pérdida tracción, sobrecalentamiento motor rueda, códigos.", modelosAplicables:["Komatsu 930E", "980E"], alertaSeguridad:"Alta tensión.", symptoms:["Pérdida tracción (1 o ambas ruedas)", "Tracción intermitente", "Sobrecalentamiento (>120°C)", "Códigos", "Ventiladores máximos"], causes:["Generador AC", "Inverter/Rectificador", "Motores rueda", "Cableado alta tensión", "Control IGBT", "Sensores velocidad", "Refrigeración"], diagnosticSteps:["1. Escanear (KOMTRAX).", "2. Verificar voltajes/corrientes.", "3. Medir temperaturas.", "4. Prueba estacionaria.", "5. Inspección visual (cables, aisladores).", "6. Medir aislamiento."], solution:["Overhaul/reemplazo generador/inverter/motores rueda", "Reemplazo módulos IGBT", "Reparar/reemplazar cableado", "Reparar refrigeración", "Actualizar software"], costoEstimado:"$10,000 (módulo) - $400,000+ (generador/motor)", searchTerms:"komatsu 930e 980e traccion electrica falla motor rueda inverter", codes:[] },
+         { id: 2802, name: "Frenado Dinámico (Grid Box)", initial:"Pérdida capacidad retardo, sobrecalentamiento.", modelosAplicables:["Komatsu 930E", "980E"], symptoms:["No retarda suficiente", "Sobrecalienta resistencias", "Falla sopladores", "Alarma"], causes:["Falla sopladores", "Resistencia quemada", "Controlador"], diagnosticSteps:["1. Verificar funcionamiento sopladores.", "2. Inspeccionar resistencias.", "3. Medir temperaturas.", "4. Escanear códigos."], solution:["Reemplazo motor soplador", "Reemplazo módulo resistencia", "Reparar controlador"], costoEstimado:"$5,000 (motor) - $20,000+ (módulo)", searchTerms:"komatsu 930e 980e frenado dinamico grid box falla", codes:[] },
+         { id: 4601, name: "Mandos Finales (Planetarios Eléctricos)", initial:"Falla reductor planetario en rueda.", modelosAplicables:["Komatsu 930E", "980E"], symptoms:["Ruido", "Vibración", "Fuga aceite", "Sobrecalentamiento"], causes:["Contaminación aceite", "Fatiga engranajes"], diagnosticSteps:["1. Revisar aceite (metal).", "2. Medir temp.", "3. Análisis vibración."], solution:["Reemplazo mando final"], costoEstimado:"$80,000 - $150,000+ por lado", searchTerms:"komatsu 930e 980e mando final falla planetario", codes:[] }
+    ],
+    volvo_a40: [
+        { id: 1402, name: "Motor Volvo D13/D16 - Sistema SCR/AdBlue", initial:"Luz AdBlue, countdown, pérdida potencia, no arranca.", modelosAplicables:["Volvo EC210B", "EC240C", "A40G"], alertaSeguridad:"Countdown 0 = NO ARRANCA.", symptoms:["Luz AdBlue", "Countdown", "Potencia reducida", "No arranca", "Consumo AdBlue anormal", "Cristalización"], causes:["Tanque vacío", "AdBlue mala calidad", "Inyector obstruido", "Calentador", "Sensores NOx", "Bomba AdBlue"], diagnosticSteps:["1. Escanear (VCADS).", "2. Leer countdown.", "3. Verificar nivel/calidad AdBlue.", "4. Probar dosificación.", "5. Inspeccionar inyector.", "6. Verificar calentador/sensores."], solution:["Rellenar (ISO 22241)", "Reemplazo inyector", "Limpieza sistema", "Reemplazo calentador", "Reemplazo sensores NOx", "Reemplazo bomba", "Reset countdown (VCADS)"], costoEstimado:"US$ 5 (AdBlue) - $4,000+ (Sensores NOx)", searchTerms:"volvo a40g adblue scr falla countdown", codes:["P20E8", "P204F", "..."] },
+        { id: 2701, name: "Articulación Central con Juego", initial:"Movimiento lateral chasis, ruido 'clonk', dirección imprecisa.", modelosAplicables:["Volvo A40G"], alertaSeguridad:"Riesgo pérdida control a alta velocidad.", symptoms:["Juego >5mm", "Ruido", "Dirección imprecisa", "Desgaste neumáticos", "Vibración", "Fugas"], causes:["Bujes articulación", "Pines desgastados", "Rodamientos thrust", "Falta lubricación", "Grietas", "Pernos flojos"], diagnosticSteps:["1. Medir juego.", "2. Inspeccionar grietas/fugas.", "3. Verificar lubricación.", "4. Revisar apriete pernos (1200-1400 Nm).", "5. Medir desgaste pines."], solution:["Reemplazo bujes/pines/rodamientos", "Rebuild articulación", "Reparar soldaduras", "Re-torque pernos", "Lubricar"], costoEstimado:"US$ 3,000 (bujes) - $25,000 (Rebuild)", searchTerms:"volvo a40g articulacion juego holgura", codes:[] },
+        { id: 2901, name: "Transmisión Volvo - Sobrecalentamiento", initial:"Temperatura >120°C, pérdida potencia.", modelosAplicables:["Volvo A40G", "L120F", "L150G", "L180"], symptoms:["Temp. >120°C", "Pérdida potencia", "Olor quemado", "Modo seguro", "Aceite oscuro"], causes:["Enfriador obstruido", "Convertidor torque", "Clutch deslizando", "Aceite degradado", "Nivel bajo"], diagnosticSteps:["1. Escanear (VCADS).", "2. Verificar temp.", "3. Prueba stall.", "4. Verificar nivel/condición aceite.", "5. Inspeccionar enfriador."], solution:["Limpieza enfriador", "Cambio aceite+filtro (Volvo Trans Oil)", "Overhaul", "Reemplazo convertidor", "Flush sistema"], costoEstimado:"US$ 500 (limpieza) - $55,000+ (Overhaul)", searchTerms:"volvo a40g l150g transmision sobrecalentamiento", codes:["MID 130 PID 177"] },
+         { id: 4701, name: "Suspensión Hydropneumática Volvo", initial:"Altura irregular, suspensión dura/blanda, fugas.", modelosAplicables:["Volvo A40G"], symptoms:["Desnivelado", "Dura/blanda", "Ruido bombeo", "Fugas cilindros", "Pérdida presión N2"], causes:["Acumuladores N2 sin presión", "Cilindros fugando", "Válvulas control", "Sensores nivel", "Bomba suspensión"], diagnosticSteps:["1. Medir altura.", "2. Verificar presión N2 (120-140 bar).", "3. Prueba fugas cilindros.", "4. Escanear (VCADS).", "5. Verificar bomba."], solution:["Recarga N2", "Rebuild/reemplazo cilindros", "Reemplazo acumuladores", "Rebuild válvulas", "Reemplazo sensores", "Overhaul bomba", "Calibrar (VCADS)"], costoEstimado:"$500 (recarga) - $8,000+ (cilindro)", searchTerms:"volvo a40g suspension hydropneumatica falla", codes:[] }
+    ],
+    liebherr_t284: [
+        { id: 3001, name: "Tracción Eléctrica AC (Liebherr)", initial:"Pérdida tracción, sobrecalentamiento, códigos.", modelosAplicables:["Liebherr T284"], alertaSeguridad:"Alta tensión.", symptoms:["Pérdida tracción", "Intermitente", "Sobrecalentamiento (>120°C motores)", "Códigos", "Ventiladores máximos"], causes:["Generador AC", "Inverter", "Motores rueda", "Cableado alta tensión", "Control IGBT", "Sensores", "Refrigeración"], diagnosticSteps:["1. Escanear (Liebherr Software).", "2. Verificar voltajes/corrientes.", "3. Medir temperaturas.", "4. Prueba estacionaria.", "5. Inspección visual.", "6. Medir aislamiento."], solution:["Overhaul/reemplazo generador/inverter/motores", "Reemplazo módulos IGBT", "Reparar/reemplazar cableado/refrigeración", "Actualizar software"], costoEstimado:"$10,000 (módulo) - $400,000+ (generador/motor)", searchTerms:"liebherr t284 traccion electrica falla litronic", codes:[] },
+        { id: 3002, name: "Suspensión Delantera", initial:"Desgaste bujes, suspensión dura.", modelosAplicables:["Liebherr T284"], symptoms:["Desgaste neumáticos", "Suspensión dura", "Ruidos"], causes:["Desgaste bujes sistema MacPherson", "Caminos malos"], diagnosticSteps:["1. Inspección visual bujes.", "2. Medir juego."], solution:["Reemplazo bujes suspensión delantera"], costoEstimado:"US$ 2,000 - $5,000", searchTerms:"liebherr t284 suspension delantera bujes", codes:[] },
+         { id: 4801, name: "Mando Final (Planetario Eléctrico)", initial:"Falla reductor planetario en rueda.", modelosAplicables:["Liebherr T284"], symptoms:["Ruido", "Vibración", "Fuga aceite", "Sobrecalentamiento"], causes:["Contaminación aceite", "Fatiga engranajes"], diagnosticSteps:["1. Revisar aceite (metal).", "2. Medir temp.", "3. Análisis vibración."], solution:["Reemplazo mando final"], costoEstimado:"$90,000 - $160,000+ por lado", searchTerms:"liebherr t284 mando final falla planetario", codes:[] }
+    ],
+    // --- BULLDOZERS ---
+    cat_d11: [
+        { id: 1701, name: "Tren Rodado High-Sprocket", initial:"Desgaste segmentos, bujes, cadenas.", modelosAplicables: ["CAT D11T", "D11R"], symptoms: ["Desgaste visible", "Ruido", "Vibración", "Cadenas flojas"], causes: ["Abrasión"], diagnosticSteps: ["1. Medir desgaste (segmentos, bujes, altura eslabón).", "2. Inspeccionar rodillos/ruedas guía."], solution: ["Reemplazo segmentos", "Volteo/reemplazo bujes/pines", "Reemplazo carro completo"], costoEstimado: "Consumible. $1,000 (segmentos) - $80,000+ (carro completo)", searchTerms: "cat d11 tren rodaje desgaste sprocket cadena", codes: [] },
+        { id: 1702, name: "Ripper - Fractura Punta/Vástago", initial:"Punta rota o vástago fisurado.", modelosAplicables: ["CAT D11T", "D11R"], alertaSeguridad:"Proyección fragmentos.", symptoms:["Punta rota", "Vástago fisurado"], causes:["Impacto roca dura", "Fatiga"], diagnosticSteps:["1. Inspección visual."], solution:["Reemplazo punta (tip)", "Reemplazo/reparación vástago (shank)"], costoEstimado:"Consumible. $300 (punta) - $5,000+ (vástago)", searchTerms:"cat d11 ripper punta vastago roto", codes:[] },
+        { id: 1703, name: "Mandos Finales Planetarios", initial:"Falla catastrófica, pérdida tracción.", modelosAplicables: ["CAT D11T", "D11R"], alertaSeguridad:"Pérdida súbita tracción.", symptoms:["Ruido extremo", "Pérdida tracción", "Fuga aceite"], causes:["Fatiga extrema", "Contaminación aceite (polvo)", "Impacto"], diagnosticSteps:["1. Revisar aceite mando final (metal).", "2. Escuchar ruidos.", "3. Medir temperatura."], solution:["Reemplazo completo mando final"], costoEstimado:"$50,000 - $100,000+ por lado", searchTerms:"cat d11 mando final falla planetario", codes:[] },
+        { id: 3101, name: "Divisor de Par (Torque Divider)", initial:"Pérdida total fuerza empuje, patina.", modelosAplicables:["CAT D11T", "D11R"], symptoms:["Sin fuerza", "Patina", "Ruido"], causes:["Desgaste embragues internos", "Falla convertidor"], diagnosticSteps:["1. Prueba stall (RPM bajas).", "2. Revisar aceite transmisión (metal)."], solution:["Overhaul divisor de par (requiere sacar transmisión)"], costoEstimado:"$20,000 - $40,000", searchTerms:"cat d11 divisor par torque divider falla", codes:[] },
+        { id: 3102, name: "Chasis / Tag-Link Fisurado", initial:"Grietas visibles en bastidor o brazo hoja.", modelosAplicables:["CAT D11T", "D11R"], alertaSeguridad:"Riesgo colapso estructural.", symptoms:["Fisuras visibles"], causes:["Fatiga", "Impacto", "Torsión"], diagnosticSteps:["1. Limpieza e inspección visual.", "2. Líquidos penetrantes/Ultrasonido."], solution:["Reparación estructural (soldadura según procedimiento CAT)"], costoEstimado:"$5,000 - $20,000+", searchTerms:"cat d11 chasis fisura tag link", codes:[] }
+    ],
+    komatsu_d475: [
+        { id: 3201, name: "Tren Rodado Low-Sprocket", initial:"Desgaste bujes, cadenas, rodillos.", modelosAplicables:["Komatsu D475A"], symptoms:["Desgaste visible", "Ruido", "Vibración"], causes:["Abrasión (sprocket más expuesto que High-Sprocket)"], diagnosticSteps:["1. Medir desgaste.", "2. Inspeccionar componentes."], solution:["Reemplazo programado"], costoEstimado:"Similar a D11, $80,000+ carro completo", searchTerms:"komatsu d475 tren rodaje desgaste", codes:[] },
+        { id: 3202, name: "Mandos Finales Komatsu", initial:"Falla planetarios, ruido, pérdida tracción.", modelosAplicables:["Komatsu D475A"], symptoms:["Ruido", "Pérdida tracción", "Fuga aceite"], causes:["Contaminación aceite (sellos Duo-Cone)", "Fatiga", "Impacto"], diagnosticSteps:["1. Revisar aceite (metal).", "2. Escuchar.", "3. Medir temp."], solution:["Reemplazo mando final (modular)"], costoEstimado:"$60,000 - $120,000+ por lado", searchTerms:"komatsu d475 mando final falla", codes:[] },
+        { id: 3203, name: "Transmisión Torqflow", initial:"Patinamiento bajo carga (1ra/Reversa).", modelosAplicables:["Komatsu D475A"], symptoms:["Patina", "Sin fuerza", "Sobrecalentamiento"], causes:["Desgaste clutch packs (ciclos FWD/REV)"], diagnosticSteps:["1. Prueba stall.", "2. Revisar aceite (metal/quemado).", "3. Medir presiones."], solution:["Overhaul transmisión (modular)"], costoEstimado:"$40,000 - $70,000+", searchTerms:"komatsu d475 transmision torqflow patina", codes:[] }
+    ],
+    liebherr_pr776: [
+        { id: 3301, name: "Tren Potencia Hidrostático - Falla Bomba/Motor", initial:"Falla catastrófica, pérdida total tracción.", modelosAplicables:["Liebherr PR776", "L586 XPower"], alertaSeguridad:"Pérdida súbita movimiento.", symptoms:["Pérdida tracción total", "Ruido extremo", "Aceite hidráulico contaminado (metal brillante)"], causes:["Contaminación SEVERA aceite hidráulico"], diagnosticSteps:["1. ¡ANALIZAR ACEITE URGENTE!", "2. Inspeccionar filtros (metal)."], solution:["Reemplazo bomba/motor afectado", "FLUSHING COMPLETO de TODO el sistema hidráulico"], costoEstimado:"$80,000 - $150,000+ por componente + Flushing", searchTerms:"liebherr pr776 hidrostático falla bomba motor", codes:[] },
+        { id: 3302, name: "Electrónico - Falla Controlador Tracción", initial:"Errores múltiples, tracción errática.", modelosAplicables:["Liebherr PR776"], symptoms:["Códigos error", "Tracción inestable", "No responde"], causes:["Picos voltaje", "Humedad", "Calor"], diagnosticSteps:["1. Diagnóstico con laptop Liebherr.", "2. Verificar conexiones."], solution:["Reemplazo controlador ECU"], costoEstimado:"$10,000 - $25,000+", searchTerms:"liebherr pr776 ecu controlador falla", codes:[] }
+    ],
+    // --- MOTONIVELADORAS ---
+    cat_16_24: [
+        { id: 1801, name: "Tornamesa Hoja - Desgaste", initial:"Juego excesivo en tornamesa, hoja vibra.", modelosAplicables: ["CAT 16M", "24M"], symptoms: ["Juego >5mm", "Vibración hoja", "Corte irregular"], causes: ["Desgaste tiras (wear strips)", "Abrasión"], diagnosticSteps: ["1. Medir juego tornamesa.", "2. Inspeccionar tiras desgaste."], solution: ["Ajuste/reemplazo tiras desgaste", "Reemplazo cuchillas"], costoEstimado: "Consumible. $500 (tiras) - $3,000 (cuchillas)", searchTerms: "cat 16m 24m tornamesa juego desgaste tiras", codes: [] },
+        { id: 1802, name: "Mando Tornamesa (Circle Drive)", initial:"Tornamesa no gira o gira con dificultad.", modelosAplicables: ["CAT 16M", "24M"], symptoms: ["No gira", "Lento", "Ruido", "Fugas"], causes: ["Falla motor hidráulico", "Falla caja engranajes", "Impacto", "Desgaste dientes"], diagnosticSteps: ["1. Medir presión motor giro.", "2. Inspeccionar caja (aceite/metal).", "3. Verificar dientes."], solution: ["Reemplazo mando tornamesa (motor+caja)"], costoEstimado: "$15,000 - $30,000+", searchTerms: "cat 16m 24m mando tornamesa circle drive falla", codes: [] },
+        { id: 3401, name: "Transmisión Powershift (Motoniveladora)", initial:"Patinamiento, cambios bruscos.", modelosAplicables:["CAT 16M", "24M"], symptoms:["Patina", "Golpes", "Sobrecalentamiento"], causes:["Desgaste clutch", "Descalibración"], diagnosticSteps:["1. Calibración con ET.", "2. Revisar aceite (metal)."], solution:["Calibración", "Overhaul transmisión"], costoEstimado:"$500 (calibración) - $30,000+ (Overhaul)", searchTerms:"cat 16m 24m transmision falla patina", codes:[] }
+    ],
+    komatsu_gd955: [
+        { id: 3501, name: "Tándems (Ejes Traseros)", initial:"Ruido, vibración, fuga en tándems.", modelosAplicables:["Komatsu GD955"], symptoms:["Ruido", "Vibración", "Fuga aceite", "Pérdida tracción"], causes:["Falla mandos finales (cadenas/engranajes)", "Contaminación aceite", "Fatiga"], diagnosticSteps:["1. Revisar aceite tándem (metal).", "2. Escuchar ruidos.", "3. Inspeccionar fugas."], solution:["Desarme tándem, reemplazo cadenas/rodamientos/engranajes"], costoEstimado:"$10,000 - $25,000+ por tándem", searchTerms:"komatsu gd955 tandem falla ruido", codes:[] },
+        { id: 3502, name: "Chasis Articulado Komatsu", initial:"Juego en articulación, dirección imprecisa.", modelosAplicables:["Komatsu GD955"], symptoms:["Juego", "Ruido", "Dirección imprecisa"], causes:["Desgaste pines/bocinas"], diagnosticSteps:["1. Medir juego.", "2. Inspección visual."], solution:["Reparación mayor (Bar-boring)"], costoEstimado:"$15,000 - $30,000+", searchTerms:"komatsu gd955 articulacion juego", codes:[] }
+    ],
+    // --- PALAS ---
+    cat_pala: [
+        { id: 1901, name: "Balde GET (Dientes/Protectores)", initial:"Fractura dientes, desgaste protectores.", modelosAplicables: ["CAT 6060FS", "6090FS"], alertaSeguridad:"Proyección fragmentos.", symptoms:["Dientes/adaptadores rotos", "Protectores gastados"], causes:["Impacto roca dura", "Abrasión"], diagnosticSteps:["1. Inspección visual diaria."], solution:["Reemplazo GET (soldadura)"], costoEstimado:"Consumible. $500 - $5,000+ por diente/protector", searchTerms:"pala cat 6060 get dientes rotos", codes:[] },
+        { id: 1902, name: "Corona de Giro (Swing Bearing)", initial:"Falla catastrófica, ruido extremo al girar.", modelosAplicables: ["CAT 6060FS", "6090FS", "Komatsu PC8000", "Liebherr R9800", "Hitachi EX8000"], alertaSeguridad:"Riesgo separación estructura.", symptoms:["Ruido extremo", "Vibración", "Giro trabado", "Fuga grasa"], causes:["Fatiga (millones ciclos)", "Lubricación deficiente", "Impacto"], diagnosticSteps:["1. Medir juego corona.", "2. Analizar grasa (metal).", "3. Inspección ultrasonido."], solution:["Reemplazo completo corona de giro (reparación mayor)"], costoEstimado:"$200,000 - $500,000+", searchTerms:"pala cat 6060 corona giro falla swing bearing", codes:[] },
+        { id: 3601, name: "Cajas de Giro (Swing Drives)", initial:"Falla reductor planetario, giro se detiene.", modelosAplicables:["CAT 6060FS", "6090FS"], symptoms:["Ruido", "Giro trabado", "Fuga aceite"], causes:["Fatiga", "Impacto", "Contaminación aceite"], diagnosticSteps:["1. Revisar aceite caja (metal).", "2. Escuchar ruidos."], solution:["Reemplazo módulo caja de giro"], costoEstimado:"$50,000 - $100,000+ por caja", searchTerms:"pala cat 6060 caja giro swing drive falla", codes:[] },
+        { id: 3602, name: "Cilindros Hidráulicos - Fugas", initial:"Fugas en sellos cilindros levante/balde.", modelosAplicables:["CAT 6060FS", "6090FS"], symptoms:["Fugas externas", "Drift leve"], causes:["Desgaste sellos", "Contaminación"], diagnosticSteps:["1. Inspección visual.", "2. Prueba drift."], solution:["Reemplazo kit sellos cilindro"], costoEstimado:"$5,000 - $15,000+ por cilindro", searchTerms:"pala cat 6060 cilindro hidraulico fuga", codes:[] }
+    ],
+     komatsu_pala: [
+        { id: 3701, name: "Bombas Hidráulicas Principales", initial:"Falla catastrófica, pérdida total funciones.", modelosAplicables:["Komatsu PC8000"], alertaSeguridad:"Parada inmediata.", symptoms:["Pérdida funciones", "Ruido extremo", "Aceite contaminado (metal brillante)"], causes:["Contaminación SEVERA aceite"], diagnosticSteps:["1. ¡ANALIZAR ACEITE URGENTE!", "2. Inspeccionar filtros (metal)."], solution:["Reemplazo bomba afectada", "FLUSHING COMPLETO sistema hidráulico"], costoEstimado:"$100,000 - $250,000+ por bomba + Flushing", searchTerms:"pala komatsu pc8000 bomba hidraulica falla", codes:[] },
+        { id: 3702, name: "Motores Diésel (Dual)", initial:"Falla uno de los motores (turbo, inyectores).", modelosAplicables:["Komatsu PC8000"], symptoms:["Pérdida potencia", "Humo", "Códigos motor"], causes:["Desgaste", "Contaminación"], diagnosticSteps:["1. Diagnóstico motor específico."], solution:["Reparar motor afectado (pala puede operar con uno)"], costoEstimado:"Variable según falla motor", searchTerms:"pala komatsu pc8000 falla motor", codes:[] },
+        { id: 1902, name: "Corona de Giro (Swing Bearing)", initial:"Falla catastrófica, ruido extremo al girar.", modelosAplicables: ["CAT 6060FS", "6090FS", "Komatsu PC8000", "Liebherr R9800", "Hitachi EX8000"], alertaSeguridad:"Riesgo separación estructura.", symptoms:["Ruido extremo", "Vibración", "Giro trabado", "Fuga grasa"], causes:["Fatiga (millones ciclos)", "Lubricación deficiente", "Impacto"], diagnosticSteps:["1. Medir juego corona.", "2. Analizar grasa (metal).", "3. Inspección ultrasonido."], solution:["Reemplazo completo corona de giro (reparación mayor)"], costoEstimado:"$200,000 - $500,000+", searchTerms:"pala komatsu pc8000 corona giro falla swing bearing", codes:[] }
+    ],
+     liebherr_pala: [
+         { id: 3801, name: "Electrónico - Sistema Litronic", initial:"Fallas intermitentes, códigos, funciones erráticas.", modelosAplicables:["Liebherr R9800"], symptoms:["Códigos", "Funciones erráticas", "No responde"], causes:["Falla módulos ECU/sensores", "Polvo", "Humedad"], diagnosticSteps:["1. Diagnóstico con laptop Liebherr.", "2. Verificar conexiones."], solution:["Reemplazo módulo/sensor"], costoEstimado:"$5,000 - $20,000+ por módulo", searchTerms:"pala liebherr r9800 litronic falla ecu", codes:[] },
+         { id: 3802, name: "Sistema Auto-lubricación", initial:"Puntos no reciben grasa, falla bomba.", modelosAplicables:["Liebherr R9800"], symptoms:["Puntos secos", "Bomba no funciona", "Líneas tapadas"], causes:["Bomba grasa", "Líneas tapadas", "Grasa incorrecta"], diagnosticSteps:["1. Verificar funcionamiento bomba.", "2. Purgar líneas.", "3. Inspeccionar puntos."], solution:["Purgar líneas", "Reemplazar bomba", "Usar grasa correcta"], costoEstimado:"$1,000 - $5,000+", searchTerms:"pala liebherr r9800 autolube falla", codes:[] },
+         { id: 1902, name: "Corona de Giro (Swing Bearing)", initial:"Falla catastrófica, ruido extremo al girar.", modelosAplicables: ["CAT 6060FS", "6090FS", "Komatsu PC8000", "Liebherr R9800", "Hitachi EX8000"], alertaSeguridad:"Riesgo separación estructura.", symptoms:["Ruido extremo", "Vibración", "Giro trabado", "Fuga grasa"], causes:["Fatiga (millones ciclos)", "Lubricación deficiente", "Impacto"], diagnosticSteps:["1. Medir juego corona.", "2. Analizar grasa (metal).", "3. Inspección ultrasonido."], solution:["Reemplazo completo corona de giro (reparación mayor)"], costoEstimado:"$200,000 - $500,000+", searchTerms:"pala liebherr r9800 corona giro falla swing bearing", codes:[] }
+    ],
+     hitachi_pala: [
+        { id: 3901, name: "Múltiple Central (Center Swivel)", initial:"Fuga interna masiva, mezcla aceites.", modelosAplicables:["Hitachi EX8000"], symptoms:["Pérdida funciones", "Aceite contaminado", "Sobrecalentamiento"], causes:["Desgaste sellos alta presión internos"], diagnosticSteps:["1. Analizar aceite (mezcla).", "2. Medir presiones.", "3. Requiere desmontaje parcial."], solution:["Reparación mayor múltiple central (reemplazo sellos)"], costoEstimado:"$50,000 - $100,000+", searchTerms:"pala hitachi ex8000 multiple central center swivel fuga", codes:[] },
+        { id: 3902, name: "Hidráulico - Lentitud / Brusquedad", initial:"Máquina lenta o movimientos bruscos.", modelosAplicables:["Hitachi EX8000"], symptoms:["Lenta", "Brusca", "No suave"], causes:["Desgaste válvulas control flujo", "Bombas piloto"], diagnosticSteps:["1. Medir tiempos ciclo.", "2. Verificar presiones piloto.", "3. Calibrar válvulas."], solution:["Calibración/reemplazo válvulas control", "Revisar bombas piloto"], costoEstimado:"$5,000 - $20,000+", searchTerms:"pala hitachi ex8000 hidraulico lento brusco", codes:[] },
+         { id: 1902, name: "Corona de Giro (Swing Bearing)", initial:"Falla catastrófica, ruido extremo al girar.", modelosAplicables: ["CAT 6060FS", "6090FS", "Komatsu PC8000", "Liebherr R9800", "Hitachi EX8000"], alertaSeguridad:"Riesgo separación estructura.", symptoms:["Ruido extremo", "Vibración", "Giro trabado", "Fuga grasa"], causes:["Fatiga (millones ciclos)", "Lubricación deficiente", "Impacto"], diagnosticSteps:["1. Medir juego corona.", "2. Analizar grasa (metal).", "3. Inspección ultrasonido."], solution:["Reemplazo completo corona de giro (reparación mayor)"], costoEstimado:"$200,000 - $500,000+", searchTerms:"pala hitachi ex8000 corona giro falla swing bearing", codes:[] }
     ]
 };
 
-// --- UI / LÓGICA ---
-let selectedMachineKey = null;
-let selectedFailure = null;
-const grid = document.getElementById('machinesGrid');
+
+// --- UI / LÓGICA (v13 - Verificada y Robusta) ---
+// (El resto del código JavaScript es idéntico a la versión v12)
+let selectedMachineType = null;
+let selectedBrandModelKey = null;
+let currentFailure = null;
+
+const machineTypeSection = document.getElementById('machineTypeSection');
+const brandModelSection = document.getElementById('brandModelSection');
 const failureSection = document.getElementById('failureSection');
 const diagnosisArea = document.getElementById('diagnosisArea');
-const diagnosisResult = document.getElementById('diagnosisResult');
-const diagnosisTitle = document.getElementById('diagnosisTitle'); // Para actualizar el título
 
-function initMachines(){
-    grid.innerHTML = '';
-    Object.keys(machines).forEach(key=>{
-        const m = machines[key];
+const machineTypesGrid = document.getElementById('machineTypesGrid');
+const brandsGrid = document.getElementById('brandsGrid');
+const failuresList = document.getElementById('failuresList');
+const filterInput = document.getElementById('filterInput');
+const diagnosisResult = document.getElementById('diagnosisResult');
+const diagnosisTitle = document.getElementById('diagnosisTitle');
+
+const backToTypesBtn = document.getElementById('backToTypesBtn');
+const backToBrandsBtn = document.getElementById('backToBrandsBtn');
+const backToFailuresBtn = document.getElementById('backToFailuresBtn');
+const btnReset = document.getElementById('btnReset');
+
+// Función para renderizar iconos (acepta emoji o Font Awesome)
+function renderIcon(iconHtmlOrEmoji) {
+    if (!iconHtmlOrEmoji) return '<i class="fas fa-question-circle"></i>';
+    if (iconHtmlOrEmoji.startsWith('<i')) {
+        return iconHtmlOrEmoji;
+    } else {
+        return `<span class="icon">${iconHtmlOrEmoji}</span>`;
+    }
+}
+
+function initMachineTypes() {
+    machineTypesGrid.innerHTML = '';
+    Object.keys(machineTypes).forEach(key => {
+        const type = machineTypes[key];
         const card = document.createElement('div');
-        card.className = 'machine-card';
-        // Añadida clase description para el texto pequeño
-        card.innerHTML = `<div style="font-size:32px">${m.icon}</div><strong>${m.name}</strong><div class="description">${m.description}</div>`;
-        card.onclick = () => {
-            document.querySelectorAll('.machine-card').forEach(c=>c.classList.remove('selected'));
-            card.classList.add('selected');
-            selectMachine(key);
-        };
-        grid.appendChild(card);
+        card.className = 'selection-card';
+        card.innerHTML = `${renderIcon(type.icon)}<strong>${type.name}</strong><div class="description">${type.description || ''}</div>`;
+        card.onclick = () => showBrands(key);
+        machineTypesGrid.appendChild(card);
     });
 }
 
-function selectMachine(key) {
-    selectedMachineKey = key;
+function showBrands(typeKey) {
+    selectedMachineType = typeKey;
+    brandsGrid.innerHTML = '';
+    const brands = brandsAndModels[typeKey] || [];
+
+    if (brands.length === 0) {
+        brandsGrid.innerHTML = `<p style="color: #f5b74f; padding: 15px; text-align: center;">Aún no hay marcas/modelos definidos para ${machineTypes[typeKey]?.name || 'este tipo'}.</p>`;
+    } else {
+        brands.forEach(brand => {
+            const card = document.createElement('div');
+            card.className = 'selection-card';
+            const modelsText = brand.models ? `<div class="description">${brand.models.join(' / ')}</div>` : '';
+            const iconToRender = brand.icon || machineTypes[typeKey]?.icon || '<i class="fas fa-industry"></i>';
+            card.innerHTML = `${renderIcon(iconToRender)}<strong>${brand.name || 'Marca Desconocida'}</strong>${modelsText}`;
+            card.onclick = () => selectBrandModel(brand.key);
+            brandsGrid.appendChild(card);
+        });
+    }
+    machineTypeSection.classList.add('hidden');
+    brandModelSection.classList.remove('hidden');
+    failureSection.classList.add('hidden');
+    diagnosisArea.classList.add('hidden');
+    brandModelSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function selectBrandModel(brandKey) {
+    selectedBrandModelKey = brandKey;
+    filterInput.value = '';
+    renderFailuresList(brandKey);
+    brandModelSection.classList.add('hidden');
+    failureSection.classList.remove('hidden');
+    diagnosisArea.classList.add('hidden');
+    failureSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderFailuresList(brandKey, filterText = '') {
     const list = document.getElementById('failuresList');
     list.innerHTML = '';
-    failureSection.style.display = 'block';
-    diagnosisArea.style.display = 'none'; // Ocultar diagnóstico al cambiar de máquina
+    const modelFailures = Array.isArray(failures[brandKey]) ? failures[brandKey] : [];
+    const lowerFilterText = filterText.toLowerCase().trim();
 
-    const machineFailures = failures[key] || [];
+    const filteredFailures = modelFailures.filter(f => {
+        if (!f) return false;
+        const nameMatch = f.name && f.name.toLowerCase().includes(lowerFilterText);
+        const initialMatch = f.initial && f.initial.toLowerCase().includes(lowerFilterText);
+        const symptomMatch = Array.isArray(f.symptoms) && f.symptoms.some(s => s && s.toLowerCase().includes(lowerFilterText));
+        const modelMatch = Array.isArray(f.modelosAplicables) && f.modelosAplicables.some(m => m && m.toLowerCase().includes(lowerFilterText));
+        return nameMatch || initialMatch || symptomMatch || modelMatch;
+    });
 
-    if (machineFailures.length === 0) {
-        list.innerHTML = `<p style="color: #f5af19; padding: 10px; text-align: center;">Aún no hay fallas definidas para ${machines[key].name}. ¡Añade más!</p>`;
+    if (filteredFailures.length === 0) {
+         let brandName = 'este modelo';
+         if (selectedMachineType && brandsAndModels[selectedMachineType]) {
+             const brandData = brandsAndModels[selectedMachineType].find(b => b.key === brandKey);
+             if (brandData) brandName = brandData.name;
+         }
+        list.innerHTML = `<p style="color: #f5b74f; padding: 15px; text-align: center;">${filterText ? 'No se encontraron fallas con ese filtro.' : `Aún no hay fallas definidas para ${brandName}.`}</p>`;
     } else {
-        machineFailures.forEach(f => {
+        filteredFailures.forEach(f => {
             const btn = document.createElement('button');
             btn.className = 'failure-btn';
-            // Añadida clase initial-context para el texto pequeño
-            btn.innerHTML = `<strong>${f.name}</strong><div class="initial-context">${f.initial}</div>`;
+            const modelsText = Array.isArray(f.modelosAplicables) && f.modelosAplicables.length > 0
+                ? `<div class="models">Modelos: ${f.modelosAplicables.join(', ')}</div>` : '';
+            const initialText = f.initial || 'Contexto no especificado.';
+            btn.innerHTML = `<strong>${f.name || 'Falla sin Nombre'}</strong><div class="initial-context">${initialText}</div>${modelsText}`;
             btn.onclick = () => showDiagnosis(f);
             list.appendChild(btn);
         });
     }
-     // Desplazar a la sección de fallas
-     window.scrollTo({top: failureSection.offsetTop - 20, behavior:'smooth'});
 }
 
-function showDiagnosis(f) {
-    selectedFailure = f;
-    diagnosisArea.style.display = 'block';
-    diagnosisTitle.innerText = `Diagnóstico: ${f.name}`; // Título dinámico
-    
-    // --- CONSTRUCCIÓN DEL HTML DE DIAGNÓSTICO MEJORADO ---
-    // Usamos plantillas literales para construir el HTML de forma más limpia
-    diagnosisResult.innerHTML = `
-        ${f.alertaSeguridad ? `<div class="alert-safety"><h4>⚠️ ALERTA DE SEGURIDAD (HSE)</h4><p>${f.alertaSeguridad}</p></div>` : ''}
-
-        <div class="info-card">
-            <h4><i class="fas fa-exclamation-triangle"></i> Síntomas Comunes</h4>
-            <ul>${f.symptoms.map(s=>`<li>${s}</li>`).join('')}</ul>
-            <p style="margin-top:10px;"><strong>Contexto Inicial:</strong> ${f.initial}</p>
-        </div>
-        
-        <div class="info-card">
-            <h4><i class="fas fa-project-diagram"></i> Causas Probables</h4>
-             <ul>${f.causes.map(c=>`<li>${c}</li>`).join('')}</ul>
-        </div>
-        
-        <div class="info-card">
-            <h4><i class="fas fa-stethoscope"></i> Pasos de Diagnóstico</h4>
-            <ol>${f.diagnosticSteps.map(s=>`<li>${s}</li>`).join('')}</ol>
-        </div>
-
-        <div class="info-card">
-            <h4><i class="fas fa-wrench"></i> Soluciones Recomendadas</h4>
-             <ul>${f.solution.map(s=>`<li>${s}</li>`).join('')}</ul>
-        </div>
-
-        <div class="info-card">
-            <h4><i class="fas fa-dollar-sign"></i> Gestión y Logística</h4>
-            <p><strong>Costo Estimado de Reparación:</strong> ${f.costoEstimado || 'Variable'}</p>
-            ${f.tiempoDowntime ? `<p><strong>Tiempo de Inactividad (Downtime):</strong> ${f.tiempoDowntime}</p>` : ''}
-        </div>
-        
-        ${f.codes ? 
-          `<div class="info-card codes-list">
-              <h4><i class="fas fa-laptop-code"></i> Códigos de Error Comunes</h4>
-              <p>${f.codes.map(c=>`<code>${c}</code>`).join(' ')}</p>
-          </div>` : ''
-        }
-
-        ${f.datoIngeniero ? 
-          `<div class="alert-engineer">
-              <h4>💡 Dato Técnico del Ingeniero</h4>
-              <p>${f.datoIngeniero}</p>
-          </div>` : ''
-        }
-    `;
-    
-    // Asignar dinámicamente el enlace de búsqueda de Google
-    const googleBtn = document.getElementById('btnOpenGoogle');
-    const q = encodeURIComponent(f.searchTerms || f.name);
-    googleBtn.href = `https://www.google.com/search?q=${q}+${machines[selectedMachineKey].name}`; // Añade nombre de máquina a la búsqueda
-
-    // Desplazar al área de diagnóstico
-    window.scrollTo({top: diagnosisArea.offsetTop - 20, behavior:'smooth'});
-}
-
-// --- BOTONES DE ACCIÓN ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Inicia las máquinas cuando la página carga
-    initMachines();
-    
-    // Lógica del botón de Reset
-    document.getElementById('btnReset').addEventListener('click', () => {
-        // location.reload(); // Recarga completa
-        // Ocultar secciones y deseleccionar
-        failureSection.style.display = 'none';
-        diagnosisArea.style.display = 'none';
-        document.querySelectorAll('.machine-card').forEach(c=>c.classList.remove('selected'));
-        selectedMachineKey = null;
-        selectedFailure = null;
-        window.scrollTo({top: 0, behavior:'smooth'}); // Volver al inicio
-    });
+filterInput.addEventListener('input', (e) => {
+    if (selectedBrandModelKey) {
+        renderFailuresList(selectedBrandModelKey, e.target.value);
+    }
 });
 
-// Añadir íconos (requiere Font Awesome) - Opcional
-// Añadir al <head>: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+function showDiagnosis(f) {
+    currentFailure = f;
+    diagnosisArea.classList.remove('hidden');
+    failureSection.classList.add('hidden');
+    diagnosisTitle.innerHTML = `<i class="fas fa-clipboard-list section-icon"></i> Diagnóstico: ${f.name || 'Falla sin Nombre'}`;
+
+    const renderList = (items, type = 'ul') => {
+        if (!Array.isArray(items) || items.length === 0) return '<p>Información no disponible.</p>';
+        const listItems = items.map(item => `<li>${item || 'N/A'}</li>`).join('');
+        return type === 'ol' ? `<ol>${listItems}</ol>` : `<ul>${listItems}</ul>`;
+    };
+    const renderCodes = (codes) => {
+        if (!Array.isArray(codes) || codes.length === 0) return '';
+        const codeItems = codes.map(c => `<code>${c || 'N/A'}</code>`).join(' ');
+        return `<div class="info-card codes-list"><h4><i class="fas fa-laptop-code"></i> Códigos Error</h4><p>${codeItems}</p></div>`;
+    };
+
+    diagnosisResult.innerHTML = `
+        ${f.modelosAplicables && f.modelosAplicables.length > 0 ? `<p class="model-info">Modelos Aplicables: ${f.modelosAplicables.join(', ')}</p>`: ''}
+        ${f.alertaSeguridad ? `<div class="alert-safety info-card"><h4><i class="fas fa-biohazard"></i> ALERTA SEGURIDAD</h4><p>${f.alertaSeguridad || 'N/A'}</p></div>` : ''}
+        <div class="info-card"><h4><i class="fas fa-eye"></i> Síntomas</h4>${renderList(f.symptoms)}<p style="margin-top:15px;"><strong>Contexto:</strong> ${f.initial || 'N/A'}</p></div>
+        <div class="info-card"><h4><i class="fas fa-project-diagram"></i> Causas Probables</h4>${renderList(f.causes)}</div>
+        <div class="info-card"><h4><i class="fas fa-stethoscope"></i> Pasos de Diagnóstico</h4>${renderList(f.diagnosticSteps, 'ol')}</div>
+        <div class="info-card"><h4><i class="fas fa-wrench"></i> Soluciones Recomendadas</h4>${renderList(f.solution)}</div>
+        <div class="info-card"><h4><i class="fas fa-dollar-sign"></i> Gestión</h4><p><strong>Costo Estimado:</strong> ${f.costoEstimado || 'Variable'}</p>${f.tiempoDowntime ? `<p><strong>Tiempo de Inactividad (Downtime):</strong> ${f.tiempoDowntime}</p>` : ''}</div>
+        ${renderCodes(f.codes)}
+        ${f.datoIngeniero ? `<div class="alert-engineer info-card"><h4><i class="fas fa-lightbulb"></i> Dato Técnico / Prevención</h4><p>${f.datoIngeniero || 'N/A'}</p></div>` : ''}
+    `;
+
+    const googleBtn = document.getElementById('btnOpenGoogle');
+    const searchTerm = (typeof f.searchTerms === 'string' ? f.searchTerms : f.name) || '';
+    const q = encodeURIComponent(searchTerm);
+    let brandModelName = '';
+     if (selectedMachineType && selectedBrandModelKey && brandsAndModels[selectedMachineType]) {
+        const brandData = brandsAndModels[selectedMachineType].find(b => b.key === selectedBrandModelKey);
+        if (brandData) brandModelName = brandData.name;
+    }
+    googleBtn.href = `https://www.google.com/search?q=${q}+${encodeURIComponent(brandModelName)}`;
+
+    diagnosisArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initMachineTypes();
+
+    backToTypesBtn.addEventListener('click', () => {
+        brandModelSection.classList.add('hidden');
+        machineTypeSection.classList.remove('hidden');
+        machineTypeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    backToBrandsBtn.addEventListener('click', () => {
+        failureSection.classList.add('hidden');
+        brandModelSection.classList.remove('hidden');
+        brandModelSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+     backToFailuresBtn.addEventListener('click', () => {
+        diagnosisArea.classList.add('hidden');
+        failureSection.classList.remove('hidden');
+    });
+
+    btnReset.addEventListener('click', () => {
+        brandModelSection.classList.add('hidden');
+        failureSection.classList.add('hidden');
+        diagnosisArea.classList.add('hidden');
+        machineTypeSection.classList.remove('hidden');
+        document.querySelectorAll('.selection-card').forEach(c => c.classList.remove('selected'));
+        selectedMachineType = null;
+        selectedBrandModelKey = null;
+        currentFailure = null;
+        filterInput.value = '';
+        window.scrollTo({top: 0, behavior:'smooth'});
+    });
+});
 </script>
 </body>
 </html>
-
