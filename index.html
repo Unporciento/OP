@@ -29,10 +29,22 @@
   .alert-safety { background: #e74c3c; border-left: 4px solid #c0392b; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
   .alert-engineer { background: #27ae60; border-left: 4px solid #2ecc71; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
   .action-buttons { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-  .search-btn { background: #3498db; color: #fff; padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer; transition: background 0.2s; }
+  /* Estilo modificado para que el 'a' (enlace) se vea como botón */
+  .search-btn { 
+    background: #3498db; 
+    color: #fff; 
+    padding: 10px 15px; 
+    border-radius: 5px; 
+    border: none; 
+    cursor: pointer; 
+    transition: background 0.2s; 
+    text-decoration: none; /* Quitar subrayado del enlace */
+    display: inline-block; /* Alinear con el botón */
+    font-size: 14px; /* Asegurar que el texto sea del mismo tamaño */
+    line-height: 1.5; /* Alinear verticalmente el texto */
+  }
   .search-btn:hover { background: #2980b9; }
   .reset-btn { background: #95a5a6; }
-  .gemini-answer { background: #1b2730; padding: 15px; border-radius: 8px; margin-top: 15px; white-space: pre-wrap; font-size: 0.9rem; }
 </style>
 </head>
 <body>
@@ -58,19 +70,20 @@
         <div id="diagnosisResult"></div>
 
         <div class="action-buttons">
-          <button id="btnGemini" class="search-btn">🔎 Pedir más info (Gemini)</button>
-          <button id="btnOpenGoogle" class="search-btn">🌐 Abrir búsquedas en Google</button>
+          <!-- Botón de Gemini ELIMINADO. Dejamos solo Google y Reset -->
+          <a id="btnOpenGoogle" class="search-btn" href="#" target="_blank">🌐 Abrir búsquedas en Google</a>
           <button id="btnReset" class="search-btn reset-btn">♻️ Reiniciar Todo</button>
         </div>
+        
+        <!-- Contenedor de Gemini ELIMINADO -->
 
-        <div id="geminiAnswer" class="gemini-answer" style="display:none;"></div>
       </section>
     </div>
   </div>
 
 <script>
 /* ----------------------------------------------------------------------------------------- */
-/* HEAVYDIAG - DATOS Y LÓGICA CONSOLIDADA (v2.0) */
+/* HEAVYDIAG - DATOS Y LÓGICA (Versión Estática SIN API) */
 /* ----------------------------------------------------------------------------------------- */
 
 const machines = {
@@ -82,6 +95,7 @@ const machines = {
     camioneta: { name: "Camioneta Minera 4x4", icon: "🚙", description: "Transporte de personal" }
 };
 
+// Esta es tu base de datos de conocimiento. ¡Puedes agregar más fallas aquí!
 const failures = {
     retroexcavadora: [
         {
@@ -89,7 +103,7 @@ const failures = {
             alertaSeguridad: "⚠️ CRÍTICO: NO intentar arrancar de nuevo. Esto puede causar una fractura del bloque o cárter.",
             chainReaction: ["Agua entra a la cámara de combustión", "El agua es incompresible (Hydrolock)", "Bielas se doblan o rompen (fuerza extrema)", "Daño al cigüeñal y fisura del bloque"],
             symptoms: ["Motor detenido súbitamente", "No gira al intentar arrancar", "Aceite con aspecto lechoso"],
-            diagnosticSteps: ["1. NO intentar encendido.", "2. Retirar inyectores/bujías y girar motor manually para drenar agua.", "3. Revisar aspecto del aceite (emulsión lechosa)."],
+            diagnosticSteps: ["1. NO intentar encendido.", "2. Retirar inyectores/bujías y girar motor manualmente para drenar agua.", "3. Revisar aspecto del aceite (emulsión lechosa)."],
             solution: ["Desmontaje completo del motor.", "Reemplazo de bielas y pistones.", "Cambio múltiple de aceite y filtros."],
             tiempoDowntime: "120 - 240 horas (por reconstrucción del motor).",
             costoEstimado: "US$ 15,000 - US$ 50,000.", searchTerms: "hydrolock motor diesel maquinaria pesada bielas dobladas",
@@ -153,6 +167,7 @@ const failures = {
             datoIngeniero: "La presión piloto es de 'baja presión' y actúa como la señal nerviosa del sistema; si es baja, el sistema principal no actúa, aunque la bomba principal esté sana."
         }
     ],
+    // Puedes agregar más fallas a 'cargador' y 'skidsteer' aquí
     cargador: [], 
     skidsteer: [] 
 };
@@ -164,7 +179,6 @@ const grid = document.getElementById('machinesGrid');
 const failureSection = document.getElementById('failureSection');
 const diagnosisArea = document.getElementById('diagnosisArea');
 const diagnosisResult = document.getElementById('diagnosisResult');
-const geminiAnswer = document.getElementById('geminiAnswer');
 
 function initMachines(){
     grid.innerHTML = '';
@@ -207,8 +221,6 @@ function selectMachine(key) {
 function showDiagnosis(f) {
     selectedFailure = f;
     diagnosisArea.style.display = 'block';
-    geminiAnswer.style.display = 'none';
-    geminiAnswer.innerText = '';
     
     // --- CONSTRUCCIÓN DEL HTML DE DIAGNÓSTICO ENRIQUECIDO ---
     diagnosisResult.innerHTML = `
@@ -245,57 +257,24 @@ function showDiagnosis(f) {
               <p>${f.datoIngeniero}</p>
           </div>` : ''
         }
-        
     `;
     
-    // Asegurar que los botones de acción se puedan vincular
-    document.getElementById('btnOpenGoogle').onclick = () => {
-        const q = encodeURIComponent(f.searchTerms || f.name);
-        window.open(`https://www.google.com/search?q=${q}`, '_blank');
-    };
+    // Asignar dinámicamente el enlace de búsqueda de Google
+    const googleBtn = document.getElementById('btnOpenGoogle');
+    const q = encodeURIComponent(f.searchTerms || f.name);
+    // El 'href' se actualiza cada vez que se selecciona una falla
+    googleBtn.href = `https://www.google.com/search?q=${q}`;
+
     // Desplazar al área de diagnóstico
     window.scrollTo({top: diagnosisArea.offsetTop - 50, behavior:'smooth'});
 }
 
-// --- BOTONES DE ACCIÓN (CONEXIÓN EXTERNA) ---
-
+// --- BOTONES DE ACCIÓN ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Inicia las máquinas cuando la página carga
     initMachines();
     
-    document.getElementById('btnGemini').addEventListener('click', async () => {
-        if (!selectedFailure) { alert('Selecciona una falla primero'); return; }
-        
-        const f = selectedFailure;
-        const prompt = `Analiza la siguiente falla en maquinaria pesada: ${f.name}. Síntomas: ${f.symptoms.join('; ')}. Pasos de diagnóstico: ${f.diagnosticSteps.join('; ')}. ¿Qué información técnica crítica (ej. presiones, torques, códigos de error) de manuales de servicio se necesita para confirmar la causa raíz?`;
-        
-        geminiAnswer.style.display = 'block';
-        geminiAnswer.innerText = '🕐 Buscando información técnica detallada en Gemini...';
-
-        try {
-            // Llama al endpoint de Vercel (que está en /api/server)
-            const res = await fetch('/api/server', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt })
-            });
-            
-            const data = await res.json();
-
-            if (!res.ok) {
-                // Si la respuesta NO es OK, muestra el error específico que enviamos desde el servidor
-                throw new Error(data.error || 'Error desconocido del servidor');
-            }
-            
-            const text = data.text || 'No se obtuvo respuesta del modelo. Intenta con Google.';
-            geminiAnswer.innerText = "🌐 RESPUESTA DE GEMINI:\n\n" + text;
-            
-        } catch (err) {
-            // Este es el error de "no se pudo conectar" O el error que lanzamos arriba
-            geminiAnswer.innerText = `❌ Error del Servidor: ${err.message}`;
-            console.error(err);
-        }
-    });
-
+    // Lógica del botón de Reset
     document.getElementById('btnReset').addEventListener('click', () => {
         location.reload();
     });
