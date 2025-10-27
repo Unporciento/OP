@@ -45,22 +45,18 @@ module.exports = async (request, response) => {
       **Síntomas:**
       * (Síntoma 1)
       * (Síntoma 2)
-      * (Síntoma 3+)
 
       **Causas Probables:**
       * (Causa 1)
       * (Causa 2)
-      * (Causa 3+)
 
       **Pasos de Diagnóstico:**
       1. (Paso 1)
       2. (Paso 2)
-      3. (Paso 3+)
 
       **Soluciones Recomendadas:**
       1. (Solución 1)
       2. (Solución 2)
-      3. (Solución 3+)
 
       **Alerta de Seguridad:**
       (Una advertencia de seguridad si es una falla peligrosa, o "Ninguna alerta específica" si no lo es.)
