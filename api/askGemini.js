@@ -19,7 +19,7 @@ export default async function handler(request, response) {
     // 3. Inicializar Gemini
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     // Usar gemini-pro o gemini-1.5-flash (flash es más rápido)
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); 
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }); 
 
     // 4. Obtener el prompt del usuario desde el body del fetch
     const { prompt, context } = request.body;
@@ -55,4 +55,5 @@ export default async function handler(request, response) {
     console.error('Error en la función API de Gemini:', error);
     return response.status(500).json({ error: `Error de la IA: ${error.message}` });
   }
+
 }
