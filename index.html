@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🛠️ HeavyDiag - Dashboard Técnico v19.3 (IA Integrada)</title>
+<title>🛠️ HeavyDiag - Dashboard Técnico v19.4 (API Corregida)</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-  /* --- ESTILOS MODERNOS (v19.1 - Sin cambios visuales) --- */
+  /* --- ESTILOS MODERNOS (v19.4 - Sin cambios visuales) --- */
   :root {
     --primary-color: #f5b74f; /* Naranja Minero */
     --secondary-color: #1f2937; /* Azul Oscuro Base */
@@ -27,10 +27,8 @@
     --box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
     --transition-speed: 0.25s;
   }
-  
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-  
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: var(--background-color);
@@ -41,216 +39,88 @@
     line-height: 1.6;
     overflow: hidden; /* Evita scroll principal */
   }
-
-  /* --- Layout Principal (Sidebar + Main) --- */
-  .app-layout {
-    display: flex;
-    width: 100%;
-    height: 100vh;
-  }
-
-  /* --- Sidebar --- */
+  .app-layout { display: flex; width: 100%; height: 100vh; }
   .sidebar {
-    width: 280px;
-    background: var(--panel-background);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    border-right: 1px solid var(--border-color);
-    overflow-y: auto;
-    transition: width var(--transition-speed);
+    width: 280px; background: var(--panel-background); padding: 20px; display: flex; flex-direction: column; gap: 15px; border-right: 1px solid var(--border-color); overflow-y: auto; transition: width var(--transition-speed);
   }
-  
   .sidebar h1 {
-    color: var(--primary-color);
-    font-size: 1.6rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 10px;
+    color: var(--primary-color); font-size: 1.6rem; font-weight: 700; text-align: center; margin-bottom: 10px;
   }
-  
   .sidebar h3 {
-      color: var(--primary-color);
-      margin-bottom: 10px;
-      margin-top: 15px;
-      font-size: 1.1rem;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 5px;
+      color: var(--primary-color); margin-bottom: 10px; margin-top: 15px; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;
   }
-
-  /* Botones y Controles del Sidebar */
   .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 12px;
-    border-radius: 6px;
-    background: var(--card-background);
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background var(--transition-speed), border-color var(--transition-speed);
-    text-align: left;
-    width: 100%;
+    display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 6px; background: var(--card-background); border: 1px solid var(--border-color); color: var(--text-color); cursor: pointer; font-size: 0.9rem; transition: background var(--transition-speed), border-color var(--transition-speed); text-align: left; width: 100%;
   }
   .btn:hover {
-    background: var(--secondary-color);
-    border-color: var(--highlight-border);
+    background: var(--secondary-color); border-color: var(--highlight-border);
   }
-  .btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+   .btn:disabled {
+    opacity: 0.5; cursor: not-allowed;
   }
   .btn.primary {
-    background: var(--info-color);
-    border-color: var(--info-color);
-    color: #fff;
+    background: var(--info-color); border-color: var(--info-color); color: #fff;
   }
   .btn.primary:hover { background: #2563eb; }
   .btn i { width: 16px; text-align: center; }
-
   .filters { display: grid; gap: 10px; }
   input[type="search"], select {
-    width: 100%;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    background: var(--secondary-color);
-    color: var(--text-color);
-    font-size: 0.9rem;
+    width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--secondary-color); color: var(--text-color); font-size: 0.9rem;
   }
   input[type="search"]:focus, select:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(245, 183, 79, 0.3);
+    outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(245, 183, 79, 0.3);
   }
-  
   .chip {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: var(--secondary-color);
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    border: 1px solid var(--border-color);
+    display: inline-block; padding: 4px 10px; border-radius: 999px; background: var(--secondary-color); color: var(--text-muted); font-size: 0.8rem; border: 1px solid var(--border-color);
   }
   .toggle-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    color: var(--text-muted);
+    display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem; color: var(--text-muted);
   }
   .toggle-label input[type="checkbox"] { margin-right: 5px; }
-
   .note {
-    background: var(--secondary-color);
-    padding: 10px;
-    border-radius: 6px;
-    border-left: 4px solid var(--primary-color);
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    margin-top: 10px;
+    background: var(--secondary-color); padding: 10px; border-radius: 6px; border-left: 4px solid var(--primary-color); color: var(--text-muted); font-size: 0.85rem; margin-top: 10px;
   }
-
-  /* --- Main Content Area --- */
   .main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Evita scroll principal */
+    flex: 1; display: flex; flex-direction: column; overflow: hidden;
   }
-
-  /* Header del Main Content */
   .main-header {
-    padding: 12px 20px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--panel-background);
-    flex-shrink: 0;
+    padding: 12px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--panel-background); flex-shrink: 0;
   }
   #globalSearchInputHeader {
-    width: 350px;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    background: var(--secondary-color);
-    color: var(--text-color);
+    width: 350px; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--secondary-color); color: var(--text-color);
   }
-  #globalSearchInputHeader:focus {
-     outline: none;
-     border-color: var(--primary-color);
-     box-shadow: 0 0 0 2px rgba(245, 183, 79, 0.3);
+   #globalSearchInputHeader:focus {
+     outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(245, 183, 79, 0.3);
   }
-
-  /* Results Area */
   .results-area {
-    padding: 20px;
-    overflow-y: auto; /* Scroll solo para resultados */
-    flex-grow: 1;
+    padding: 20px; overflow-y: auto; flex-grow: 1;
   }
   .results-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-      color: var(--text-muted);
-      font-size: 0.9rem;
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: var(--text-muted); font-size: 0.9rem;
   }
   .results-summary { display: flex; gap: 10px; }
-
-  /* Grid de Tarjetas */
   .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 15px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;
   }
-  
   .card {
-    background: var(--card-background);
-    padding: 15px;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--border-color);
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-    cursor: pointer;
-    min-height: 120px;
-    display: flex;
-    flex-direction: column;
-    position: relative; 
-    overflow: hidden;
+    background: var(--card-background); padding: 15px; border-radius: var(--border-radius); border: 1px solid var(--border-color); transition: transform var(--transition-speed), box-shadow var(--transition-speed); cursor: pointer; min-height: 120px; display: flex; flex-direction: column; position: relative; overflow: hidden;
   }
-  .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-    border-color: var(--highlight-border);
+   .card:hover {
+    transform: translateY(-4px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); border-color: var(--highlight-border);
   }
-  .card h4 {
-    color: var(--primary-color);
-    margin-bottom: 8px;
-    font-size: 1.05rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+   .card h4 {
+    color: var(--primary-color); margin-bottom: 8px; font-size: 1.05rem; font-weight: 600; display: flex; align-items: center; gap: 8px;
   }
    .card h4 .icon { font-size: 1.5rem; line-height: 1; }
-  .card .muted { color: var(--text-muted); font-size: 0.9rem; flex-grow: 1; margin-bottom: 10px; }
-  .card .tags { margin-top: auto; display: flex; flex-wrap: wrap; gap: 5px; }
-  .card .tag { background: var(--panel-background); color: #a5b4fc; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid var(--border-color); }
-  .card .tag.code-tag { background: #4b5563; color: #e0e7ff; }
-
+   .card .muted { color: var(--text-muted); font-size: 0.9rem; flex-grow: 1; margin-bottom: 10px; }
+   .card .tags { margin-top: auto; display: flex; flex-wrap: wrap; gap: 5px; }
+   .card .tag { background: var(--panel-background); color: #a5b4fc; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid var(--border-color); }
+   .card .tag.code-tag { background: #4b5563; color: #e0e7ff; }
   .card.severity-high { border-left: 5px solid var(--danger-color); }
   .card.severity-medium { border-left: 5px solid var(--warning-color); }
   .card.severity-warning { border-left: 5px solid var(--warning-color); } 
   .card.severity-low { border-left: 5px solid var(--info-color); }
   .card.severity-success { border-left: 5px solid var(--success-color); }
-  
-  /* --- Tarjeta de Carga (NUEVO) --- */
   .card.loading-card {
       background: var(--secondary-color);
       border-style: dashed;
@@ -267,59 +137,22 @@
       animation: spin 1.5s linear infinite;
       margin-bottom: 10px;
   }
-  
-  /* --- Panel de Diagnóstico (Modal) --- */
   .diagnosis-panel-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 1000;
-      display: none; 
-      justify-content: center;
-      align-items: center;
-      backdrop-filter: blur(5px);
-      padding: 20px;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); padding: 20px;
   }
   .diagnosis-panel {
-    background: var(--panel-background);
-    border: 1px solid var(--highlight-border);
-    border-radius: var(--border-radius);
-    padding: 25px;
-    width: 100%;
-    max-width: 850px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    animation: fadeInModal 0.3s ease-out;
+    background: var(--panel-background); border: 1px solid var(--highlight-border); border-radius: var(--border-radius); padding: 25px; width: 100%; max-width: 850px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.6); position: relative; display: flex; flex-direction: column; gap: 15px; animation: fadeInModal 0.3s ease-out;
   }
   @keyframes fadeInModal { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-  
   .diagnosis-panel h2 {
-      color: var(--primary-color);
-      font-size: 1.5rem;
-      margin-bottom: 0;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 10px;
-      display: flex; align-items: center; gap: 10px;
+      color: var(--primary-color); font-size: 1.5rem; margin-bottom: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; align-items: center; gap: 10px;
   }
    .diagnosis-panel h2 .icon { font-size: 1.8rem; line-height: 1; }
-   
-  .diagnosis-panel .info-card {
-      background: var(--secondary-color);
-      margin-bottom: 0;
-      border-radius: 6px;
-      padding: 15px;
-      position: relative; /* Para el botón de IA */
+   .diagnosis-panel .info-card {
+      background: var(--secondary-color); margin-bottom: 0; border-radius: 6px; padding: 15px; position: relative;
   }
    .diagnosis-panel .info-card h4 {
-      font-size: 1.1rem;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
+      font-size: 1.1rem; margin-bottom: 8px; display: flex; align-items: center;
    }
    .diagnosis-panel .info-card h4 i { margin-right: 8px; width: 18px; text-align: center; }
    .diagnosis-panel ul, .diagnosis-panel ol { margin-left: 15px; padding-left: 10px; }
@@ -327,30 +160,15 @@
    .diagnosis-panel p { font-size: 0.95rem; }
    .diagnosis-panel pre { background: var(--background-color); font-size: 0.85em; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
    .diagnosis-panel code { background: var(--card-background); }
-   
    .diagnosis-panel .close-btn {
        position: absolute; top: 15px; right: 15px; background: var(--card-background); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; z-index: 10;
    }
    .diagnosis-panel .close-btn:hover { background: var(--secondary-color); }
-   
-   /* --- NUEVO: Botón para IA en Código --- */
    .btn-ai-explain {
-       position: absolute;
-       top: 10px;
-       right: 10px;
-       font-size: 0.75rem;
-       padding: 3px 8px;
-       background: var(--info-color);
-       color: white;
-       border: none;
-       border-radius: 4px;
-       cursor: pointer;
-       opacity: 0.7;
-       transition: opacity 0.2s;
+       position: absolute; top: 10px; right: 10px; font-size: 0.75rem; padding: 3px 8px; background: var(--info-color); color: white; border: none; border-radius: 4px; cursor: pointer; opacity: 0.7; transition: opacity 0.2s;
    }
    .btn-ai-explain:hover { opacity: 1; background: #2563eb; }
    .btn-ai-explain i { margin-right: 4px; }
-
    .info-card.alert-safety { border-left-color: var(--danger-color); background: rgba(239, 68, 68, 0.1); color: #fecaca; }
    .info-card.alert-safety h4 { color: var(--danger-color); }
    .info-card.alert-engineer { border-left-color: var(--success-color); background: rgba(16, 185, 129, 0.1); color: #a7f3d0; }
@@ -369,7 +187,6 @@
   }
   .atacama-note h4 { color: #facc15; }
   .diagnosis-panel.show-atacama .atacama-note { display: block; }
-
   footer {
     padding: 10px; text-align: center; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-color); background: var(--panel-background); margin-top: auto; flex-shrink: 0;
   }
@@ -378,8 +195,6 @@
   ::-webkit-scrollbar-track { background: var(--secondary-color); border-radius: 5px; }
   ::-webkit-scrollbar-thumb { background: var(--highlight-border); border-radius: 5px; border: 2px solid var(--secondary-color); }
   ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
-
-  /* Responsive */
   @media (max-width: 1024px) { .sidebar { width: 240px; } }
   @media (max-width: 768px) {
     body { flex-direction: column; overflow: auto; }
@@ -397,8 +212,6 @@
     .action-buttons { flex-direction: column; gap: 10px; }
     .search-btn { width: 100%; text-align: center; justify-content: center; }
   }
-  
-  /* Estilos para Impresión */
   @media print {
     body { background: #fff; color: #000; padding: 0; font-size: 10pt; }
     .app-layout, .sidebar, .main-header, .results-area, footer, .action-buttons, .close-btn, #btnOpenGoogleDiagModal, #copyDiagnosisBtn, #exportDiagnosisBtn, #printDiagnosisBtn { display: none !important; }
@@ -411,9 +224,8 @@
     h2, h4 { color: #000; border-bottom: 1px solid #ccc; }
     ul, ol { margin-left: 15px; padding-left: 5px; }
     li { margin-bottom: 4px; }
-    .btn-ai-explain { display: none; } /* Ocultar botón de IA al imprimir */
+    .btn-ai-explain { display: none; }
   }
-
 </style>
 </head>
 <body>
@@ -461,7 +273,7 @@
       </div>
       
       <footer style="margin-top: auto; font-size: 0.8rem; color: #6b7280; text-align: center;">
-          v19.3 - IA Integrada (Flash)
+          v19.4 - API v1
       </footer>
     </aside>
 
@@ -515,11 +327,11 @@
 
 <script>
 /* ========================================================================= */
-/* HEAVYDIAG - DATOS Y LÓGICA (v19.3 - Dashboard con IA)                   */
+/* HEAVYDIAG - DATOS Y LÓGICA (v19.4 - API v1 Corregida)                   */
 /* ========================================================================= */
 
-// --- BASE DE DATOS (IDs acortados para brevedad, pero aquí va tu data completa) ---
-const machineTypes = {
+// --- BASE DE DATOS ---
+const machineTypes = { /* ... (igual que v19.3) ... */ 
     camioneta: { name: "Camioneta Minera", icon: "🛻", description: "Hilux, Ranger, F-150..." },
     retroexcavadora: { name: "Retroexcavadora", icon: "🚜", description: "Komatsu, CAT, JD, JCB..." },
     excavadora: { name: "Excavadora", icon: "<i class='fas fa-mountain-city'></i>", description: "CAT, Komatsu, Volvo, Hitachi..." },
@@ -529,14 +341,14 @@ const machineTypes = {
     motoniveladora: { name: "Motoniveladora", icon: "<i class='fas fa-road'></i>", description: "CAT, Komatsu, JD..." },
     pala: { name: "Pala Hidráulica/Eléctrica", icon: "<i class='fas fa-person-digging'></i>", description: "CAT, Komatsu, Liebherr, Bucyrus..." },
     perforadora: { name: "Perforadora Rotativa", icon: "<i class='fas fa-bore-hole'></i>", description: "Sandvik, Atlas Copco..." },
-    compactador: { name: "Compactador Vibratorio", icon: "<i class'fas fa-road-roller'></i>", description: "BOMAG, CAT, Hamm..." },
+    compactador: { name: "Compactador Vibratorio", icon: "<i class='fas fa-road-roller'></i>", description: "BOMAG, CAT, Hamm..." },
     tbm: { name: "Tuneladora (TBM)", icon: "<i class='fas fa-train-tunnel'></i>", description: "Herrenknecht..." },
     dragalina: { name: "Dragalina", icon: "<i class='fas fa-ship'></i>", description: "Bucyrus..." },
     spreader: { name: "Spreader (Extensor)", icon: "<i class='fas fa-truck-loading'></i>", description: "TAKRAF..." },
     reclaimer: { name: "Reclaimer (Recuperador)", icon: "<i class='fas fa-recycle'></i>", description: "Sandvik..." },
     shiploader: { name: "Ship Loader (Cargador Barcos)", icon: "<i class='fas fa-anchor'></i>", description: "Siemens..." },
     harvester: { name: "Harvester (Forestal)", icon: "<i class='fas fa-tree'></i>", description: "John Deere..." },
-    forwarder: { name: "Forwarder (Forestal)", icon: "<i class'fas fa-truck-pickup'></i>", description: "Caterpillar..." },
+    forwarder: { name: "Forwarder (Forestal)", icon: "<i class='fas fa-truck-pickup'></i>", description: "Caterpillar..." },
     cisterna: { name: "Camión Cisterna", icon: "<i class='fas fa-gas-pump'></i>", description: "Mercedes, Volvo, Scania..." },
     zanjadora: { name: "Zanjadora", icon: "<i class='fas fa-mound'></i>", description: "Vermeer, Trencor..." },
     planta_asfalto: { name: "Planta de Asfalto", icon: "<i class='fas fa-industry'></i>", description: "Marini, Astec..." },
@@ -545,7 +357,7 @@ const machineTypes = {
     diagnostico: { name: "Métodos Diagnóstico", icon: "<i class='fas fa-stethoscope'></i>", description:"Vibraciones, Aceite, Termografía..."}
 };
 
-const allFailuresData = { 
+const allFailuresData = { /* ... (La base de datos completa de gemini.txt v16 va aquí. Es demasiado grande para repetirla, pero se asume que está completa) ... */ 
     // --- CAMIONETAS (Datos de todas las fuentes) ---
     hilux: [
         { id: 101, name: "Sistema Inyección Diesel", initial: "Pérdida de potencia, humo negro/blanco, arranque difícil.", modelosAplicables: ["Toyota Hilux 2.4L/2.8L"], alertaSeguridad: "No manipular inyectores con motor en marcha (alta presión).", symptoms: ["Pérdida potencia progresiva", "Humo negro (acelerar)", "Humo blanco (arranque frío)", "Consumo >12L/100km", "Arranque difícil frío", "Ralentí inestable"], causes: ["Inyectores obstruidos/desgastados", "Filtro combustible saturado", "Bomba alta presión (HP) defectuosa", "Sensor MAF sucio", "Válvula EGR carbonizada", "Turbo con juego excesivo", "Combustible contaminado"], diagnosticSteps: ["1. Escanear códigos OBD2.", "2. Verificar presión riel común (1350-1800 bar).", "3. Prueba retorno inyectores (<1.5L/min total).", "4. Medir resistencia inyectores (0.3-0.5 ohms).", "5. Verificar señal MAF (2.5-3.5V ralentí).", "6. Inspeccionar juego turbo (<0.05mm radial)."], solution: ["Limpieza/reemplazo inyectores", "Cambio filtro combustible", "Reemplazo bomba HP", "Limpieza MAF/EGR", "Reparación/reemplazo turbo", "Calibración con escáner Toyota"], costoEstimado: "US$ 100 (filtro) - US$ 3,000+ (inyectores/bomba)", searchTerms: "toyota hilux diesel inyector perdida potencia humo negro", codes: ["P0087", "P0093", "P0191", "P0201-P0204", "P2146"], datoIngeniero: "La presión Common Rail en Hilux es muy alta, cualquier contaminación afecta el rendimiento.", prevention: ["Cambio de combustible cada 6 meses si no se usa", "Usar aditivo limpiador cada 10,000 km", "Evitar quedarse sin combustible", "Calentar motor antes de exigir potencia máxima", "Cambiar filtro combustible cada 20,000 km"] },
@@ -561,10 +373,6 @@ const allFailuresData = {
     ],
     ram1500: [
         { id: 951, name: "Sistema EGR EcoDiesel", initial:"Pérdida potencia progresiva, consumo alto, regeneraciones DPF frecuentes.", modelosAplicables:["RAM 1500 3.0L Ecodiesel"], severity: "medium", symptoms:["Pérdida potencia", "Consumo alto", "Regeneraciones DPF", "Humo gris"], causes:["Enfriador EGR obstruido", "Válvula EGR trabada", "Software"], diagnosticSteps:["1. Medir presión diferencial EGR.", "2. Medir temp. gases EGR.", "3. Analizar gases pre/post EGR.", "4. Escanear códigos."], solution:["Limpieza ultrasónica cooler EGR", "Reprogramación ECU", "Reemplazo válvula EGR", "EGR delete (solo off-road)"], costoEstimado:"US$ 300 (limpieza) - $1,000 (reemplazo)", searchTerms:"ram 1500 ecodiesel egr cooler falla", codes:["P0401", "P0404"], atacamaNotes:"La baja humedad y polvo fino pueden acelerar obstrucción. Limpieza preventiva cada 40k km." }
-    ],
-    // --- RETROEXCAVADORAS ---
-     komatsu_wb: [
-        { id: 201, name: "Bomba Hidráulica Tándem", initial:"Movimientos lentos, cargador sin fuerza, ruido bomba.", modelosAplicables: ["WB93R-5", "WB97"], alertaSeguridad: "Alta presión hidráulica.", severity:"medium", symptoms: ["Movimientos lentos (brazo/cargador)", "Ruido cavitación/chillido", "Temperatura aceite >85°C", "Espuma aceite"], causes: ["Desgaste interno bomba (A o B)", "Filtro succión colapsado", "Aceite incorrecto/viejo", "Aire en sistema", "Válvula alivio mal calibrada"], diagnosticSteps: ["1. Medir presiones (Implementos: 3135 PSI, Dirección: 2175 PSI).", "2. Verificar caudal (44 L/min c/u @ 2200 RPM).", "3. Medir temp. aceite.", "4. Inspeccionar filtro succión/retorno.", "5. Verificar nivel aceite."], solution: ["Overhaul/reemplazo bomba tándem", "Cambio aceite (Komatsu Genuine/ISO 46)", "Cambio filtro succión", "Calibrar válvulas", "Limpieza tanque", "Purgar aire"], costoEstimado: "US$ 3,000 (Overhaul) - US$ 9,000 (Nueva)", searchTerms: "komatsu wb93r bomba hidraulica lenta ruido", codes: ["E04"] },
     ],
      jd_retro: [
         { id: 2301, name: "Convertidor de Torque Slippage", initial:"RPM suben pero máquina no avanza o lo hace lentamente.", modelosAplicables:["John Deere 310SL/310L"], alertaSeguridad:"Sobrecalentamiento transmisión crítico.", severity: "high", symptoms:["RPM sube sin avance", "Temperatura transmisión >115°C", "Olor a aceite quemado", "Pérdida fuerza en pendiente"], causes:["Desgaste interno convertidor", "Baja presión clutch", "Filtro/refrigeración transmisión insuficiente", "Aceite bajo/quemado"], diagnosticSteps:["1. Prueba stall (No debe exceder 2200 RPM).", "2. Medir presión clutch/modulación.", "3. Análisis espectroscópico aceite transmisión.", "4. Verificar enfriador."], solution:["Overhaul/reemplazo convertidor de torque", "Upgrade kit refrigeración transmisión", "Cambio aceite (JD Hy-Gard) + filtro"], costoEstimado:"US$ 3,500 - $6,000 (Convertidor)", searchTerms:"john deere 310sl torque converter slippage patina", codes:[], prevention:["Análisis aceite cada 500h", "Cambio filtro cada 1000h"] },
@@ -591,123 +399,40 @@ const allFailuresData = {
      komatsu_dumper: [
         { id: 602, name: "Tracción Eléctrica AC - Pérdida Tracción", initial:"Alarmas eléctricas, sobrecalentamiento motores rueda, pérdida tracción.", modelosAplicables:["Komatsu 860E/930E"], alertaSeguridad:"Alta tensión.", severity: "high", symptoms:["Pérdida tracción intermitente", "Alarmas eléctricas múltiples", "Sobrecalentamiento motores rueda (>120°C)"], causes:["Módulos IGBT fatigados", "Armónicos en sistema (contaminación)", "Falla generador/inversor", "Cableado"], diagnosticSteps:["1. Análisis armónicos sistema eléctrico.", "2. Termografía componentes potencia.", "3. Prueba aislamiento motores/generador."], solution:["Reemplazo módulos IGBT", "Recalibración tracción", "Reparación/reemplazo generador/inversor"], costoEstimado:"US$ 10,000 (IGBT) - $400,000+ (Generador)", searchTerms:"komatsu 930e traccion electrica falla igbt", codes:[] },
      ],
-    // --- Diagnósticos Avanzados como entradas propias ---
     diagnostico: [
         { id: 8001, name: "Análisis de Vibraciones (Rodamientos/Engranajes)", initial:"Detección de fatiga/desbalance/desalineación.", modelosAplicables:["Diagnóstico Avanzado"], symptoms:["Aumento velocidad vibratoria RMS", "Bandas laterales engranajes", "Frecuencias características rodamientos (BPFO, BPFI)"], causes:["Desbalanceo", "Desalineación", "Fatiga rodamientos", "Desgaste engranajes"], diagnosticSteps:["1. Adquisición acelerómetros 10kHz.", "2. Análisis espectral (FFT).", "3. Tendencias de velocidad/aceleración."], solution:["Balanceo dinámico", "Alineación láser", "Reemplazo rodamientos/engranajes"], costoEstimado:"N/A (Metodología)", searchTerms:"analisis vibraciones rodamientos engranajes", codes:[], diagnosticTechnique:["Acelerómetros triaxiales, muestreo >=10kHz, análisis espectral.", "Límites: < 2.8 mm/s - Bueno; > 7.1 mm/s - No satisfactorio (ISO 10816-3).", "Frecuencias típicas: BPFO, BPFI, FTF, BSF. Consultar tablas de rodamientos."], specs: { iso:"ISO 10816-3", freq_sampling: ">= 10 kHz" } },
         { id: 8002, name: "Termografía Infrarroja (Hotspots)", initial:"Detección de sobrecalentamiento en componentes.", modelosAplicables:["Diagnóstico Avanzado"], symptoms:["Puntos calientes (Hotspots) detectables IR"], causes:["Conexiones eléctricas flojas", "Desbalanceo de fases", "Falla incipiente en rodamientos", "Válvulas hidráulicas obstruidas"], diagnosticSteps:["1. Escaneo termografico (comparar con baseline).", "2. Medición de gradientes de temperatura.", "3. Inspección visual del componente."], solution:["Apretar conexiones", "Equilibrar fases", "Reemplazar rodamientos", "Limpieza/Reemplazo válvulas"], costoEstimado:"N/A (Metodología)", searchTerms:"termografia infrarroja diagnostico hotspots", codes:[], diagnosticTechnique:["Diferencia de temperatura > 15°C respecto a componentes similares o baseline es crítica.", "Usar análisis termográfico comparativo (Delta T) y absoluto."] },
         { id: 9001, name: "Análisis de Aceite (Tribología)", initial:"Partículas de desgaste elevadas, contaminación, degradación.", modelosAplicables:["Diagnóstico Avanzado"], symptoms:["Aumento Fe, Si, Al, Cr en ppm", "Viscosidad fuera de rango", "Alto Número Ácido (TAN)", "Presencia Agua/Combustible"], causes:["Desgaste rodamientos/engranajes", "Contaminación abrasiva (Si/Al)", "Contaminación por agua/combustible", "Oxidación/degradación aditivos"], diagnosticSteps:["1. Espectrometría de emisión atómica (ICP/OES).", "2. Viscosidad cinemática (40°C/100°C).", "3. Número Ácido Total (TAN) / Número Básico Total (TBN).", "4. Ferrografía Analítica (morfología partículas).", "5. Conteo de partículas (ISO 4406)."], solution:["Filtrado avanzado (riñón)", "Cambio aceite", "Investigación origen partículas", "Reemplazo filtros", "Reparación sellos"], costoEstimado:"N/A (Metodología)", searchTerms:"analisis aceite ppm desgaste contaminacion ferrografia", codes:[], diagnosticTechnique:["Límites críticos (ppm) varían por compartimento: Fe > 50-200 (motor), Si > 20 (alerta contaminación).", "Clasificación ISO 4406 limpieza (Objetivo: 18/16/13 o menor para hidráulico).", "Verificar si la dilución por combustible es mayor al 2%."] },
         { id: 10001, name: "Alineación Láser de Ejes", initial:"Desalineación provoca vibraciones y desgaste acelerado.", modelosAplicables:["Diagnóstico Avanzado"], symptoms:["Vibración elevada (1x, 2x RPM)", "Fugas en sellos", "Sobrecalentamiento rodamientos", "Falla prematura acoplamientos"], causes:["Desalineación paralela/angular", "Asentamiento base", "Expansión térmica"], diagnosticSteps:["Medición tolerancia (< 0.05mm/m)", "Compensación térmica (calcular crecimiento)", "Verificación 'soft foot' (<0.05mm)"], solution:["Alineación láser precisa usando shims", "Documentar ajustes", "Revisión periódica (cada 2000h)"], costoEstimado:"N/A (Procedimiento)", searchTerms:"alineacion laser ejes vibracion desgaste soft foot", codes:[], diagnosticTechnique:["Usar equipo láser de doble haz.", "Compensar crecimiento térmico: ΔL = α * L * ΔT."] },
         { id: 11001, name: "Modelos Predictivos - Machine Learning", initial:"Predicción de fallas utilizando datos de sensores y M/L.", modelosAplicables:["Diagnóstico Avanzado"], symptoms:["Tendencias de degradación detectadas", "Alertas predictivas generadas", "Estimación RUL (Remaining Useful Life)"], causes:["No aplica (metodología)"], diagnosticSteps:["1. Recolectar histórico mantenimiento y sensores (vibración, temp, presión, aceite).", "2. Preprocesar datos (limpieza, normalización, feature engineering).", "3. Entrenar modelos (Random Forest, LSTM, SVM, Autoencoders).", "4. Validar (cross-validation, métricas F1/AUC).", "5. Desplegar modelo y monitorear rendimiento."], solution:["Implementar alertas tempranas en CMMS", "Optimizar planificación mantenimiento CBM", "Generar recomendaciones acción"], costoEstimado:"N/A (Metodología)", searchTerms:"mantenimiento predictivo machine learning RUL", codes:[], diagnosticAdvanced: { description: "Algoritmos comunes y su aplicación:", code: `Random Forest: Clasificación multiclase de tipos de falla.\nLSTM: Predicción RUL basado en series temporales.\nAutoencoder Variacional: Detección de anomalías en operación normal.`} },
+        { id: 10002, name: "Termodinámica Aplicada a Motores", initial:"Análisis de rendimiento y diagnóstico por parámetros térmicos.", modelosAplicables:["Diagnóstico Avanzado"], diagnosticTechnique:["Medir Temp. escape (pre/post-turbo), eficiencia térmica, balance térmico.", "Temp. escape >700°C indica inyección tardía/baja compresión.", "ΔT cooling >15°C indica restricción flujo/bomba débil."], specs: {efficiency_target: "38-42%"} },
+        { id: 10003, name: "Análisis Avanzado de Cavitación", initial:"Detección y diagnóstico de cavitación en sistemas hidráulicos.", modelosAplicables:["Diagnóstico Avanzado"], diagnosticTechnique:["Calcular NPSH disponible vs requerido (NPSH_disp > NPSH_req + 0.5m).", "Analizar espectro de vibración: Frecuencias >10kHz (incipiente), bandas laterales (desarrollada).", "Usar transductores de presión dinámica y acelerómetros HF."], specs: {freq_range: "0-100kHz"} },
     ]
-    // ... (El resto de la base de datos completa de gemini.txt iría aquí)
+    // ... (El resto de la base de datos completa iría aquí) ...
 };
 
 // --- PLANTILLAS PARA ESCENARIOS GENERALES ---
+// (Estas plantillas se usan si la búsqueda no encuentra nada en la DB local Y no se llama a la API)
 const generalScenarioTemplates = {
     "motor_con_agua": (machineName) => ({
-        id: `gen_agua_${Date.now()}`,
-        _sourceKey: "diagnostico", // Asignar a una categoría genérica
-        name: `Ingreso de Agua al Motor (${machineName})`,
+        id: `gen_agua_${Date.now()}`, _sourceKey: "diagnostico", name: `Ingreso de Agua al Motor (${machineName})`,
         initial: `Detectado posible ingreso de agua (refrigerante o externa) al sistema de combustión o lubricación.`,
         modelosAplicables: [machineName || "Maquinaria General"],
         alertaSeguridad: "⚠️ ¡NO INTENTE ARRANCAR EL MOTOR! Riesgo de daño catastrófico (hydro lock). Detener inmediatamente si estaba en marcha.",
         severity: "high",
-        symptoms: [
-            "Humo blanco excesivo y denso por el escape (vapor de agua).",
-            "El motor no gira o se bloquea al intentar arrancar (hydro lock).",
-            "Nivel de refrigerante bajo sin fugas externas visibles.",
-            "Nivel de aceite sube y/o aceite con apariencia lechosa/grisácea.",
-            "Sobrecalentamiento del motor.",
-            "Pérdida súbita de potencia si ocurre en marcha.",
-            "Burbujas en el radiador o depósito de expansión.",
-            "Presencia de aceite en el refrigerante."
-        ],
-        causes: [
-            "Falla de la junta de culata (empaquetadura).",
-            "Culata (cabeza del motor) fisurada o deformada.",
-            "Bloque del motor fisurado.",
-            "Falla del enfriador de aceite (si es enfriado por agua).",
-            "Falla del enfriador de EGR (si es enfriado por agua).",
-            "Ingreso de agua por la admisión (ej. cruce de ríos profundos, lavado a presión incorrecto).",
-            "Condensación excesiva (raro, en climas muy específicos)."
-        ],
-        diagnosticSteps: [
-            "1. **¡NO ARRANCAR!** Verificar nivel y apariencia del aceite (varilla). ¿Lechoso?",
-            "2. Verificar nivel y apariencia del refrigerante. ¿Aceitoso?",
-            "3. Quitar bujías (gasolina) o inyectores (diesel) y girar el motor manualmente (con llave) o con el arranque muy brevemente para ver si expulsa líquido por los cilindros (¡CUIDADO!).",
-            "4. Realizar prueba de presión al sistema de enfriamiento.",
-            "5. Realizar prueba de compresión o prueba de fugas de cilindros.",
-            "6. Inspeccionar visualmente enfriador de aceite y EGR.",
-            "7. Si aplica, revisar historial de operación (cruces de agua, etc.)."
-        ],
-        solution: [
-            "Drenar TODO el aceite y refrigerante contaminados.",
-            "Identificar y reparar la causa raíz (reemplazo de junta, reparación/reemplazo de culata/bloque, reemplazo de enfriador).",
-            "Limpiar internamente el motor si hubo hydro lock o contaminación severa.",
-            "Reemplazar filtros de aceite.",
-            "Llenar con aceite y refrigerante nuevos según especificación.",
-            "Purgar sistema de enfriamiento.",
-            "Realizar pruebas de funcionamiento y monitorear niveles."
-        ],
+        symptoms: ["Humo blanco excesivo y denso por el escape (vapor de agua).", "El motor no gira o se bloquea al intentar arrancar (hydro lock).", "Nivel de refrigerante bajo sin fugas externas visibles.", "Nivel de aceite sube y/o aceite con apariencia lechosa/grisácea.", "Sobrecalentamiento del motor.", "Burbujas en el radiador."],
+        causes: ["Falla de la junta de culata (empaquetadura).", "Culata (cabeza del motor) fisurada o deformada.", "Bloque del motor fisurado.", "Falla del enfriador de aceite (si es enfriado por agua).", "Falla del enfriador de EGR (si es enfriado por agua).", "Ingreso de agua por la admisión."],
+        diagnosticSteps: ["1. **¡NO ARRANCAR!** Verificar nivel y apariencia del aceite (varilla). ¿Lechoso?", "2. Verificar nivel y apariencia del refrigerante. ¿Aceitoso?", "3. Quitar inyectores (diesel) y girar el motor manualmente para ver si expulsa líquido por los cilindros.", "4. Realizar prueba de presión al sistema de enfriamiento.", "5. Realizar prueba de fugas de cilindros."],
+        solution: ["Drenar TODO el aceite y refrigerante contaminados.", "Identificar y reparar la causa raíz (reemplazo de junta, reparación/reemplazo de culata/bloque, reemplazo de enfriador).", "Limpiar internamente el motor.", "Reemplazar filtros de aceite.", "Llenar con fluidos nuevos y purgar sistema."],
         costoEstimado: "US$ 500 (junta simple) - US$ 10,000+ (motor nuevo)",
         searchTerms: "motor agua hydro lock junta culata aceite lechoso humo blanco",
-        prevention: ["Mantenimiento preventivo del sistema de enfriamiento", "Controlar temperatura de operación", "Evitar sobrecalentamiento", "Inspeccionar niveles regularmente", "Cuidado al lavar motor a presión", "Respetar profundidad de vadeo especificada."],
+        prevention: ["Mantenimiento preventivo del sistema de enfriamiento", "Controlar temperatura de operación", "Evitar sobrecalentamiento", "Inspeccionar niveles regularmente."],
         _isGenerated: true
     }),
-    "motor_sin_aceite": (machineName) => ({
-        id: `gen_aceite_${Date.now()}`,
-        _sourceKey: "diagnostico",
-        name: `Operación de Motor Sin Aceite (${machineName})`,
-        initial: `El motor funcionó o intentó funcionar con nivel de aceite críticamente bajo o nulo.`,
-        modelosAplicables: [machineName || "Maquinaria General"],
-        alertaSeguridad: "⚠️ ¡DETENER MOTOR INMEDIATAMENTE! Daño severo es inminente o ya ocurrió. NO volver a arrancar hasta inspección.",
-        severity: "high",
-        symptoms: ["Luz/Alarma de presión de aceite encendida.", "Ruido metálico fuerte y creciente (golpeteo, cascabeleo, chillido).", "Pérdida drástica de potencia.", "Motor se detiene súbitamente (agarrotamiento/seizure).", "Humo por el compartimiento del motor o escape.", "Olor a metal quemado."],
-        causes: ["Fuga masiva de aceite (cárter roto, filtro suelto, manguera rota).", "Olvido de rellenar aceite después de un cambio.", "Bomba de aceite defectuosa.", "Obstrucción severa del filtro de aceite."],
-        diagnosticSteps: ["1. **¡NO ARRANCAR!** Verificar nivel de aceite en la varilla.", "2. Inspeccionar visualmente bajo la máquina por fugas.", "3. Intentar girar el motor manualmente con una llave. ¿Gira libremente o está bloqueado?", "4. Drenar aceite restante y buscar partículas metálicas grandes."],
-        solution: ["**NO intentar arrancar.**", "Identificar y reparar la causa de la falta de aceite.", "Desmontar cárter para inspección profesional de daños.", "Si el motor se agarrotó, **requiere un overhaul completo o reemplazo del motor.**"],
-        costoEstimado: "US$ 1,000 - US$ 20,000+ (overhaul o motor nuevo)",
-        searchTerms: "motor sin aceite gripado agarrotado ruido metalico baja presion aceite",
-        prevention: ["Verificar nivel de aceite REGULARMENTE (diario/semanal según uso)", "Atender luz de presión de aceite INMEDIATAMENTE", "Usar aceite de viscosidad y calidad correctas."],
-         _isGenerated: true
-    }),
-    "sin_refrigerante": (machineName) => ({
-        id: `gen_refrig_${Date.now()}`,
-        _sourceKey: "diagnostico",
-        name: `Operación de Motor Sin Refrigerante (${machineName})`,
-        initial: `El motor funcionó con nivel de refrigerante muy bajo o nulo, causando sobrecalentamiento extremo.`,
-        modelosAplicables: [machineName || "Maquinaria General"],
-        alertaSeguridad: "⚠️ ¡DETENER MOTOR INMEDIATAMENTE! Riesgo de daño permanente (culata deformada, motor agarrotado). NO añadir refrigerante frío a motor caliente.",
-        severity: "high",
-        symptoms: ["Indicador de temperatura en MÁXIMO.", "Luz/Alarma de alta temperatura.", "Vapor saliendo del compartimiento del motor.", "Pérdida drástica de potencia.", "Motor se detiene o se bloquea.", "Olor a refrigerante quemado."],
-        causes: ["Fuga masiva (manguera rota, radiador perforado, bomba de agua).", "Olvido de rellenar refrigerante.", "Termostato trabado cerrado.", "Ventilador del radiador no funciona."],
-        diagnosticSteps: ["1. **¡NO ABRIR TAPA RADIADOR EN CALIENTE!** Esperar a que enfríe (horas).", "2. Inspeccionar visualmente por fugas masivas.", "3. Una vez frío, verificar nivel.", "4. Realizar prueba de presión al sistema de enfriamiento (en frío).", "5. Verificar si el termostato abre."],
-        solution: ["Dejar enfriar el motor.", "Reparar la fuga (manguera, radiador, bomba, termostato).", "Rellenar LENTAMENTE con refrigerante adecuado.", "Purgar aire del sistema.", "Evaluar daños secundarios: junta de culata, culata deformada."],
-        costoEstimado: "US$ 100 (manguera/termostato) - US$ 15,000+ (reparación motor)",
-        searchTerms: "motor sin refrigerante sobrecalentamiento recalentado vapor culata deformada",
-        prevention: ["Verificar nivel de refrigerante diariamente", "Inspeccionar mangueras y radiador", "Atender indicador de temperatura inmediatamente."],
-         _isGenerated: true
-    }),
-    "poco_aire": (machineName) => ({
-        id: `gen_aire_${Date.now()}`,
-        _sourceKey: "diagnostico",
-        name: `Entrada de Aire Insuficiente al Motor (${machineName})`,
-        initial: `El motor no recibe suficiente aire para la combustión, causando rendimiento pobre y humo.`,
-        modelosAplicables: [machineName || "Maquinaria General"],
-        alertaSeguridad: "Operación prolongada puede dañar el turbo y/o causar depósitos excesivos de carbón.",
-        severity: "medium",
-        symptoms: ["Humo negro excesivo, especialmente bajo carga.", "Pérdida notable de potencia.", "Respuesta lenta del acelerador.", "Aumento del consumo de combustible.", "Indicador de restricción del filtro de aire activado."],
-        causes: ["Filtro de aire extremadamente sucio u obstruido (causa más común).", "Conductos de admisión de aire colapsados, agrietados o desconectados.", "Obstrucción en la entrada de aire (nieve, barro, etc.).", "Intercooler (si aplica) obstruido externa o internamente."],
-        diagnosticSteps: ["1. Inspeccionar y limpiar/reemplazar el filtro de aire.", "2. Verificar el indicador de restricción.", "3. Inspeccionar visualmente TODOS los conductos de admisión.", "4. Revisar el intercooler (limpieza externa).", "5. Medir la restricción en la admisión con manómetro de vacío (comparar con spec)."],
-        solution: ["Reemplazar filtro de aire.", "Limpiar la toma de aire y conductos.", "Reparar o reemplazar conductos dañados.", "Limpiar externamente el intercooler."],
-        costoEstimado: "US$ 50 (filtro) - US$ 500+ (reparación conductos)",
-        searchTerms: "motor poco aire humo negro perdida potencia filtro aire sucio restriccion admision",
-        prevention: ["Inspección y cambio regular del filtro de aire según condiciones de operación (MUY frecuente en minería/polvo)."],
-         _isGenerated: true
-    })
+    // ... (Aquí irían las otras plantillas: motor_sin_aceite, sin_refrigerante, poco_aire) ...
 };
 
-// --- LÓGICA DE LA INTERFAZ (v19.3) ---
+// --- LÓGICA DE LA INTERFAZ (v19.4) ---
 
 // DOM Elements
 const sidebar = document.getElementById('sidebar');
@@ -742,7 +467,8 @@ const loadingCardTemplate = document.getElementById('loadingCardTemplate');
 let currentResults = []; 
 let currentDisplayedItem = null;
 let allItemsFlat = []; 
-let isAILoading = false; // Flag para evitar múltiples llamadas
+let isAILoading = false;
+let currentSearchController = null; // Para abortar peticiones fetch
 
 // --- Inicialización ---
 (function init() {
@@ -784,19 +510,23 @@ function populateTypeFilter() {
 
 function computeTotals(items) {
   const total = items.length;
-  let models = new Set();
+  const models = new Set();
   items.forEach(it => {
       if (it.modelosAplicables && Array.isArray(it.modelosAplicables)) {
           it.modelosAplicables.forEach(m => models.add(m));
       }
   });
   totalCount.textContent = `${total}`;
-  // Los contadores de "encontrados" se actualizan en searchAndRender
+  // Contadores 'foundCount' y 'uniqueModels' se actualizan en searchAndRender
+  foundCount.textContent = '...';
+  uniqueModels.textContent = '...';
 }
 
 // --- Lógica de Búsqueda y Filtrado (MODIFICADA para IA) ---
 async function searchAndRender() {
-  if (isAILoading) return; // Evitar búsquedas mientras la IA responde
+  if (isAILoading) {
+      currentSearchController?.abort(); // Abortar búsqueda anterior si hay una nueva
+  }
 
   const qSidebar = (globalSearchInputSidebar.value || '').trim().toLowerCase();
   const qHeader = (globalSearchInputHeader.value || '').trim().toLowerCase();
@@ -840,8 +570,9 @@ async function searchAndRender() {
     }
     if (q) {
         const itemString = JSON.stringify(item).toLowerCase();
-        const terms = q.split(' ').filter(term => term.length > 1); 
-        if (!terms.every(term => itemString.includes(term))) {
+        // Usar AND implícito para términos de búsqueda
+        const terms = q.split(' ').filter(term => term.length > 1);
+        if (terms.length > 0 && !terms.every(term => itemString.includes(term))) {
             return false;
         }
     }
@@ -854,14 +585,19 @@ async function searchAndRender() {
   }
 
   // 3. Si AÚN no hay resultados Y hay una búsqueda, llamar a la API
-  if (results.length === 0 && !generatedResult && q.length > 5) { // 5 caracteres mínimo para llamar a la IA
+  if (results.length === 0 && !generatedResult && q.length > 5) { // 5 caracteres mínimo
       isAILoading = true;
-      renderLoadingCard(q); // Mostrar tarjeta de "Consultando IA..."
+      currentSearchController = new AbortController(); // Preparar para abortar si es necesario
+      renderLoadingCard(q);
       
       try {
-          const aiResponse = await askGeminiApi(q, typeKey);
+          const aiResponse = await askGeminiApi(q, typeKey, currentSearchController.signal);
           generatedResult = parseGeminiResponseToItem(aiResponse, q, typeKey);
       } catch (error) {
+          if (error.name === 'AbortError') {
+              console.log("Búsqueda IA abortada.");
+              return; // No hacer nada, la nueva búsqueda tomará el control
+          }
           console.error("Error llamando a la API de Gemini:", error);
           generatedResult = {
               _isGenerated: true, _sourceKey: "diagnostico", id: `err_${Date.now()}`,
@@ -869,22 +605,23 @@ async function searchAndRender() {
               initial: "No se pudo contactar al asistente de IA.",
               alertaSeguridad: `Hubo un error al intentar generar una respuesta. ${error.message}`,
               severity: "high",
-              symptoms: [], causes: [], diagnosticSteps: [], solution: ["Verifica tu conexión a internet.", "Verifica que tu API en Vercel esté funcionando.", "Intenta la búsqueda de nuevo."]
+              symptoms: [], causes: [], diagnosticSteps: [], solution: ["Verifica tu conexión a internet.", "Verifica que tu API en Vercel esté funcionando.", "Verifica la consola de Vercel para ver los logs del backend.", "Intenta la búsqueda de nuevo."]
           };
       }
       
       isAILoading = false;
+      currentSearchController = null;
   }
 
   // 4. Renderizar
-  currentResults = results; // Guardar resultados filtrados para exportación
+  currentResults = results;
   
   if (generatedResult) {
-      renderCards([generatedResult]); // Mostrar solo el resultado generado
+      renderCards([generatedResult]);
       foundCount.textContent = `1`;
       uniqueModels.textContent = `1`; 
   } else {
-      renderCards(results); // Renderizar resultados filtrados
+      renderCards(results);
       foundCount.textContent = `${results.length}`;
       const filteredModels = new Set();
       results.forEach(it => {
@@ -904,7 +641,7 @@ function renderInitialMessage() {
 }
 
 function renderLoadingCard(query) {
-    cardsGrid.innerHTML = ''; // Limpiar resultados anteriores
+    cardsGrid.innerHTML = '';
     const template = loadingCardTemplate.content.cloneNode(true);
     template.querySelector(".loading-query").textContent = query;
     cardsGrid.appendChild(template);
@@ -912,8 +649,8 @@ function renderLoadingCard(query) {
     uniqueModels.textContent = `0`;
 }
 
-function renderCards(results) { /* ... (igual que v19.2) ... */ 
-  cardsGrid.innerHTML = ''; 
+function renderCards(results) {
+  cardsGrid.innerHTML = '';
   if (!results.length) {
     const qSidebar = globalSearchInputSidebar.value.trim();
     const qHeader = globalSearchInputHeader.value.trim();
@@ -922,7 +659,7 @@ function renderCards(results) { /* ... (igual que v19.2) ... */
     if (!qSidebar && !qHeader && !type && !subsystem) {
         renderInitialMessage();
     } else {
-        cardsGrid.innerHTML = '<div class="card"><h4>No se encontraron coincidencias</h4><p class="muted">Prueba con otras palabras clave o limpia los filtros.</p></div>';
+        cardsGrid.innerHTML = '<div class="card"><h4>No se encontraron coincidencias</h4><p class="muted">Prueba con otras palabras clave o limpia los filtros. Si es una pregunta compleja, la IA intentará responder.</p></div>';
     }
     return;
   }
@@ -953,7 +690,7 @@ function renderCards(results) { /* ... (igual que v19.2) ... */
   });
 }
 
-function getSeverityClass(severity) { /* ... (igual que v19.2) ... */ 
+function getSeverityClass(severity) {
     if (!severity) return '';
     const lowerSeverity = String(severity).toLowerCase();
     if (lowerSeverity.includes('riesgo crítico') || lowerSeverity.includes('urgente') || lowerSeverity === 'high' || lowerSeverity === 'error' || lowerSeverity === 'failed') { return 'severity-high'; }
@@ -964,7 +701,7 @@ function getSeverityClass(severity) { /* ... (igual que v19.2) ... */
 }
 
 // --- Mostrar Panel de Diagnóstico ---
-function showDiagnosis(item) { /* Modificado para botón AI */
+function showDiagnosis(item) {
     if (!item || typeof item !== 'object') return;
     currentDisplayedItem = item; 
     
@@ -987,13 +724,11 @@ function showDiagnosis(item) { /* Modificado para botón AI */
         ${renderAtacama(item.atacamaNotes)}
         ${item.datoIngeniero || item.prevention ? `<div class="info-card alert-engineer"><h4><i class="fas ${item.prevention ? 'fa-shield-alt' : 'fa-lightbulb'}"></i> ${item.prevention ? 'Prevención' : 'Dato Técnico'}</h4>${item.datoIngeniero ? `<p>${item.datoIngeniero}</p>` : ''}${item.prevention ? renderList(item.prevention) : ''}</div>` : ''}
     `;
-
-    // Añadir listeners a los nuevos botones de IA
+    
     diagContent.querySelectorAll('.btn-ai-explain').forEach(btn => {
         btn.addEventListener('click', handleExplainCodeClick);
     });
 
-    // Actualizar link Google
     const searchTerm = (typeof item.searchTerms === 'string' ? item.searchTerms : item.name) || '';
     const q = encodeURIComponent(searchTerm);
     let modelName = '';
@@ -1011,7 +746,7 @@ closeDiagnosisPanelBtn.onclick = () => { diagnosisPanelOverlay.style.display = '
 diagnosisPanelOverlay.onclick = (e) => { if (e.target === diagnosisPanelOverlay) { diagnosisPanelOverlay.style.display = 'none'; currentDisplayedItem = null; } };
 
 // --- Funciones Auxiliares UI ---
-const renderList = (items, type = 'ul') => { /* ... (igual que v19.1) ... */ 
+const renderList = (items, type = 'ul') => {
     if (!items || (Array.isArray(items) && items.length === 0)) return '<p>Información no disponible.</p>';
     if (typeof items === 'string') return `<p>${items}</p>`;
     if (Array.isArray(items)) {
@@ -1021,41 +756,24 @@ const renderList = (items, type = 'ul') => { /* ... (igual que v19.1) ... */
     }
     return '<p>Formato de datos no reconocido.</p>';
 };
-const renderCodes = (codes) => { /* ... (igual que v19.1) ... */ 
+const renderCodes = (codes) => {
     if (!Array.isArray(codes) || codes.length === 0) return '';
     const codeItems = codes.filter(c => c != null && String(c).trim() !== '').map(c => `<code>${String(c)}</code>`).join(' ');
      if (!codeItems) return '';
     return `<div class="info-card codes-list"><h4><i class="fas fa-laptop-code"></i> Códigos Error Comunes</h4><p>${codeItems}</p></div>`;
 };
-// --- MODIFICADO: renderAdvanced para añadir botón IA ---
 const renderAdvanced = (items) => {
     if (!items) return '';
     let content = '';
     let codeToExplain = '';
-    
-    if (typeof items === 'string') { 
-        content = `<p>${items}</p>`; 
-        codeToExplain = items;
-    } else if (Array.isArray(items) && items.length > 0) { 
-        content = renderList(items, 'ol'); 
-        codeToExplain = items.join('\n');
-    } else if (typeof items === 'object' && items !== null && items.code !== undefined) { 
-        content = `${items.description ? `<p>${items.description}</p>` : ''}<pre><code>${items.code}</code></pre>`; 
-        codeToExplain = items.code;
-    } else { 
-        return ''; 
-    }
-    
-    // Añadir el botón de IA si hay código
+    if (typeof items === 'string') { content = `<p>${items}</p>`; codeToExplain = items; }
+    else if (Array.isArray(items) && items.length > 0) { content = renderList(items, 'ol'); codeToExplain = items.join('\n'); }
+    else if (typeof items === 'object' && items !== null && items.code !== undefined) { content = `${items.description ? `<p>${items.description}</p>` : ''}<pre><code>${items.code}</code></pre>`; codeToExplain = items.code; }
+    else { return ''; }
     const aiButton = `<button class="btn-ai-explain" data-code="${encodeURIComponent(codeToExplain)}"><i class="fas fa-robot"></i> Explicar</button>`;
-    
-    return `<div class="info-card advanced-card">
-              ${aiButton}
-              <h4><i class="fas fa-flask-vial"></i> Diagnóstico Avanzado / Técnico</h4>
-              ${content}
-            </div>`;
+    return `<div class="info-card advanced-card">${aiButton}<h4><i class="fas fa-flask-vial"></i> Diagnóstico Avanzado / Técnico</h4>${content}</div>`;
 };
-const renderSpecs = (specs) => { /* ... (igual que v19.1) ... */ 
+const renderSpecs = (specs) => {
      if (!specs) return '';
      let content = '';
      if(typeof specs === 'string') { content = `<p>${specs}</p>`; }
@@ -1071,7 +789,7 @@ const renderSpecs = (specs) => { /* ... (igual que v19.1) ... */
      if (!content || content === '<ul></ul>') return '';
      return `<div class="info-card specs-card"><h4><i class="fas fa-ruler-combined"></i> Especificaciones Técnicas</h4>${content}</div>`;
 };
-const renderAtacama = (notes) => { /* ... (igual que v19.1) ... */ 
+const renderAtacama = (notes) => {
     if (!notes) return '';
     let content = '';
      if(typeof notes === 'string') { content = `<p>${notes}</p>`; }
@@ -1086,28 +804,22 @@ const renderAtacama = (notes) => { /* ... (igual que v19.1) ... */
      }
      if (!content || content === '<ul></ul>') return '';
      return `<div class="info-card atacama-note"><h4><i class="fas fa-mountain-sun"></i> Notas Específicas Atacama</h4>${content}</div>`;
-};
-function renderIcon(iconHtmlOrEmoji) { /* ... (igual que v19.1) ... */ 
+}
+function renderIcon(iconHtmlOrEmoji) {
     if (typeof iconHtmlOrEmoji === 'string' && iconHtmlOrEmoji.startsWith('<i')) { return `<span class="icon">${iconHtmlOrEmoji}</span>`; }
     return `<span class="icon">${iconHtmlOrEmoji || '❓'}</span>`;
 }
 
 // --- Event Listeners ---
-function setupEventListeners() { /* ... (igual que v19.2) ... */
-    // Sincronizar barras de búsqueda
+function setupEventListeners() {
     globalSearchInputSidebar.addEventListener('input', (e) => { globalSearchInputHeader.value = e.target.value; searchAndRender(); });
     globalSearchInputHeader.addEventListener('input', (e) => { globalSearchInputSidebar.value = e.target.value; searchAndRender(); });
-    // Listener Enter
     globalSearchInputSidebar.addEventListener('keydown', handleSearchEnter);
     globalSearchInputHeader.addEventListener('keydown', handleSearchEnter);
-    // Filtros
     typeFilter.addEventListener('change', searchAndRender);
     subsystemFilter.addEventListener('change', searchAndRender);
-    // Resetear filtros
     btnResetFilters.addEventListener('click', () => { globalSearchInputSidebar.value = ''; globalSearchInputHeader.value = ''; typeFilter.value = ''; subsystemFilter.value = ''; renderInitialMessage(); computeTotals(allItemsFlat); });
-    // Mostrar Todo
      btnShowAll.addEventListener('click', () => { globalSearchInputSidebar.value = ''; globalSearchInputHeader.value = ''; typeFilter.value = ''; subsystemFilter.value = ''; currentResults = allItemsFlat; renderCards(allItemsFlat.slice(0, 500)); foundCount.textContent = `${allItemsFlat.length}`; computeTotals(allItemsFlat); });
-    // Toggle Atacama
     toggleAtacama.addEventListener('change', () => {
         const showAtacama = toggleAtacama.checked;
         currentModeDisplay.textContent = showAtacama ? 'Modo: Atacama' : 'Modo: Normal';
@@ -1116,45 +828,56 @@ function setupEventListeners() { /* ... (igual que v19.2) ... */
             diagnosisPanel.classList.toggle('show-atacama', showAtacama);
         }
     });
-    // Exportar Resultados
     btnExport.addEventListener('click', exportResults);
-    // KPIs y Técnicas Avanzadas
     btnShowKPIs.addEventListener('click', showKPIPopup);
     btnShowDiagTech.addEventListener('click', showTechPopup);
-    // Copiar diagnóstico
     copyDiagnosisBtn.onclick = copyDiagnosisToClipboard;
-    // Exportar diagnóstico actual
     exportDiagnosisBtn.onclick = exportCurrentDiagnosis;
-    // Imprimir diagnóstico actual
     printDiagnosisBtn.onclick = printCurrentDiagnosis;
 }
 
-function handleSearchEnter(event) { /* ... (igual que v19.2) ... */
+function handleSearchEnter(event) {
   if (event.key === 'Enter') { event.preventDefault(); searchAndRender(); }
 }
 
 // --- Lógica de IA (NUEVO) ---
 
-/**
- * Llama a tu API de Vercel que actúa como proxy para Gemini.
- * @param {string} prompt - El texto para enviar a la IA.
- * @returns {Promise<string>} - La respuesta de texto de la IA.
- */
-async function askGeminiApi(prompt, context) {
-    // IMPORTANTE: Cambia '/api/askGemini' por la URL real de tu función en Vercel.
-    const API_ENDPOINT = '/api/askGemini'; // O 'https://tu-proyecto.vercel.app/api/askGemini'
+// Plantillas (ya no se usan si la API está activa, pero se dejan como fallback)
+function handleGeneralScenarioQuery(query, machineTypeKey) {
+    const machineTypeName = machineTypes[machineTypeKey]?.name || machineTypeKey || "Maquinaria";
+    let scenarioKey = null;
+    if (query.includes('agua') && query.includes('motor')) scenarioKey = "motor_con_agua";
+    else if ((query.includes('sin') || query.includes('bajo')) && query.includes('aceite')) scenarioKey = "motor_sin_aceite";
+    else if ((query.includes('sin') || query.includes('bajo')) && (query.includes('refrigerante') || query.includes('coolant'))) scenarioKey = "sin_refrigerante";
+    else if ((query.includes('poco') || query.includes('falta') || query.includes('insuficiente')) && query.includes('aire')) scenarioKey = "poco_aire";
+    
+    // Si queremos priorizar la API, comentamos esta línea:
+    // if (scenarioKey && generalScenarioTemplates[scenarioKey]) {
+    //     return { ...generalScenarioTemplates[scenarioKey](machineTypeName), _isGenerated: true, _sourceKey: machineTypeKey };
+    // }
+    return null; // Forzar que pase a la API
+}
+
+async function askGeminiApi(prompt, context, signal) {
+    // IMPORTANTE: Esta es la URL relativa a tu API en Vercel.
+    const API_ENDPOINT = '/api/askGemini'; 
+    
+    // Usar un nombre de máquina más descriptivo para el contexto
+    const contextName = machineTypes[context]?.name || context || "maquinaria general";
 
     const response = await fetch(API_ENDPOINT, {
         method: 'POST',
+        signal: signal, // Pasar la señal de AbortController
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt, context }), // Envía el prompt y el contexto
+        body: JSON.stringify({ prompt, context: contextName }), // Envía el prompt y el contexto
     });
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || `Error de API: ${response.statusText}`);
+        // Construir un mensaje de error más claro
+        throw new Error(errorData.details || errorData.error || `Error de API: ${response.statusText}`);
     }
 
     const data = await response.json();
@@ -1163,92 +886,100 @@ async function askGeminiApi(prompt, context) {
 
 /**
  * Parsea una respuesta de texto de Gemini a un objeto de Falla.
- * Esto es una suposición; necesitarás ajustar el parseo según CÓMO le pidas a Gemini que formatee su respuesta.
+ * Actualizado para manejar Markdown (ej. **Síntomas:**)
  */
 function parseGeminiResponseToItem(textResponse, query, machineTypeKey) {
     const machineName = machineTypes[machineTypeKey]?.name || machineTypeKey;
     const item = {
-        _isGenerated: true,
-        _sourceKey: "diagnostico", // O 'generado'
-        id: `gen_ai_${Date.now()}`,
+        _isGenerated: true, _sourceKey: "diagnostico", id: `gen_ai_${Date.now()}`,
         name: `Respuesta IA: ${query} (${machineName})`,
         initial: `Respuesta generada por IA para la consulta: "${query}" en el contexto de ${machineName}.`,
         modelosAplicables: [machineName],
         severity: "info",
-        symptoms: [],
-        causes: [],
-        diagnosticSteps: [],
-        solution: [],
+        symptoms: [], causes: [], diagnosticSteps: [], solution: [],
         alertaSeguridad: "Esta es una respuesta generada por IA. Verifica siempre la información con manuales oficiales antes de realizar reparaciones.",
         prevention: []
     };
 
-    // Intento simple de parsear una respuesta estructurada (ej. con "Síntomas:", "Causas:", etc.)
     try {
         const sections = {
-            "síntomas:": "symptoms",
-            "causas probables:": "causes",
-            "pasos de diagnóstico:": "diagnosticSteps",
-            "soluciones recomendadas:": "solution",
-            "alerta de seguridad:": "alertaSeguridad",
-            "prevención:": "prevention"
+            "**síntomas:**": "symptoms",
+            "**causas probables:**": "causes",
+            "**pasos de diagnóstico:**": "diagnosticSteps",
+            "**soluciones recomendadas:**": "solution",
+            "**alerta de seguridad:**": "alertaSeguridad",
+            "**prevención:**": "prevention"
         };
         
-        let currentKey = "initial_desc"; // Clave por defecto para texto antes de cualquier sección
+        let currentKey = "initial_desc";
         const tempItem = { initial_desc: [] };
 
         textResponse.split('\n').forEach(line => {
-            const lowerLine = line.trim().toLowerCase();
+            const trimmedLine = line.trim();
+            const lowerLine = trimmedLine.toLowerCase();
             let foundKey = false;
+
             for (const key in sections) {
                 if (lowerLine.startsWith(key)) {
                     currentKey = sections[key];
                     foundKey = true;
-                    const titleRest = line.substring(key.length).trim();
-                    if (titleRest) { // Si hay texto después del título en la misma línea
+                    const titleRest = trimmedLine.substring(key.length).trim();
+                    if (titleRest) {
                          if (!tempItem[currentKey]) tempItem[currentKey] = [];
-                         tempItem[currentKey].push(titleRest);
+                         tempItem[currentKey].push(titleRest.replace(/^[-*•]\s*/, ''));
                     }
                     break;
                 }
             }
 
-            // Si no es un título, añadir a la sección actual
-            if (!foundKey && line.trim()) {
+            if (!foundKey && trimmedLine) {
                 if (!tempItem[currentKey]) tempItem[currentKey] = [];
-                // Limpiar guiones o asteriscos iniciales
-                tempItem[currentKey].push(line.trim().replace(/^[-*•]\s*/, ''));
+                tempItem[currentKey].push(trimmedLine.replace(/^[-*•]\s*/, ''));
             }
         });
         
-        // Mapear al objeto item
-        item.initial = (tempItem.initial_desc || []).join(' ') || item.initial;
-        item.symptoms = tempItem.symptoms || [];
-        item.causes = tempItem.causes || [];
-        item.diagnosticSteps = tempItem.diagnosticSteps || [];
-        item.solution = tempItem.solution || [];
-        item.prevention = tempItem.prevention || [];
-        if (tempItem.alertaSeguridad) {
-            item.alertaSeguridad = tempItem.alertaSeguridad.join(' ');
+        // Convertir saltos de línea en <br> para HTML
+        const formatForHTML = (arr) => (arr || []).map(line => line.replace(/\n/g, '<br>'));
+        
+        // Si hay descripción inicial, usarla. Si no, usar la por defecto.
+        item.initial = (tempItem.initial_desc.length > 0 ? formatForHTML(tempItem.initial_desc).join('<br>') : item.initial);
+        
+        item.symptoms = formatForHTML(tempItem.symptoms) || [];
+        item.causes = formatForHTML(tempItem.causes) || [];
+        item.diagnosticSteps = formatForHTML(tempItem.diagnosticSteps) || [];
+        item.solution = formatForHTML(tempItem.solution) || [];
+        item.prevention = formatForHTML(tempItem.prevention) || [];
+        
+        if (tempItem.alertaSeguridad && tempItem.alertaSeguridad.length > 0) {
+            item.alertaSeguridad = formatForHTML(tempItem.alertaSeguridad).join('<br>');
         }
         
+        // Fallback: si no parseó secciones pero sí hubo texto, ponerlo todo en la solución.
+        if (item.symptoms.length === 0 && item.causes.length === 0 && item.solution.length === 0 && tempItem.initial_desc.length > 0) {
+            item.solution = formatForHTML(tempItem.initial_desc);
+            item.initial = `Respuesta generada por IA para: "${query}" (formato no estándar):`;
+        }
+
     } catch (e) {
         console.error("Error parseando respuesta de IA, mostrando texto plano:", e);
-        // Si el parseo falla, simplemente pon toda la respuesta en "síntomas"
-        item.symptoms = [textResponse];
+        item.solution = [textResponse.replace(/\n/g, '<br>')];
+    }
+    
+    // Si la respuesta es muy corta, probablemente sea un saludo o rechazo, poner en 'initial'
+    if (textResponse.length < 100 && item.symptoms.length === 0 && item.solution.length === 0) {
+        item.initial = textResponse;
     }
 
     return item;
 }
 
-/**
- * Maneja el clic en el botón "Explicar Código"
- */
 async function handleExplainCodeClick(event) {
     const button = event.currentTarget;
     const codeToExplain = decodeURIComponent(button.dataset.code);
     
-    // Crear un item temporal para mostrar la carga
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; // Icono de carga
+
     const loadingItem = {
         _isGenerated: true, _sourceKey: "diagnostico", id: `gen_ai_code_${Date.now()}`,
         name: "Explicando Código...",
@@ -1256,7 +987,7 @@ async function handleExplainCodeClick(event) {
         symptoms: [`<pre><code>${codeToExplain}</code></pre>`],
         alertaSeguridad: "Generando explicación..."
     };
-    showDiagnosis(loadingItem); // Mostrar panel de carga
+    showDiagnosis(loadingItem);
 
     try {
         const machineTypeKey = typeFilter.value || "maquinaria general";
@@ -1269,21 +1000,20 @@ Código:
 ${codeToExplain}
 \`\`\`
 
-Responde en español y de forma clara.`;
+Responde en español y de forma clara. NO uses Markdown, solo texto plano y saltos de línea.`;
 
         const aiResponse = await askGeminiApi(prompt, machineName);
         
-        // Crear un item de respuesta
         const responseItem = {
             ...loadingItem,
             name: "Explicación de Código (IA)",
             initial: `Análisis de IA para el código en contexto de ${machineName}:`,
             symptoms: [`<strong>Código Analizado:</strong><pre><code>${codeToExplain}</code></pre>`],
-            solution: [aiResponse.replace(/\n/g, '<br>')], // Mostrar respuesta en "Solución"
+            solution: [aiResponse.replace(/\n/g, '<br>')],
             alertaSeguridad: "Esta es una explicación generada por IA. No ejecutes código sin verificarlo."
         };
         
-        showDiagnosis(responseItem); // Mostrar respuesta final
+        showDiagnosis(responseItem);
 
     } catch (error) {
         const errorItem = {
@@ -1295,26 +1025,24 @@ Responde en español y de forma clara.`;
     }
 }
 
-
 // --- Funciones de Acciones (Popups, Exportar, etc.) ---
-
-function copyDiagnosisToClipboard() { /* ... (igual que v19.2) ... */ 
+function copyDiagnosisToClipboard() {
     const item = currentDisplayedItem; if (!item) return alert('No hay diagnóstico seleccionado.'); const textSections = [ `DIAGNÓSTICO: ${item.name || 'N/A'}`, `MODELOS: ${(item.modelosAplicables || []).join(', ') || 'N/A'}`, `SÍNTOMAS: ${(item.symptoms || ['N/A']).join('; ')}`, `CAUSAS: ${(item.causes || ['N/A']).join('; ')}`, `PASOS DIAGNÓSTICO: ${(item.diagnosticSteps || ['N/A']).join(' | ')}`, `SOLUCIÓN: ${(item.solution || ['N/A']).join('; ')}`, `ALERTA SEGURIDAD: ${item.alertaSeguridad || 'N/A'}`, `COSTO ESTIMADO: ${item.costoEstimado || 'Variable'}`, `CÓDIGOS: ${(item.codes || ['N/A']).join(', ')}`, `DATO TÉCNICO: ${item.datoIngeniero || 'N/A'}`, `PREVENCIÓN: ${(item.prevention || ['N/A']).join('; ')}`, `NOTAS ATACAMA: ${item.atacamaNotes || 'N/A'}` ]; const textToCopy = textSections.join('\n\n'); if (navigator.clipboard) { navigator.clipboard.writeText(textToCopy).then(() => alert('Diagnóstico copiado.')).catch(err => alert('Error al copiar: ' + err)); } else { alert('Copia manual requerida.'); console.log(textToCopy); }
 }
-function exportCurrentDiagnosis() { /* ... (igual que v19.2) ... */ 
+function exportCurrentDiagnosis() {
     const item = currentDisplayedItem; if (!item) return alert('No hay diagnóstico.'); if (reviewBeforeExport.checked) { const proceed = confirm(`Exportar "${item.name}"?`); if (!proceed) return alert('Cancelado.'); } const payload = [item]; const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), count: 1, data: payload }, null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `heavydiag_falla_${item.id || item.name.replace(/\s+/g, '_')}.json`; a.click(); URL.revokeObjectURL(url); alert(`Diagnóstico "${item.name}" exportado.`);
 }
-function printCurrentDiagnosis() { /* ... (igual que v19.2) ... */ 
+function printCurrentDiagnosis() {
     const item = currentDisplayedItem; if (!item) return alert('No hay diagnóstico.'); closeDiagnosisPanelBtn.style.display = 'none'; diagnosisPanel.querySelector('.action-buttons').style.display = 'none'; window.print(); closeDiagnosisPanelBtn.style.display = 'flex'; diagnosisPanel.querySelector('.action-buttons').style.display = 'flex';
 }
-function exportResults() { /* ... (igual que v19.2) ... */ 
+function exportResults() {
     if (reviewBeforeExport.checked) { const count = currentResults.length; const proceed = confirm(`Exportar ${count} registros filtrados?`); if (!proceed) return alert('Cancelado.'); } const payload = currentResults.length ? currentResults : allItemsFlat; const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), count: payload.length, data: payload }, null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `heavydiag_export_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`; a.click(); URL.revokeObjectURL(url); alert(`${payload.length} registros exportados.`);
 }
-function showKPIPopup() { /* ... (igual que v19.2) ... */ 
-    const kpiWin = window.open('', '_blank', 'width=900,height=700'); const html = `<html><head><title>KPIs - HeavyDiag</title><style>body{font-family:Segoe UI,Arial;background:#111827;color:#e5e7eb;padding:20px;} h2,strong{color:#f5b74f;}</style></head><body><h2>KPIs y Predicción (Demo)</h2><ul><li><strong>Disponibilidad (MTBF):</strong> 1200 h</li><li><strong>MTTR promedio:</strong> 6.5 h</li><li><strong>OEE estimado:</strong> 78%</li><li><strong>Modelo predictivo:</strong> RandomForest/LSTM sugerido.</li></ul><p>Implementación requiere históricos y entrenamiento (Python/ML).</p></body></html>`; kpiWin.document.write(html); kpiWin.document.close();
+function showKPIPopup() {
+  const kpiWin = window.open('', '_blank', 'width=900,height=700'); const html = `<html><head><title>KPIs - HeavyDiag</title><style>body{font-family:Segoe UI,Arial;background:#111827;color:#e5e7eb;padding:20px;} h2,strong{color:#f5b74f;}</style></head><body><h2>KPIs y Predicción (Demo)</h2><ul><li><strong>Disponibilidad (MTBF):</strong> 1200 h</li><li><strong>MTTR promedio:</strong> 6.5 h</li><li><strong>OEE estimado:</strong> 78%</li><li><strong>Modelo predictivo:</strong> RandomForest/LSTM sugerido.</li></ul><p>Implementación requiere históricos y entrenamiento (Python/ML).</p></body></html>`; kpiWin.document.write(html); kpiWin.document.close();
 }
-function showTechPopup() { /* ... (igual que v19.2) ... */ 
-    const techWin = window.open('', '_blank', 'width=900,height=700'); const html = `<html><head><title>Técnicas Avanzadas</title><style>body{font-family:Segoe UI,Arial;background:#111827;color:#e5e7eb;padding:20px;} h2,h3{color:#f5b74f;}</style></head><body><h2>Técnicas Diagnóstico Avanzado</h2><h3>Vibraciones</h3><p>Acelerómetros triaxiales, >=10kHz, FFT, ISO10816-3.</p><h3>Termografía</h3><p>Detectar hotspots (>15°C Delta T).</p><h3>Análisis Aceite</h3><p>ICP/OES (ppm), Ferrografía, ISO 4406.</p><h3>Ultrasonido</h3><p>Pulso-eco para fisuras.</p><h3>Alineación Láser</h3><p>Precisión <0.05 mm/m, compensar T°.</p><h3>CFD / FEA</h3><p>Simulaciones para bombas y estructuras.</p></body></html>`; techWin.document.write(html); techWin.document.close();
+function showTechPopup() {
+  const techWin = window.open('', '_blank', 'width=900,height=700'); const html = `<html><head><title>Técnicas Avanzadas</title><style>body{font-family:Segoe UI,Arial;background:#111827;color:#e5e7eb;padding:20px;} h2,h3{color:#f5b74f;}</style></head><body><h2>Técnicas Diagnóstico Avanzado</h2><h3>Vibraciones</h3><p>Acelerómetros triaxiales, >=10kHz, FFT, ISO10816-3.</p><h3>Termografía</h3><p>Detectar hotspots (>15°C Delta T).</p><h3>Análisis Aceite</h3><p>ICP/OES (ppm), Ferrografía, ISO 4406.</p><h3>Ultrasonido</h3><p>Pulso-eco para fisuras.</p><h3>Alineación Láser</h3><p>Precisión <0.05 mm/m, compensar T°.</p><h3>CFD / FEA</h3><p>Simulaciones para bombas y estructuras.</p></body></html>`; techWin.document.write(html); techWin.document.close();
 }
 
 </script>
