@@ -4,17 +4,16 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 // Obtener la API Key (esto es seguro, Vercel lo inyecta)
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-// ---
-// --- ¡ESTA ES LA LÍNEA MÁS IMPORTANTE QUE HAY QUE CAMBIAR! ---
-// ---
-// Forzamos la apiVersion: 'v1' para que coincida con 'gemini-pro'
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY, { apiVersion: 'v1' });
-// ---
-// ---
-// ---
+// Inicializar el cliente, forzando la API 'v1' que es donde vive 'gemini-pro'
+let genAI;
+if (GEMINI_API_KEY) {
+  genAI = new GoogleGenerativeAI(GEMINI_API_KEY, { apiVersion: 'v1' }); 
+} else {
+  console.error('Error: GEMINI_API_KEY no está configurada en Vercel.');
+}
 
 // Asegurarse de que el modelo sea 'gemini-pro'
-const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+const model = genAI ? genAI.getGenerativeModel({ model: "gemini-pro" }) : null;
 
 // Usar 'module.exports' en lugar de 'export default' para CJS
 module.exports = async (request, response) => {
