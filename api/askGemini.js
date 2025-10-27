@@ -45,36 +45,25 @@ module.exports = async (request, response) => {
       **Síntomas:**
       * (Síntoma 1)
       * (Síntoma 2)
+      * (Síntoma 3+)
 
       **Causas Probables:**
       * (Causa 1)
       * (Causa 2)
+      * (Causa 3+)
 
       **Pasos de Diagnóstico:**
       1. (Paso 1)
       2. (Paso 2)
+      3. (Paso 3+)
 
       **Soluciones Recomendadas:**
       1. (Solución 1)
       2. (Solución 2)
+      3. (Solución 3+)
 
       **Alerta de Seguridad:**
       (Una advertencia de seguridad si es una falla peligrosa, o "Ninguna alerta específica" si no lo es.)
       
       Si es una pregunta para explicar un código, explica qué hace cada parte y si ves un error.
-      Si es una pregunta general, responde de forma clara y concisa.
-    `;
-
-    const result = await model.generateContent(fullPrompt);
-    const textResponse = result.response.text();
-
-    return response.status(200).json({ text: textResponse });
-
-  } catch (error) {
-    console.error('Error en la función API de Gemini:', error);
-    return response.status(500).json({ 
-        error: `Error de la IA: ${error.message}`,
-        details: error.toString() 
-    });
-  }
-};
+      Si es una
