@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagrama Intuitivo Ladder</title>
+    <title>Diagrama Final Corregido</title>
     <style>
         body {
             background-color: #ffffff;
@@ -15,266 +15,288 @@
         }
 
         .diagram-sheet {
-            border: 2px solid #333;
+            border: 2px solid #000;
             padding: 40px;
             background-color: #fff;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-            min-width: 750px;
+            min-width: 800px; /* Ancho suficiente para que no se apriete */
+            position: relative;
         }
 
         h2 {
             text-align: center;
-            margin-top: 0;
             text-transform: uppercase;
-            border-bottom: 3px solid #cc0000; /* Rojo INACAP */
+            border-bottom: 3px solid #cc0000;
             padding-bottom: 10px;
-            display: inline-block;
+            margin-bottom: 40px;
+            color: #000;
         }
 
-        /* LEYENDA VISUAL */
+        /* LEYENDA */
         .legend {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 30px;
-            padding: 10px;
-            background-color: #f4f4f4;
-            border-radius: 8px;
-            border: 1px solid #ddd;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            border: 1px solid #aaa;
+            padding: 5px 10px;
+            font-size: 12px;
+            background: #f9f9f9;
         }
-        .legend-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #555; }
-        
-        /* Símbolo miniatura para leyenda */
-        .mini-symbol {
-            width: 15px; height: 20px; border-left: 2px solid #000; border-right: 2px solid #000;
-        }
-        .mini-symbol.nc { position: relative; }
-        .mini-symbol.nc::after { content:''; position: absolute; width: 18px; height: 2px; background:#000; transform: rotate(-45deg); top: 9px; left: -2px; }
 
-        /* CIRCUITO */
-        .ladder-diagram {
+        /* ESTRUCTURA PRINCIPAL */
+        .circuit-area {
             display: flex;
             flex-direction: column;
+            align-items: center;
             position: relative;
+            padding: 0 40px; /* Margen lateral interno */
         }
 
-        /* Rieles Laterales (Estilo Americano/Ladder) */
+        /* RIELES DE POTENCIA (Verticales a los lados) */
+        .rail-container {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            pointer-events: none; /* Para que no moleste al layout */
+        }
         .rail {
             position: absolute;
             width: 4px;
             height: 100%;
             background-color: #000;
+            top: 0;
         }
-        .rail-left { left: 0; }
-        .rail-right { right: 0; }
-        
+        .rail.left { left: 0; }
+        .rail.right { right: 0; }
+
         .rail-label {
             position: absolute;
             top: -25px;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 14px;
         }
-        .l1-label { left: -5px; color: #cc0000; }
-        .n-label { right: -5px; color: #0055aa; }
 
-        /* Escalones (Rungs) */
-        .rungs-container {
-            display: flex;
-            flex-direction: column; /* Apilados verticalmente para Ladder puro, pero tu profe pidió paralelo vertical */
-            /* Volvemos al estilo vertical paralelo por la densidad del dibujo */
-            flex-direction: row; 
-            justify-content: space-around;
-            margin: 0 20px; /* Margen para los rieles */
-            height: 300px;
+        /* BUSES HORIZONTALES */
+        .bus-bar {
+            width: 100%;
+            height: 3px;
+            background-color: #000;
+            margin: 10px 0;
             position: relative;
-            border-top: 2px solid #000; /* Bus Superior */
-            border-bottom: 2px solid #000; /* Bus Inferior */
+            z-index: 1;
+        }
+
+        /* CONTENEDOR DE RAMAS */
+        .branches-row {
+            display: flex;
+            justify-content: space-between; /* Distribuye equitativamente */
+            width: 100%;
+            height: 250px; /* Altura de los cables verticales */
         }
 
         .branch {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 80px;
+            width: 60px;
             position: relative;
+            height: 100%;
         }
 
-        .wire { width: 2px; background: #000; flex-grow: 1; }
+        .wire {
+            width: 2px;
+            background-color: #000;
+            flex-grow: 1; /* Ocupa todo el espacio disponible */
+        }
 
-        /* EL CAMBIO CLAVE: Símbolo Ladder Abierto "Gap" */
-        .contact-ladder {
+        /* SÍMBOLO CONTACTO ABIERTO (LADDER) */
+        .contact-symbol {
             width: 30px;
-            height: 30px;
-            border-left: 3px solid #000;
-            border-right: 3px solid #000;
+            height: 40px;
             position: relative;
-            margin: 10px 0;
-            background: #fff; /* Blanco por dentro = Abierto/Hueco */
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 5;
+            background: #fff; /* Tapa el cable de fondo si lo hubiera */
+            z-index: 2;
+            margin: 5px 0;
         }
-        
-        .tag {
+        /* Líneas verticales del capacitor/contacto */
+        .contact-symbol::before {
+            content: ''; position: absolute; left: 0; height: 100%; width: 3px; background: #000;
+        }
+        .contact-symbol::after {
+            content: ''; position: absolute; right: 0; height: 100%; width: 3px; background: #000;
+        }
+
+        .tag-name {
             position: absolute;
-            left: 35px; /* Etiqueta a la derecha del símbolo */
+            right: -45px; /* Texto a la derecha del símbolo */
+            top: 10px;
             font-weight: bold;
             font-size: 14px;
-            color: #333;
             white-space: nowrap;
         }
         
-        .sub-tag {
-            font-size: 10px;
-            color: #cc0000;
+        .tag-no {
             position: absolute;
-            top: -12px;
-            left: 0;
-            width: 100%;
-            text-align: center;
+            top: -15px;
+            color: #cc0000;
+            font-size: 10px;
+            font-weight: bold;
         }
 
-        /* Bobina / Luz */
-        .coil-container {
-            position: absolute;
-            bottom: -50px; /* Debajo del bus inferior */
-            left: 50%;
-            transform: translateX(-50%);
+        /* ZONA DE SALIDA (BOBINA) ARREGLADA */
+        .output-zone {
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
+            margin-top: -3px; /* Pegado al bus de abajo */
         }
 
-        .coil {
-            width: 40px;
-            height: 40px;
+        .coil-wire {
+            width: 2px;
+            height: 30px;
+            background-color: #000;
+        }
+
+        .coil-circle {
+            width: 50px;
+            height: 50px;
             border: 3px solid #000;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 24px;
             font-weight: bold;
+            background-color: #fff;
+            position: relative;
+            z-index: 10;
         }
+
+        /* Pequeñas "orejas" para conectar el círculo si hiciera falta, pero con el cable directo basta */
 
     </style>
 </head>
 <body>
 
     <div class="diagram-sheet">
-        <div style="text-align: center;">
-            <h2>Esquema de Contactos (Ladder)</h2>
-        </div>
+        <h2>Diagrama de Mando (Lógica Ladder)</h2>
+        
+        <div class="legend">NO = Normalmente Abierto</div>
 
-        <div class="legend">
-            <div class="legend-item">
-                <div class="mini-symbol"></div>
-                <span>= <strong>Normalmente Abierto (NO)</strong><br><small>Pasa corriente al activar</small></span>
+        <div class="circuit-area">
+            <div class="rail-container">
+                <div class="rail left"></div>
+                <div class="rail right"></div>
+                <div class="rail-label" style="left: -5px; color: #cc0000;">L1 (24V)</div>
+                <div class="rail-label" style="right: -5px; color: #0055aa;">N (0V)</div>
             </div>
-            <div class="legend-item">
-                <div class="mini-symbol nc"></div>
-                <span>= <strong>Normalmente Cerrado (NC)</strong><br><small>Corta corriente al activar</small></span>
-            </div>
-        </div>
 
-        <div class="ladder-diagram">
-            <div class="rail-label l1-label">L1 (24V)</div>
-            <div class="rail-label n-label">N (0V)</div>
+            <div class="bus-bar"></div>
 
-            <div class="rungs-container">
+            <div class="branches-row">
                 
                 <div class="branch">
-                    <div class="wire" style="height: 20px; flex-grow: 0;"></div>
-                    <div class="contact-ladder">
-                        <span class="sub-tag">NO</span> <span class="tag">K1 (A)</span>
+                    <div class="wire" style="max-height: 20px;"></div>
+                    <div class="contact-symbol">
+                        <span class="tag-no">NO</span>
+                        <span class="tag-name">K1 (A)</span>
                     </div>
                     <div class="wire"></div>
-                    <div class="contact-ladder">
-                        <span class="sub-tag">NO</span>
-                        <span class="tag">K2 (B)</span>
-                    </div>
-                    <div class="wire"></div>
-                </div>
-
-                <div class="branch">
-                    <div class="wire" style="height: 20px; flex-grow: 0;"></div>
-                    <div class="contact-ladder">
-                        <span class="sub-tag">NO</span>
-                        <span class="tag">K1 (A)</span>
-                    </div>
-                    <div class="wire"></div>
-                    <div class="contact-ladder">
-                        <span class="sub-tag">NO</span>
-                        <span class="tag">K3 (C)</span>
+                    <div class="contact-symbol">
+                        <span class="tag-no">NO</span>
+                        <span class="tag-name">K2 (B)</span>
                     </div>
                     <div class="wire"></div>
                 </div>
 
                 <div class="branch">
-                    <div class="wire" style="height: 20px; flex-grow: 0;"></div>
-                    <div class="contact-ladder">
-                        <span class="sub-tag">NO</span>
-                        <span class="tag">K1 (A)</span>
+                    <div class="wire" style="max-height: 20px;"></div>
+                    <div class="contact-symbol">
+                        <span class="tag-no">NO</span>
+                        <span class="tag-name">K1 (A)</span>
                     </div>
                     <div class="wire"></div>
-                    <div class="contact-ladder">
-                        <span class="sub-tag">NO</span>
-                        <span class="tag">K4 (D)</span>
+                    <div class="contact-symbol">
+                        <span class="tag-no">NO</span>
+                        <span class="tag-name">K3 (C)</span>
                     </div>
                     <div class="wire"></div>
                 </div>
 
                 <div class="branch">
-                    <div class="wire" style="height: 20px; flex-grow: 0;"></div>
-                    <div class="contact-ladder">
-                        <span class="sub-tag">NO</span>
-                        <span class="tag">K2 (B)</span>
+                    <div class="wire" style="max-height: 20px;"></div>
+                    <div class="contact-symbol">
+                        <span class="tag-no">NO</span>
+                        <span class="tag-name">K1 (A)</span>
                     </div>
                     <div class="wire"></div>
-                    <div class="contact-ladder">
-                        <span class="sub-tag">NO</span>
-                        <span class="tag">K3 (C)</span>
+                    <div class="contact-symbol">
+                        <span class="tag-no">NO</span>
+                        <span class="tag-name">K4 (D)</span>
+                    </div>
+                    <div class="wire"></div>
+                </div>
+
+                <div class="branch">
+                    <div class="wire" style="max-height: 20px;"></div>
+                    <div class="contact-symbol">
+                        <span class="tag-no">NO</span>
+                        <span class="tag-name">K2 (B)</span>
+                    </div>
+                    <div class="wire"></div>
+                    <div class="contact-symbol">
+                        <span class="tag-no">NO</span>
+                        <span class="tag-name">K3 (C)</span>
                     </div>
                     <div class="wire"></div>
                 </div>
 
                  <div class="branch">
-                    <div class="wire" style="height: 20px; flex-grow: 0;"></div>
-                    <div class="contact-ladder">
-                        <span class="sub-tag">NO</span>
-                        <span class="tag">K2 (B)</span>
+                    <div class="wire" style="max-height: 20px;"></div>
+                    <div class="contact-symbol">
+                        <span class="tag-no">NO</span>
+                        <span class="tag-name">K2 (B)</span>
                     </div>
                     <div class="wire"></div>
-                    <div class="contact-ladder">
-                        <span class="sub-tag">NO</span>
-                        <span class="tag">K4 (D)</span>
+                    <div class="contact-symbol">
+                        <span class="tag-no">NO</span>
+                        <span class="tag-name">K4 (D)</span>
                     </div>
                     <div class="wire"></div>
                 </div>
 
                  <div class="branch">
-                    <div class="wire" style="height: 20px; flex-grow: 0;"></div>
-                    <div class="contact-ladder">
-                        <span class="sub-tag">NO</span>
-                        <span class="tag">K3 (C)</span>
+                    <div class="wire" style="max-height: 20px;"></div>
+                    <div class="contact-symbol">
+                        <span class="tag-no">NO</span>
+                        <span class="tag-name">K3 (C)</span>
                     </div>
                     <div class="wire"></div>
-                    <div class="contact-ladder">
-                        <span class="sub-tag">NO</span>
-                        <span class="tag">K4 (D)</span>
+                    <div class="contact-symbol">
+                        <span class="tag-no">NO</span>
+                        <span class="tag-name">K4 (D)</span>
                     </div>
                     <div class="wire"></div>
                 </div>
 
             </div>
 
-            <div class="coil-container">
-                <div class="wire" style="height: 20px; width: 2px; background: #000;"></div>
-                <div class="coil">
-                    ( Z )
-                </div>
-                <div class="wire" style="height: 20px; width: 2px; background: #000;"></div>
+            <div class="bus-bar"></div>
+
+            <div class="output-zone">
+                <div class="coil-wire"></div>
+                
+                <div class="coil-circle">Z</div>
+                
+                <div class="coil-wire"></div>
             </div>
+
+            <div style="width: 100%; height: 3px; background: #000;"></div>
+
         </div>
     </div>
 
