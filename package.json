@@ -1,8 +1,0 @@
-{
-  "name": "heavydiag-api",
-  "version": "1.0.0",
-  "private": true,
-  "dependencies": {
-    "@google/generative-ai": "^0.15.0"
-  }
-}
