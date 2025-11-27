@@ -3,85 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plano de Control - INACAP</title>
+    <title>Circuito Móvil</title>
     <style>
-        :root {
-            --bg-color: #1e1e1e;
-            --line-color: #f0f0f0;
-            --phase-color: #ff4d4d; /* Rojo para control 24V */
-            --neutral-color: #4da6ff; /* Azul para común */
-            --text-color: #dcdcdc;
-            --component-color: #4ec9b0;
-        }
-
         body {
-            background-color: var(--bg-color);
-            font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
-            color: var(--text-color);
+            background-color: #000000;
+            color: white;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
         }
 
-        /* Contenedor Principal tipo Hoja A3/A4 */
-        .sheet {
-            background-color: #252526;
-            border: 2px solid #555;
-            padding: 30px;
-            width: 900px; /* Ancho fijo para mantener escala */
-            position: relative;
-            box-shadow: 0 0 30px rgba(0,0,0,0.7);
+        h2 { margin: 5px 0; color: #ffeb3b; text-align: center; }
+        p { color: #aaa; margin-bottom: 20px; font-size: 14px; text-align: center; }
+
+        /* Contenedor con Scroll Lateral */
+        .diagram-wrapper {
+            width: 100%;
+            overflow-x: auto; /* Permite deslizar con el dedo */
+            padding-bottom: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #111;
         }
 
-        h1 {
-            text-align: center;
-            font-size: 20px;
-            margin-top: 0;
-            border-bottom: 1px solid #444;
-            padding-bottom: 10px;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Estilos del Circuito */
-        .schematic {
+        .circuit-board {
             display: flex;
             flex-direction: column;
-            margin: 40px 0;
-            position: relative;
+            padding: 20px;
+            min-width: 600px; /* Fuerza el ancho para que no se apriete */
         }
 
-        /* Rieles de alimentación */
-        .rail-top {
+        /* Líneas de Energía */
+        .line-24v {
+            height: 4px;
+            background: #ff4444; /* Rojo intenso */
             width: 100%;
-            height: 3px;
-            background-color: var(--phase-color);
-            position: relative;
             margin-bottom: 20px;
+            position: relative;
         }
-        .rail-top::before { content: '24V AC'; position: absolute; left: -60px; top: -5px; color: var(--phase-color); font-weight: bold;}
+        .line-24v::after { content: "24V (+)"; position: absolute; right: 0; top: -20px; color: #ff4444; font-weight: bold;}
 
-        .rail-bottom {
+        .line-0v {
+            height: 4px;
+            background: #4488ff; /* Azul intenso */
             width: 100%;
-            height: 3px;
-            background-color: var(--neutral-color);
             margin-top: 20px;
+            position: relative;
         }
-        .rail-bottom::before { content: '0V (COM)'; position: absolute; left: -70px; top: -5px; color: var(--neutral-color); font-weight: bold;}
+        .line-0v::after { content: "0V (-)"; position: absolute; right: 0; bottom: -20px; color: #4488ff; font-weight: bold;}
 
-        /* Contenedor de las Ramas (Rungs) */
-        .rungs-container {
+        /* Zona de Ramas */
+        .branches {
             display: flex;
-            justify-content: space-between; /* Distribuye las ramas */
-            min-height: 350px;
-            padding: 0 20px;
+            justify-content: space-around;
+            position: relative;
         }
 
-        /* Una rama vertical */
+        /* Bus común de conexión */
+        .common-wire {
+            position: absolute;
+            height: 2px;
+            background: white;
+            width: 90%;
+            left: 5%;
+        }
+        .top-bus { top: -10px; }
+        .bot-bus { bottom: 50px; } /* Ajustado para dejar espacio a la luz */
+
         .branch {
             display: flex;
             flex-direction: column;
@@ -89,273 +80,144 @@
             position: relative;
             width: 60px;
         }
-        
-        /* Cables verticales */
-        .wire {
-            width: 2px;
-            background-color: var(--line-color);
-            flex-grow: 1; /* El cable ocupa el espacio vacío */
-        }
-        .wire.short { flex-grow: 0; height: 30px; }
 
-        /* Símbolo Contacto NO (Normalmente Abierto) */
-        .contact-no {
-            width: 20px;
+        /* Cables Verticales */
+        .wire { width: 3px; background: white; flex-grow: 1; min-height: 20px; }
+
+        /* Contacto Simple y Grande */
+        .contact {
+            width: 30px;
             height: 30px;
-            border-left: 2px solid var(--line-color);
-            border-right: 2px solid var(--line-color);
+            border-left: 3px solid white;
+            border-right: 3px solid white;
             position: relative;
             margin: 10px 0;
-        }
-        .contact-no::after {
-            content: '';
-            position: absolute;
-            width: 24px;
-            height: 2px;
-            background-color: var(--line-color);
-            transform: rotate(-45deg);
-            top: 14px;
-            left: -10px;
-        }
-        
-        /* Símbolo Bobina / Piloto */
-        .coil {
-            width: 34px;
-            height: 34px;
-            border: 2px solid var(--line-color);
-            border-radius: 50%; /* Redondo para piloto */
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            margin-top: auto; /* Empuja al fondo */
-            margin-bottom: 10px;
-            background-color: #252526;
-            z-index: 2;
         }
-        .coil span { font-weight: bold; font-size: 12px; color: #fff; }
-        .coil.pilot::before, .coil.pilot::after {
-            content: ''; position: absolute; width: 20px; height: 2px; background: var(--line-color);
-        }
-        .coil.pilot::before { transform: rotate(45deg); }
-        .coil.pilot::after { transform: rotate(-45deg); }
-
-        /* Etiquetas */
-        .tag {
+        /* Palanca del contacto */
+        .contact::after {
+            content: '';
             position: absolute;
-            left: 25px;
-            color: var(--component-color);
-            font-size: 12px;
+            width: 35px;
+            height: 3px;
+            background: white;
+            transform: rotate(-45deg);
+            left: -10px;
+            top: 10px;
+        }
+
+        .label {
+            color: #00ff00; /* Verde neón */
             font-weight: bold;
-            white-space: nowrap;
+            font-size: 18px;
+            background: #000;
+            z-index: 10;
+            padding: 2px;
         }
-        .pin {
-            font-size: 9px;
-            color: #888;
-            position: absolute;
-        }
-        .pin.top { left: -10px; top: -5px; }
-        .pin.bot { left: -10px; bottom: -5px; }
 
-        /* Líneas horizontales de conexión paralela */
-        .parallel-bus {
-            position: absolute;
-            height: 2px;
-            background-color: var(--line-color);
-            width: 86%; /* Ajuste manual para cubrir las 6 ramas */
-            left: 7%;
-        }
-        .bus-top { top: 0; }
-        .bus-bot { bottom: 66px; } /* Justo arriba de la lámpara */
-
-        /* Agrupación de la salida */
-        .output-group {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
+        /* Lámpara Final */
+        .output-section {
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 66px;
+            margin-top: -50px; /* Subimos para conectar con el bus */
         }
 
-        /* CAJETÍN (Title Block) */
-        .title-block {
-            margin-top: 40px;
-            border: 1px solid #555;
-            width: 100%;
-            font-size: 12px;
-            color: #bbb;
-        }
-        .title-block table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .title-block td, .title-block th {
-            border: 1px solid #555;
-            padding: 8px;
-            text-align: left;
-        }
-        .title-block th { background-color: #333; width: 100px; }
-        .logo-area {
-            text-align: center;
+        .lamp {
+            width: 50px;
+            height: 50px;
+            border: 3px solid yellow;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #222;
+            color: yellow;
             font-weight: bold;
-            font-size: 18px;
-            color: #ff4d4d;
-            letter-spacing: 1px;
+            font-size: 24px;
+            z-index: 5;
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.3);
         }
-
-        .note {
-            font-size: 11px;
-            color: #e6b400;
-            margin-top: 10px;
-            text-align: center;
-        }
-
+        
     </style>
 </head>
 <body>
 
-    <div class="sheet">
-        <h1>Diagrama Esquemático de Control</h1>
-        
-        <div class="schematic">
-            <div class="rail-top"></div>
+    <h2>Z = AB+AC+AD+BC+BD+CD</h2>
+    <p>💡 Desliza hacia la derecha para ver todo &rarr;</p>
 
-            <div class="rungs-container">
+    <div class="diagram-wrapper">
+        <div class="circuit-board">
+            
+            <div class="line-24v"></div>
+
+            <div class="branches">
+                <div class="common-wire top-bus"></div>
                 
-                <div class="parallel-bus bus-top"></div>
-
                 <div class="branch">
-                    <div class="wire short"></div>
-                    <div class="contact-no">
-                        <span class="tag">K1 (A)</span>
-                        <span class="pin top">13</span><span class="pin bot">14</span>
-                    </div>
-                    <div class="wire short"></div>
-                    <div class="contact-no">
-                        <span class="tag">K2 (B)</span>
-                        <span class="pin top">13</span><span class="pin bot">14</span>
-                    </div>
-                    <div class="wire"></div> </div>
-
-                <div class="branch">
-                    <div class="wire short"></div>
-                    <div class="contact-no">
-                        <span class="tag">K1 (A)</span>
-                        <span class="pin top">23</span><span class="pin bot">24</span>
-                    </div>
-                    <div class="wire short"></div>
-                    <div class="contact-no">
-                        <span class="tag">K3 (C)</span>
-                        <span class="pin top">13</span><span class="pin bot">14</span>
-                    </div>
+                    <div class="wire"></div>
+                    <div class="contact"><span class="label">K1</span></div>
+                    <div class="wire"></div>
+                    <div class="contact"><span class="label">K2</span></div>
                     <div class="wire"></div>
                 </div>
 
                 <div class="branch">
-                    <div class="wire short"></div>
-                    <div class="contact-no">
-                        <span class="tag">K1 (A)</span>
-                        <span class="pin top">33</span><span class="pin bot">34</span>
-                    </div>
-                    <div class="wire short"></div>
-                    <div class="contact-no">
-                        <span class="tag">K4 (D)</span>
-                        <span class="pin top">13</span><span class="pin bot">14</span>
-                    </div>
+                    <div class="wire"></div>
+                    <div class="contact"><span class="label">K1</span></div>
+                    <div class="wire"></div>
+                    <div class="contact"><span class="label">K3</span></div>
                     <div class="wire"></div>
                 </div>
 
                 <div class="branch">
-                    <div class="wire short"></div>
-                    <div class="contact-no">
-                        <span class="tag">K2 (B)</span>
-                        <span class="pin top">23</span><span class="pin bot">24</span>
-                    </div>
-                    <div class="wire short"></div>
-                    <div class="contact-no">
-                        <span class="tag">K3 (C)</span>
-                        <span class="pin top">23</span><span class="pin bot">24</span>
-                    </div>
+                    <div class="wire"></div>
+                    <div class="contact"><span class="label">K1</span></div>
+                    <div class="wire"></div>
+                    <div class="contact"><span class="label">K4</span></div>
                     <div class="wire"></div>
                 </div>
 
                 <div class="branch">
-                    <div class="wire short"></div>
-                    <div class="contact-no">
-                        <span class="tag">K2 (B)</span>
-                        <span class="pin top">33</span><span class="pin bot">34</span>
-                    </div>
-                    <div class="wire short"></div>
-                    <div class="contact-no">
-                        <span class="tag">K4 (D)</span>
-                        <span class="pin top">23</span><span class="pin bot">24</span>
-                    </div>
+                    <div class="wire"></div>
+                    <div class="contact"><span class="label">K2</span></div>
+                    <div class="wire"></div>
+                    <div class="contact"><span class="label">K3</span></div>
                     <div class="wire"></div>
                 </div>
 
-                <div class="branch">
-                    <div class="wire short"></div>
-                    <div class="contact-no">
-                        <span class="tag">K3 (C)</span>
-                        <span class="pin top">33</span><span class="pin bot">34</span>
-                    </div>
-                    <div class="wire short"></div>
-                    <div class="contact-no">
-                        <span class="tag">K4 (D)</span>
-                        <span class="pin top">33</span><span class="pin bot">34</span>
-                    </div>
+                 <div class="branch">
+                    <div class="wire"></div>
+                    <div class="contact"><span class="label">K2</span></div>
+                    <div class="wire"></div>
+                    <div class="contact"><span class="label">K4</span></div>
                     <div class="wire"></div>
                 </div>
 
-                <div class="parallel-bus bus-bot"></div>
-                
-                <div class="output-group">
-                    <div class="wire short"></div>
-                    <div class="coil pilot">
-                        <span class="tag" style="left: 40px;">H1 (Z)</span>
-                        <span class="pin top">X1</span><span class="pin bot">X2</span>
-                    </div>
-                    <div class="wire short"></div>
+                 <div class="branch">
+                    <div class="wire"></div>
+                    <div class="contact"><span class="label">K3</span></div>
+                    <div class="wire"></div>
+                    <div class="contact"><span class="label">K4</span></div>
+                    <div class="wire"></div>
                 </div>
 
+                <div class="common-wire bot-bus"></div>
             </div>
 
-            <div class="rail-bottom"></div>
-        </div>
+            <div class="output-section">
+                <div class="wire" style="height: 30px;"></div> <div class="lamp">X</div>
+                <div class="wire" style="height: 20px;"></div>
+            </div>
 
-        <div class="note">
-            * NOTA: Las bobinas K1, K2, K3, K4 son activadas por los pulsadores S1, S2, S3, S4 (Circuito de entradas no mostrado para claridad).
-        </div>
+            <div class="line-0v"></div>
 
-        <div class="title-block">
-            <table>
-                <tr>
-                    <td rowspan="3" class="logo-area">INACAP</td>
-                    <th>PROYECTO:</th>
-                    <td>Lógica Combinacional - Función Z</td>
-                    <th>FECHA:</th>
-                    <td>Nov 2025</td>
-                </tr>
-                <tr>
-                    <th>ALUMNO:</th>
-                    <td>[Tu Nombre Aquí]</td> <th>REVISIÓN:</th>
-                    <td>1.0</td>
-                </tr>
-                <tr>
-                    <th>ECUACIÓN:</th>
-                    <td colspan="3">Z = AB + AC + AD + BC + BD + CD</td>
-                </tr>
-            </table>
         </div>
-
     </div>
+
+    <p style="margin-top: 10px;">INACAP - Taller de Automatización</p>
 
 </body>
 </html>
-
-
-
-
