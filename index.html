@@ -3,273 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagrama Final INACAP - Simplificado</title>
+    <title>Diagrama Intuitivo Ladder</title>
     <style>
         body {
-            background-color: #ffffff; /* Fondo blanco para documentos */
+            background-color: #ffffff;
             font-family: 'Segoe UI', Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 20px;
-            margin: 0;
         }
 
-        .diagram-container {
+        .diagram-sheet {
             border: 2px solid #333;
-            padding: 30px 50px;
+            padding: 40px;
             background-color: #fff;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            position: relative;
-            min-width: 700px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            min-width: 750px;
         }
 
         h2 {
             text-align: center;
-            color: #000;
+            margin-top: 0;
             text-transform: uppercase;
-            font-size: 18px;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-            border-bottom: 2px solid #000;
+            border-bottom: 3px solid #cc0000; /* Rojo INACAP */
             padding-bottom: 10px;
+            display: inline-block;
         }
 
-        .subtitle {
-            text-align: center;
-            color: #555;
-            font-size: 14px;
+        /* LEYENDA VISUAL */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
             margin-bottom: 30px;
-            font-style: italic;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border-radius: 8px;
+            border: 1px solid #ddd;
         }
-
-        /* LÍNEAS DE ALIMENTACIÓN */
-        .power-rail {
-            width: 100%;
-            height: 3px;
-            position: relative;
-        }
-        .phase { background-color: #cc0000; margin-bottom: 15px; } /* Rojo Fase */
-        .neutral { background-color: #0055aa; margin-top: 15px; } /* Azul Neutro */
-
-        .rail-label {
-            position: absolute;
-            left: -35px;
-            top: -8px;
-            font-weight: bold;
-            font-size: 14px;
-        }
+        .legend-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #555; }
         
-        /* ESTRUCTURA DEL CIRCUITO */
-        .circuit-body {
+        /* Símbolo miniatura para leyenda */
+        .mini-symbol {
+            width: 15px; height: 20px; border-left: 2px solid #000; border-right: 2px solid #000;
+        }
+        .mini-symbol.nc { position: relative; }
+        .mini-symbol.nc::after { content:''; position: absolute; width: 18px; height: 2px; background:#000; transform: rotate(-45deg); top: 9px; left: -2px; }
+
+        /* CIRCUITO */
+        .ladder-diagram {
             display: flex;
             flex-direction: column;
-            align-items: center;
             position: relative;
-            height: 320px;
         }
 
-        /* Buses horizontales */
-        .bus-wire {
+        /* Rieles Laterales (Estilo Americano/Ladder) */
+        .rail {
             position: absolute;
-            width: 90%;
-            height: 2px;
-            background-color: #000;
-            left: 5%;
-        }
-        .top-bus { top: 0; }
-        .bot-bus { bottom: 60px; }
-
-        /* Contenedor de las Ramas */
-        .branches-wrapper {
-            display: flex;
-            justify-content: space-between;
-            width: 90%;
+            width: 4px;
             height: 100%;
+            background-color: #000;
+        }
+        .rail-left { left: 0; }
+        .rail-right { right: 0; }
+        
+        .rail-label {
+            position: absolute;
+            top: -25px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .l1-label { left: -5px; color: #cc0000; }
+        .n-label { right: -5px; color: #0055aa; }
+
+        /* Escalones (Rungs) */
+        .rungs-container {
+            display: flex;
+            flex-direction: column; /* Apilados verticalmente para Ladder puro, pero tu profe pidió paralelo vertical */
+            /* Volvemos al estilo vertical paralelo por la densidad del dibujo */
+            flex-direction: row; 
+            justify-content: space-around;
+            margin: 0 20px; /* Margen para los rieles */
+            height: 300px;
             position: relative;
+            border-top: 2px solid #000; /* Bus Superior */
+            border-bottom: 2px solid #000; /* Bus Inferior */
         }
 
         .branch {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 60px;
-            height: 260px; /* Altura hasta el bus de abajo */
+            width: 80px;
             position: relative;
         }
 
-        .wire {
-            width: 2px;
-            background-color: #000;
-            flex-grow: 1;
-        }
+        .wire { width: 2px; background: #000; flex-grow: 1; }
 
-        /* Símbolo de Contacto NA (Norma IEC) */
-        .contact {
-            width: 20px;
+        /* EL CAMBIO CLAVE: Símbolo Ladder Abierto "Gap" */
+        .contact-ladder {
+            width: 30px;
             height: 30px;
-            border-left: 2px solid #000;
-            border-right: 2px solid #000;
+            border-left: 3px solid #000;
+            border-right: 3px solid #000;
             position: relative;
-            margin: 15px 0;
-            background: #fff;
-            z-index: 10;
+            margin: 10px 0;
+            background: #fff; /* Blanco por dentro = Abierto/Hueco */
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 5;
         }
         
-        /* La barra diagonal del contacto */
-        .contact::after {
-            content: '';
-            position: absolute;
-            width: 24px;
-            height: 2px;
-            background-color: #000;
-            transform: rotate(-45deg);
-            top: 14px;
-            left: -8px;
-        }
-
         .tag {
             position: absolute;
-            left: 25px;
+            left: 35px; /* Etiqueta a la derecha del símbolo */
             font-weight: bold;
             font-size: 14px;
-            color: #000;
+            color: #333;
+            white-space: nowrap;
+        }
+        
+        .sub-tag {
+            font-size: 10px;
+            color: #cc0000;
+            position: absolute;
+            top: -12px;
+            left: 0;
+            width: 100%;
+            text-align: center;
         }
 
-        /* Símbolo de la Lámpara / Bobina */
-        .output-section {
+        /* Bobina / Luz */
+        .coil-container {
             position: absolute;
-            bottom: 0;
+            bottom: -50px; /* Debajo del bus inferior */
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 60px;
-            left: 50%;
-            transform: translateX(-50%);
         }
 
-        .lamp {
-            width: 35px;
-            height: 35px;
-            border: 2px solid #000;
+        .coil {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #000;
             border-radius: 50%;
-            position: relative;
-            background: #fff;
-            z-index: 20;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        /* La X dentro de la lámpara */
-        .lamp::before { content: ''; position: absolute; width: 24px; height: 2px; background: #000; transform: rotate(45deg); }
-        .lamp::after { content: ''; position: absolute; width: 24px; height: 2px; background: #000; transform: rotate(-45deg); }
-
-        .lamp-label {
-            position: absolute;
-            right: -80px;
             font-weight: bold;
-            font-size: 14px;
-        }
-
-        /* FOTTER TÉCNICO */
-        .footer-info {
-            margin-top: 20px;
-            border-top: 1px solid #aaa;
-            padding-top: 10px;
-            font-size: 11px;
-            color: #666;
-            display: flex;
-            justify-content: space-between;
         }
 
     </style>
 </head>
 <body>
 
-    <div class="diagram-container">
-        <h2>Esquema de Mando - Implementación Final</h2>
-        <div class="subtitle">Ecuación Simplificada: Z = AB + AC + AD + BC + BD + CD</div>
-
-        <div class="power-rail phase">
-            <span class="rail-label" style="color: #cc0000;">24V</span>
+    <div class="diagram-sheet">
+        <div style="text-align: center;">
+            <h2>Esquema de Contactos (Ladder)</h2>
         </div>
 
-        <div class="circuit-body">
-            <div class="bus-wire top-bus"></div>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="mini-symbol"></div>
+                <span>= <strong>Normalmente Abierto (NO)</strong><br><small>Pasa corriente al activar</small></span>
+            </div>
+            <div class="legend-item">
+                <div class="mini-symbol nc"></div>
+                <span>= <strong>Normalmente Cerrado (NC)</strong><br><small>Corta corriente al activar</small></span>
+            </div>
+        </div>
 
-            <div class="branches-wrapper">
+        <div class="ladder-diagram">
+            <div class="rail-label l1-label">L1 (24V)</div>
+            <div class="rail-label n-label">N (0V)</div>
+
+            <div class="rungs-container">
                 
                 <div class="branch">
-                    <div class="wire" style="flex-grow: 0; height: 20px;"></div>
-                    <div class="contact"><span class="tag">K1(A)</span></div>
+                    <div class="wire" style="height: 20px; flex-grow: 0;"></div>
+                    <div class="contact-ladder">
+                        <span class="sub-tag">NO</span> <span class="tag">K1 (A)</span>
+                    </div>
                     <div class="wire"></div>
-                    <div class="contact"><span class="tag">K2(B)</span></div>
-                    <div class="wire"></div>
-                </div>
-
-                <div class="branch">
-                    <div class="wire" style="flex-grow: 0; height: 20px;"></div>
-                    <div class="contact"><span class="tag">K1(A)</span></div>
-                    <div class="wire"></div>
-                    <div class="contact"><span class="tag">K3(C)</span></div>
+                    <div class="contact-ladder">
+                        <span class="sub-tag">NO</span>
+                        <span class="tag">K2 (B)</span>
+                    </div>
                     <div class="wire"></div>
                 </div>
 
                 <div class="branch">
-                    <div class="wire" style="flex-grow: 0; height: 20px;"></div>
-                    <div class="contact"><span class="tag">K1(A)</span></div>
+                    <div class="wire" style="height: 20px; flex-grow: 0;"></div>
+                    <div class="contact-ladder">
+                        <span class="sub-tag">NO</span>
+                        <span class="tag">K1 (A)</span>
+                    </div>
                     <div class="wire"></div>
-                    <div class="contact"><span class="tag">K4(D)</span></div>
-                    <div class="wire"></div>
-                </div>
-
-                <div class="branch">
-                    <div class="wire" style="flex-grow: 0; height: 20px;"></div>
-                    <div class="contact"><span class="tag">K2(B)</span></div>
-                    <div class="wire"></div>
-                    <div class="contact"><span class="tag">K3(C)</span></div>
+                    <div class="contact-ladder">
+                        <span class="sub-tag">NO</span>
+                        <span class="tag">K3 (C)</span>
+                    </div>
                     <div class="wire"></div>
                 </div>
 
                 <div class="branch">
-                    <div class="wire" style="flex-grow: 0; height: 20px;"></div>
-                    <div class="contact"><span class="tag">K2(B)</span></div>
+                    <div class="wire" style="height: 20px; flex-grow: 0;"></div>
+                    <div class="contact-ladder">
+                        <span class="sub-tag">NO</span>
+                        <span class="tag">K1 (A)</span>
+                    </div>
                     <div class="wire"></div>
-                    <div class="contact"><span class="tag">K4(D)</span></div>
+                    <div class="contact-ladder">
+                        <span class="sub-tag">NO</span>
+                        <span class="tag">K4 (D)</span>
+                    </div>
                     <div class="wire"></div>
                 </div>
 
                 <div class="branch">
-                    <div class="wire" style="flex-grow: 0; height: 20px;"></div>
-                    <div class="contact"><span class="tag">K3(C)</span></div>
+                    <div class="wire" style="height: 20px; flex-grow: 0;"></div>
+                    <div class="contact-ladder">
+                        <span class="sub-tag">NO</span>
+                        <span class="tag">K2 (B)</span>
+                    </div>
                     <div class="wire"></div>
-                    <div class="contact"><span class="tag">K4(D)</span></div>
+                    <div class="contact-ladder">
+                        <span class="sub-tag">NO</span>
+                        <span class="tag">K3 (C)</span>
+                    </div>
+                    <div class="wire"></div>
+                </div>
+
+                 <div class="branch">
+                    <div class="wire" style="height: 20px; flex-grow: 0;"></div>
+                    <div class="contact-ladder">
+                        <span class="sub-tag">NO</span>
+                        <span class="tag">K2 (B)</span>
+                    </div>
+                    <div class="wire"></div>
+                    <div class="contact-ladder">
+                        <span class="sub-tag">NO</span>
+                        <span class="tag">K4 (D)</span>
+                    </div>
+                    <div class="wire"></div>
+                </div>
+
+                 <div class="branch">
+                    <div class="wire" style="height: 20px; flex-grow: 0;"></div>
+                    <div class="contact-ladder">
+                        <span class="sub-tag">NO</span>
+                        <span class="tag">K3 (C)</span>
+                    </div>
+                    <div class="wire"></div>
+                    <div class="contact-ladder">
+                        <span class="sub-tag">NO</span>
+                        <span class="tag">K4 (D)</span>
+                    </div>
                     <div class="wire"></div>
                 </div>
 
             </div>
 
-            <div class="bus-wire bot-bus"></div>
-
-            <div class="output-section">
-                <div class="wire" style="height: 15px;"></div>
-                <div class="lamp"></div>
-                <div class="wire" style="height: 10px;"></div>
-                <span class="lamp-label">H1 (Salida Z)</span>
+            <div class="coil-container">
+                <div class="wire" style="height: 20px; width: 2px; background: #000;"></div>
+                <div class="coil">
+                    ( Z )
+                </div>
+                <div class="wire" style="height: 20px; width: 2px; background: #000;"></div>
             </div>
-        </div>
-
-        <div class="power-rail neutral">
-            <span class="rail-label" style="color: #0055aa;">0V</span>
-        </div>
-
-        <div class="footer-info">
-            <span>PROYECTO: Automatización y Control</span>
-            <span>INACAP - 2025</span>
-            <span>REV: 1.1 (FINAL)</span>
         </div>
     </div>
 
