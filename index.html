@@ -3,302 +3,745 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagrama Final Corregido</title>
+    <title>HeavyDiag Pro | Don Pistón Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        :root {
+            --bg-body: #0a0a0a;
+            --bg-card: #141414;
+            --bg-hover: #1f1f1f;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --accent: #f5b74f; /* Naranja Pistón */
+            --accent-blue: #2980b9;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --border: #333;
+            --radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            background-color: #ffffff;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
-        .diagram-sheet {
-            border: 2px solid #000;
-            padding: 40px;
-            background-color: #fff;
-            min-width: 800px; /* Ancho suficiente para que no se apriete */
-            position: relative;
-        }
-
-        h2 {
-            text-align: center;
-            text-transform: uppercase;
-            border-bottom: 3px solid #cc0000;
-            padding-bottom: 10px;
-            margin-bottom: 40px;
-            color: #000;
-        }
-
-        /* LEYENDA */
-        .legend {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            border: 1px solid #aaa;
-            padding: 5px 10px;
-            font-size: 12px;
-            background: #f9f9f9;
-        }
-
-        /* ESTRUCTURA PRINCIPAL */
-        .circuit-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            padding: 0 40px; /* Margen lateral interno */
-        }
-
-        /* RIELES DE POTENCIA (Verticales a los lados) */
-        .rail-container {
-            position: absolute;
+        /* --- HEADER TIPO APPLE/NIKE --- */
+        nav {
+            position: fixed;
             top: 0;
-            bottom: 0;
             width: 100%;
-            pointer-events: none; /* Para que no moleste al layout */
-        }
-        .rail {
-            position: absolute;
-            width: 4px;
-            height: 100%;
-            background-color: #000;
-            top: 0;
-        }
-        .rail.left { left: 0; }
-        .rail.right { right: 0; }
-
-        .rail-label {
-            position: absolute;
-            top: -25px;
-            font-weight: bold;
-            font-size: 14px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            padding: 15px 0;
         }
 
-        /* BUSES HORIZONTALES */
-        .bus-bar {
-            width: 100%;
-            height: 3px;
-            background-color: #000;
-            margin: 10px 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* CONTENEDOR DE RAMAS */
-        .branches-row {
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
             display: flex;
-            justify-content: space-between; /* Distribuye equitativamente */
-            width: 100%;
-            height: 250px; /* Altura de los cables verticales */
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
         }
 
-        .branch {
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i { color: var(--accent); }
+
+        .menu {
+            display: flex;
+            gap: 30px;
+        }
+
+        .menu-item {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            color: var(--text-main);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 80vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            width: 60px;
-            position: relative;
-            height: 100%;
-        }
-
-        .wire {
-            width: 2px;
-            background-color: #000;
-            flex-grow: 1; /* Ocupa todo el espacio disponible */
-        }
-
-        /* SÍMBOLO CONTACTO ABIERTO (LADDER) */
-        .contact-symbol {
-            width: 30px;
-            height: 40px;
-            position: relative;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            background: #fff; /* Tapa el cable de fondo si lo hubiera */
-            z-index: 2;
-            margin: 5px 0;
-        }
-        /* Líneas verticales del capacitor/contacto */
-        .contact-symbol::before {
-            content: ''; position: absolute; left: 0; height: 100%; width: 3px; background: #000;
-        }
-        .contact-symbol::after {
-            content: ''; position: absolute; right: 0; height: 100%; width: 3px; background: #000;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .tag-name {
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            line-height: 0.9;
+            letter-spacing: -3px;
+            background: linear-gradient(to bottom, #fff, #666);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 40px;
+            animation: fadeInUp 1.2s ease;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            animation: fadeInUp 1.4s ease;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 20px 60px 20px 25px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: white;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(245, 183, 79, 0.1);
+        }
+
+        .search-icon {
             position: absolute;
-            right: -45px; /* Texto a la derecha del símbolo */
-            top: 10px;
-            font-weight: bold;
-            font-size: 14px;
-            white-space: nowrap;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* --- GRID LAYOUT (Estilo Nike Shop) --- */
+        .content-area {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 350px;
+        }
+
+        .card:hover {
+            background: var(--bg-hover);
+            transform: scale(1.02);
+            border-color: #333;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .card-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge-cat { background: rgba(255,255,255,0.1); color: #fff; }
+        .badge-alert { background: rgba(231, 76, 60, 0.2); color: var(--danger); }
+
+        /* --- MODAL DETALLE (Estilo Hoja Técnica) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: #111;
+            width: 90%;
+            max-width: 900px;
+            height: 85vh;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: translateY(50px);
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 30px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            background: #161616;
+        }
+
+        .modal-body {
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .close-btn:hover { color: var(--accent); }
+
+        /* --- ACCORDION STYLES --- */
+        .accordion-item {
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 10px;
+        }
+
+        .accordion-header {
+            width: 100%;
+            padding: 20px 0;
+            background: none;
+            border: none;
+            color: #fff;
+            text-align: left;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            color: var(--text-muted);
         }
         
-        .tag-no {
+        .accordion-content.open {
+            max-height: 1000px; /* Arbitrary large number */
+            padding-bottom: 20px;
+        }
+
+        /* --- DON PISTON SECTION --- */
+        .don-piston-card {
+            background: linear-gradient(135deg, #2c3e50, #000);
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        .don-piston-avatar {
             position: absolute;
             top: -15px;
-            color: #cc0000;
-            font-size: 10px;
-            font-weight: bold;
-        }
-
-        /* ZONA DE SALIDA (BOBINA) ARREGLADA */
-        .output-zone {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            margin-top: -3px; /* Pegado al bus de abajo */
-        }
-
-        .coil-wire {
-            width: 2px;
-            height: 30px;
-            background-color: #000;
-        }
-
-        .coil-circle {
-            width: 50px;
-            height: 50px;
-            border: 3px solid #000;
+            right: 20px;
+            background: var(--accent);
+            color: #000;
+            width: 40px; height: 40px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
+            display: flex; align-items: center; justify-content: center;
             font-weight: bold;
-            background-color: #fff;
-            position: relative;
-            z-index: 10;
+            box-shadow: 0 5px 15px rgba(245, 183, 79, 0.4);
         }
 
-        /* Pequeñas "orejas" para conectar el círculo si hiciera falta, pero con el cable directo basta */
+        /* --- UTILS --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
+        .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #222;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            color: #aaa;
+        }
+        
+        code {
+            background: #222;
+            color: var(--accent);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .menu { display: none; } /* Simplified for mobile demo */
+            .modal-content { width: 100%; height: 100%; border-radius: 0; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="diagram-sheet">
-        <h2>Diagrama de Mando (Lógica Ladder)</h2>
-        
-        <div class="legend">NO = Normalmente Abierto</div>
-
-        <div class="circuit-area">
-            <div class="rail-container">
-                <div class="rail left"></div>
-                <div class="rail right"></div>
-                <div class="rail-label" style="left: -5px; color: #cc0000;">L1 (24V)</div>
-                <div class="rail-label" style="right: -5px; color: #0055aa;">N (0V)</div>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-wrench"></i> HeavyDiag
             </div>
-
-            <div class="bus-bar"></div>
-
-            <div class="branches-row">
-                
-                <div class="branch">
-                    <div class="wire" style="max-height: 20px;"></div>
-                    <div class="contact-symbol">
-                        <span class="tag-no">NO</span>
-                        <span class="tag-name">K1 (A)</span>
-                    </div>
-                    <div class="wire"></div>
-                    <div class="contact-symbol">
-                        <span class="tag-no">NO</span>
-                        <span class="tag-name">K2 (B)</span>
-                    </div>
-                    <div class="wire"></div>
-                </div>
-
-                <div class="branch">
-                    <div class="wire" style="max-height: 20px;"></div>
-                    <div class="contact-symbol">
-                        <span class="tag-no">NO</span>
-                        <span class="tag-name">K1 (A)</span>
-                    </div>
-                    <div class="wire"></div>
-                    <div class="contact-symbol">
-                        <span class="tag-no">NO</span>
-                        <span class="tag-name">K3 (C)</span>
-                    </div>
-                    <div class="wire"></div>
-                </div>
-
-                <div class="branch">
-                    <div class="wire" style="max-height: 20px;"></div>
-                    <div class="contact-symbol">
-                        <span class="tag-no">NO</span>
-                        <span class="tag-name">K1 (A)</span>
-                    </div>
-                    <div class="wire"></div>
-                    <div class="contact-symbol">
-                        <span class="tag-no">NO</span>
-                        <span class="tag-name">K4 (D)</span>
-                    </div>
-                    <div class="wire"></div>
-                </div>
-
-                <div class="branch">
-                    <div class="wire" style="max-height: 20px;"></div>
-                    <div class="contact-symbol">
-                        <span class="tag-no">NO</span>
-                        <span class="tag-name">K2 (B)</span>
-                    </div>
-                    <div class="wire"></div>
-                    <div class="contact-symbol">
-                        <span class="tag-no">NO</span>
-                        <span class="tag-name">K3 (C)</span>
-                    </div>
-                    <div class="wire"></div>
-                </div>
-
-                 <div class="branch">
-                    <div class="wire" style="max-height: 20px;"></div>
-                    <div class="contact-symbol">
-                        <span class="tag-no">NO</span>
-                        <span class="tag-name">K2 (B)</span>
-                    </div>
-                    <div class="wire"></div>
-                    <div class="contact-symbol">
-                        <span class="tag-no">NO</span>
-                        <span class="tag-name">K4 (D)</span>
-                    </div>
-                    <div class="wire"></div>
-                </div>
-
-                 <div class="branch">
-                    <div class="wire" style="max-height: 20px;"></div>
-                    <div class="contact-symbol">
-                        <span class="tag-no">NO</span>
-                        <span class="tag-name">K3 (C)</span>
-                    </div>
-                    <div class="wire"></div>
-                    <div class="contact-symbol">
-                        <span class="tag-no">NO</span>
-                        <span class="tag-name">K4 (D)</span>
-                    </div>
-                    <div class="wire"></div>
-                </div>
-
+            <div class="menu">
+                <span class="menu-item active" onclick="filterCategory('all')">Inicio</span>
+                <span class="menu-item" onclick="filterCategory('heavy')">Maquinaria Pesada</span>
+                <span class="menu-item" onclick="filterCategory('auto')">Automotriz</span>
+                <span class="menu-item" onclick="filterCategory('tech')">Ingeniería</span>
             </div>
+        </div>
+    </nav>
 
-            <div class="bus-bar"></div>
+    <section class="hero">
+        <h1>Diagnóstico Inteligente</h1>
+        <p>La biblioteca técnica definitiva potenciada por Don Pistón. Desde un Yaris hasta un CAT 797F.</p>
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="searchInput" placeholder="Describe el problema (ej: 'humo negro', 'presión hidráulica', 'P0087')...">
+        </div>
+    </section>
 
-            <div class="output-zone">
-                <div class="coil-wire"></div>
-                
-                <div class="coil-circle">Z</div>
-                
-                <div class="coil-wire"></div>
+    <div class="content-area">
+        <div class="section-title" id="gridTitle">
+            <i class="fas fa-th-large"></i> Categorías y Averías
+        </div>
+        <div class="grid" id="cardsGrid">
             </div>
+    </div>
 
-            <div style="width: 100%; height: 3px; background: #000;"></div>
-
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 id="modalTitle" style="font-size: 1.8rem; margin-bottom: 5px;">Título</h2>
+                    <p id="modalSubtitle" style="color: var(--text-muted);">Subtítulo</p>
+                </div>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                </div>
         </div>
     </div>
 
+<script>
+/* ==========================================================================
+   1. BASE DE DATOS UNIFICADA (Don Pistón + HeavyDiag + Ingeniería)
+   ========================================================================== */
+const DATABASE = [
+    // --- MAQUINARIA PESADA (Datos de HeavyDiag v13/v16 + a.txt) ---
+    {
+        id: 'cat-fuel',
+        category: 'heavy',
+        type: 'Retroexcavadora',
+        model: 'Caterpillar 420F2 / 416E',
+        title: 'Pérdida de Potencia / Humo Negro',
+        tags: ['Motor C4.4', 'Inyección', 'CID 0269'],
+        icon: 'fa-tractor',
+        desc: 'Caída de presión en riel común, humo negro en carga.',
+        content: {
+            symptoms: ['Pérdida de potencia >30%', 'Humo negro en aceleración', 'Código CID 0269 FMI 02'],
+            causes: ['Bomba de alta presión defectuosa', 'Inyectores con retorno excesivo', 'Filtros saturados'],
+            steps: [
+                'Conectar Scanner CAT ET.',
+                'Verificar presión de riel (Debe ser 2000-2200 bar a plena carga).',
+                'Prueba de retorno de inyectores (<12 L/h).',
+                'Revisar presencia de virutas en el filtro.'
+            ],
+            solution: 'Reemplazo de bomba HP (Bosch CP4.2) o inyectores. Limpieza del tanque si hay contaminación.',
+            donPiston: "Mire compadre, si esa CAT echa humo como locomotora, fijo que tenés un inyector goteando o la bomba ya no tira presión. Revisá primero el filtro: si brilla con metal, prepará la billetera porque la bomba se molió."
+        }
+    },
+    {
+        id: 'komatsu-hyd',
+        category: 'heavy',
+        type: 'Excavadora',
+        model: 'Komatsu PC200-8 / PC300',
+        title: 'Hidráulico Lento / Ruido Cavitación',
+        tags: ['Hidráulica', 'Bomba K3V', 'Ruido'],
+        icon: 'fa-water',
+        desc: 'Movimientos lentos y ruido de martilleo en la bomba principal.',
+        content: {
+            symptoms: ['Ruido fuerte (chillido/martilleo)', 'Aceite espumoso', 'Temperatura >85°C'],
+            causes: ['Entrada de aire por succión', 'Filtro de tanque colapsado', 'Desgaste interno de bomba'],
+            steps: [
+                'Revisar nivel de aceite hidráulico.',
+                'Inspeccionar manguera de succión (abrazaderas flojas).',
+                'Medir presiones de bomba (P1/P2 > 350 bar).',
+                'Revisar O-ring de la tapa del filtro.'
+            ],
+            solution: 'Sellar entrada de aire, cambiar filtros, o overhaul de bomba si hay daño interno.',
+            donPiston: "Ese ruido a piedras en la bomba es aire, hijo. La bomba está 'tragando aire'. Revisá la manguera gorda que sale del tanque, seguro está chupando por ahí o el nivel está muy bajo."
+        }
+    },
+    {
+        id: 'cat-797-brake',
+        category: 'heavy',
+        type: 'Camión Minero',
+        model: 'CAT 797F',
+        title: 'Sobrecalentamiento de Frenos',
+        tags: ['Seguridad', 'Frenos', 'Minería'],
+        icon: 'fa-truck-monster',
+        desc: 'Alarma de temperatura de frenos, olor a quemado, pérdida de eficiencia.',
+        content: {
+            symptoms: ['Discos al rojo vivo', 'Olor a aceite quemado', 'Pérdida de frenado'],
+            causes: ['Operador no usa Retarder', 'Enfriamiento de frenos insuficiente', 'Frenos "drag" (no liberan)'],
+            steps: [
+                'Medir temperatura de los mandos finales.',
+                'Verificar presión de liberación de frenos.',
+                'Revisar flujo de aceite de enfriamiento (Cooling Pump).'
+            ],
+            solution: 'Reconstrucción de paquetes de freno, cambio de sellos y verificación de bombas de enfriamiento.',
+            donPiston: "¡Para esa máquina ya! Si los frenos hierven, o el operador baja pisando el pedal en vez del retardador, o los platos se quedaron pegados. Ojo con los sellos Duo-Cone."
+        }
+    },
+    // --- AUTOMOTRIZ (Datos de Don Piston Taller Real) ---
+    {
+        id: 'hilux-dpf',
+        category: 'auto',
+        type: 'Camioneta',
+        model: 'Toyota Hilux / Fortuner 2.8L',
+        title: 'DPF Saturado / Modo Emergencia',
+        tags: ['Diesel', 'DPF', 'Potencia'],
+        icon: 'fa-car-side',
+        desc: 'Luz de DPF encendida, el vehículo no pasa de 2000 RPM.',
+        content: {
+            symptoms: ['Luz DPF fija o parpadeando', 'Modo Limp (sin fuerza)', 'Humo blanco en regeneración fallida'],
+            causes: ['Trayectos cortos (uso urbano)', 'Inyector de combustible DPF fallando', 'Sensor diferencial'],
+            steps: [
+                'Escanear porcentaje de saturación de hollín.',
+                'Intentar regeneración forzada con scanner.',
+                'Revisar inyector de petróleo en el escape.'
+            ],
+            solution: 'Regeneración forzada, limpieza química o eliminación física (off-road).',
+            donPiston: "Esa camioneta es de ciudad, ¿cierto? El DPF necesita carretera para quemar la mugre. Si la usas pa' ir a comprar pan, se tapa. Sacala a autopista 30 minutos en 3ra marcha a ver si destapa."
+        }
+    },
+    {
+        id: 'ranger-egr',
+        category: 'auto',
+        type: 'Camioneta',
+        model: 'Ford Ranger 3.2L',
+        title: 'Pérdida de Refrigerante (EGR)',
+        tags: ['Refrigeración', 'EGR', 'Ford'],
+        icon: 'fa-thermometer-half',
+        desc: 'Baja el nivel de agua sin fugas visibles al piso.',
+        content: {
+            symptoms: ['Consumo de refrigerante', 'Humo blanco leve', 'Motor se protege por temperatura'],
+            causes: ['Enfriador de EGR fisurado internamente (falla común).'],
+            steps: [
+                'Prueba de presión al sistema de refrigeración.',
+                'Desconectar manguera de salida de EGR a admisión y buscar humedad.'
+            ],
+            solution: 'Reemplazar enfriador de EGR y válvula. Verificar que no haya doblado bielas por hidrolock.',
+            donPiston: "Clásico de la Ranger 3.2. Se rompe el radiador de la EGR y el motor se toma el agua. Cuidado que si entra mucha agua al cilindro, doblás biela. Cambialo ayer."
+        }
+    },
+    {
+        id: 'generic-clutch',
+        category: 'auto',
+        type: 'General',
+        model: 'Transmisión Manual',
+        title: 'Cambios duros / Raspa',
+        tags: ['Transmisión', 'Embrague'],
+        icon: 'fa-cogs',
+        desc: 'Cuesta meter las marchas, especialmente en frío o reversa.',
+        content: {
+            symptoms: ['Ruido "Grrr" al meter cambio', 'Pedal bajo', 'Dificultad en 1ra y R'],
+            causes: ['Sincronizadores gastados', 'Embrague no desacopla bien', 'Falta de aceite'],
+            steps: [
+                'Revisar nivel de líquido de embrague.',
+                'Purgar bombín esclavo.',
+                'Revisar juego libre del pedal.'
+            ],
+            solution: 'Kit de embrague nuevo o cambio de aceite de caja (75W-90 GL4).',
+            donPiston: "Si raspa, es que el embrague no está cortando bien o los frenos de bronce (sincrónicos) murieron. Probá bombear el pedal; si mejora, tenés aire en el sistema, purgalo primero."
+        }
+    },
+    // --- INGENIERÍA AVANZADA (Datos de a.txt) ---
+    {
+        id: 'eng-vib',
+        category: 'tech',
+        type: 'Análisis',
+        model: 'Industrial',
+        title: 'Análisis de Vibraciones (ISO 10816)',
+        tags: ['Predictivo', 'Ingeniería'],
+        icon: 'fa-chart-line',
+        desc: 'Diagnóstico de desalineación y desbalanceo mediante espectro.',
+        content: {
+            symptoms: ['Vibración alta en cojinetes', 'Ruido cíclico'],
+            causes: ['Desbalanceo (1x RPM)', 'Desalineación (2x RPM)', 'Rodamiento (Frecuencias altas)'],
+            steps: [
+                'Instalar acelerómetro triaxial.',
+                'Adquirir espectro FFT.',
+                'Comparar picos con frecuencias de falla calculadas.'
+            ],
+            solution: 'Balanceo dinámico in-situ o alineación láser de ejes.',
+            donPiston: "Acá ya entramos en terreno de la NASA. Si vibra parejo con las vueltas, le falta peso a un lado. Si vibra dos veces por vuelta, los ejes están chuecos. Alinealo con láser, no a ojo."
+        }
+    }
+];
+
+/* ==========================================================================
+   2. LÓGICA DE INTERFAZ
+   ========================================================================== */
+
+const grid = document.getElementById('cardsGrid');
+const modal = document.getElementById('detailModal');
+const searchInput = document.getElementById('searchInput');
+
+// Renderizar Tarjetas
+function renderCards(data) {
+    grid.innerHTML = '';
+    data.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = () => openDetail(item);
+        
+        // Badges HTML
+        const tagsHtml = item.tags.map(t => `<span class="tag">${t}</span>`).join('');
+        
+        card.innerHTML = `
+            <div>
+                <i class="fas ${item.icon} card-icon"></i>
+                <h3 class="card-title">${item.title}</h3>
+                <div style="margin-bottom: 10px;">${tagsHtml}</div>
+                <p class="card-subtitle">${item.model}</p>
+                <p class="card-subtitle" style="margin-top:10px; opacity:0.8;">${item.desc}</p>
+            </div>
+            <div class="card-footer">
+                <span class="badge badge-cat">${item.type}</span>
+                <i class="fas fa-arrow-right" style="color:var(--accent)"></i>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// Filtrado
+function filterCategory(cat) {
+    document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    if (cat === 'all') {
+        renderCards(DATABASE);
+    } else {
+        const filtered = DATABASE.filter(item => item.category === cat);
+        renderCards(filtered);
+    }
+}
+
+searchInput.addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase();
+    const filtered = DATABASE.filter(item => 
+        item.title.toLowerCase().includes(term) || 
+        item.model.toLowerCase().includes(term) ||
+        item.desc.toLowerCase().includes(term) ||
+        item.tags.some(t => t.toLowerCase().includes(term))
+    );
+    renderCards(filtered);
+});
+
+// Modal Logic
+function openDetail(item) {
+    document.getElementById('modalTitle').innerText = item.title;
+    document.getElementById('modalSubtitle').innerText = item.model;
+    
+    const body = document.getElementById('modalBody');
+    
+    // Construir contenido del modal
+    let html = '';
+
+    // Sección Don Pistón (Si existe)
+    if (item.content.donPiston) {
+        html += `
+            <div class="don-piston-card">
+                <div class="don-piston-avatar">DP</div>
+                <h4 style="color:var(--accent); margin-bottom:10px;">El Consejo de Don Pistón:</h4>
+                <p style="font-style:italic; font-size:1.1rem;">"${item.content.donPiston}"</p>
+            </div>
+            <br>
+        `;
+    }
+
+    // Acordeones Técnicos
+    html += createAccordion('Síntomas', item.content.symptoms, 'ul');
+    html += createAccordion('Causas Probables', item.content.causes, 'ul');
+    html += createAccordion('Pasos de Diagnóstico', item.content.steps, 'ol');
+    
+    // Solución
+    html += `
+        <div style="margin-top:20px; padding:20px; border:1px solid var(--success); border-radius:8px; background:rgba(39, 174, 96, 0.1);">
+            <h4 style="color:var(--success); margin-bottom:5px;"><i class="fas fa-check-circle"></i> Solución Recomendada</h4>
+            <p>${item.content.solution}</p>
+        </div>
+    `;
+
+    body.innerHTML = html;
+    modal.classList.add('active');
+    setupAccordions();
+}
+
+function closeModal() {
+    modal.classList.remove('active');
+}
+
+// Helper Acordeón
+function createAccordion(title, items, listType) {
+    if (!items || items.length === 0) return '';
+    
+    const listHtml = listType === 'ul' 
+        ? `<ul>${items.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join('')}</ul>`
+        : `<ol style="margin-left:20px;">${items.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join('')}</ol>`;
+
+    return `
+        <div class="accordion-item">
+            <button class="accordion-header">
+                ${title}
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="accordion-content">
+                ${listHtml}
+            </div>
+        </div>
+    `;
+}
+
+function setupAccordions() {
+    const acc = document.getElementsByClassName("accordion-header");
+    for (let i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            const content = this.nextElementSibling;
+            const icon = this.querySelector('i');
+            
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            } else {
+                content.classList.add('open');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
+        });
+    }
+}
+
+// Cerrar modal al hacer clic fuera
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+});
+
+// Init
+renderCards(DATABASE);
+
+</script>
 </body>
 </html>
