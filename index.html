@@ -263,7 +263,10 @@
             correct = `${I} A`;
             dist1 = `${(voltage * R).toFixed(0)} A`; // Error multiplicar
             dist2 = `${(R / voltage).toFixed(2)} A`; // Error dividir al revés
-            dist3 = `${(12 / R).toFixed(2)} A`; // Error de voltaje incorrecto (trampa)
+            
+            let trapVoltage = (voltage === 12) ? 24 : 12;
+            dist3 = `${(trapVoltage / R).toFixed(2)} A`; // Trampa de voltaje
+
             explanation = `Ley de Ohm: I = V / R. <br>Como es ${vehicle}, usas <b>${voltage}V</b>. <br>${voltage}V / ${R}Ω = <b>${I}A</b>.`;
         } 
         else if (type === 1) { // Calcular Resistencia (R = V/I)
@@ -273,7 +276,10 @@
             correct = `${R} Ω`;
             dist1 = `${(voltage * I).toFixed(0)} Ω`;
             dist2 = "0.5 Ω";
-            dist3 = `${(12 / I).toFixed(1)} Ω`; 
+            
+            let trapVoltage = (voltage === 12) ? 24 : 12;
+            dist3 = `${(trapVoltage / I).toFixed(1)} Ω`; 
+
             explanation = `Ley de Ohm: R = V / I. <br>Vehículo ${vehicle} usa <b>${voltage}V</b>. <br>${voltage}V / ${I}A = <b>${R}Ω</b>.`;
         }
         else { // Calcular Potencia (P = V*I)
@@ -283,14 +289,20 @@
             correct = `${P} Watts`;
             dist1 = `${(voltage / I).toFixed(1)} Watts`;
             dist2 = `${P * 2} Watts`;
-            dist3 = `${(12 * I)} Watts`; // Trampa voltaje 12v en camión
+            
+            // --- CORRECCIÓN DEL BUG ---
+            // Si es 12V, trampa con 24V. Si es 24V, trampa con 12V.
+            let trapVoltage = (voltage === 12) ? 24 : 12;
+            dist3 = `${(trapVoltage * I)} Watts`; 
+            // --------------------------
+
             explanation = `Ley de Watt: P = V x I. <br>Vehículo ${vehicle} usa <b>${voltage}V</b>. <br>${voltage}V x ${I}A = <b>${P}W</b>.`;
         }
 
         return {
             q: qText,
             opts: [correct, dist1, dist2, dist3].sort(() => 0.5 - Math.random()),
-            a: -1, // Se calculará dinámicamente al buscar el índice de 'correct'
+            a: -1, 
             correctVal: correct,
             tag: "math",
             exp: explanation
@@ -307,39 +319,26 @@
         currentIndex = 0;
         score = 0;
 
-        // 1. GENERAR BANCO DE PREGUNTAS SEGÚN MODO
         if (mode === 'math') {
-            // Generar 20 preguntas matemáticas nuevas
             for(let i=0; i<20; i++) currentQuiz.push(generateMathQuestion());
         } 
         else if (mode === 'scope') {
-            // Filtrar solo preguntas de osciloscopio
             currentQuiz = theoryQuestions.filter(q => q.tag === 'scope');
-            // Duplicarlas o revolverlas si son pocas, o mezclar
             currentQuiz = currentQuiz.sort(() => 0.5 - Math.random());
         } 
         else if (mode === 'exam') {
-            // MODO EXAMEN: MEZCLA TOTAL
-            // Tomamos toda la teoría
             let pool = [...theoryQuestions]; 
-            // Generamos 30 matemáticas para engordar el pool
             for(let i=0; i<30; i++) pool.push(generateMathQuestion());
-            
-            // Barajar todo el pool gigante
             pool.sort(() => 0.5 - Math.random());
-            
-            // Tomar solo 20 preguntas
             currentQuiz = pool.slice(0, 20);
         }
 
-        // Ajustar índices de respuestas correctas para las generadas
         currentQuiz.forEach(q => {
             if(q.a === -1) {
                 q.a = q.opts.indexOf(q.correctVal);
             }
         });
 
-        // UI
         document.getElementById('main-menu').style.display = 'none';
         document.getElementById('quiz-interface').style.display = 'block';
         document.getElementById('results-screen').style.display = 'none';
@@ -349,8 +348,6 @@
 
     function loadQuestion() {
         const q = currentQuiz[currentIndex];
-        
-        // Barra de progreso
         const pct = ((currentIndex) / currentQuiz.length) * 100;
         document.getElementById('progress-fill').style.width = `${pct}%`;
 
@@ -372,7 +369,6 @@
     }
 
     function checkAnswer(selectedIdx, btn, qData) {
-        // Bloquear botones
         const allBtns = document.querySelectorAll('.option-btn');
         allBtns.forEach(b => b.disabled = true);
 
@@ -385,7 +381,6 @@
             feedback.innerHTML = `<span style="color:green; font-weight:bold;">✅ Correcto</span><br>${qData.exp}`;
         } else {
             btn.classList.add('wrong');
-            // Mostrar la correcta
             allBtns[qData.a].classList.add('correct');
             feedback.innerHTML = `<span style="color:red; font-weight:bold;">❌ Incorrecto</span><br>${qData.exp}`;
         }
@@ -406,9 +401,6 @@
         document.getElementById('quiz-interface').style.display = 'none';
         document.getElementById('results-screen').style.display = 'block';
 
-        // Nota escala 1.0 a 7.0 (Chile)
-        // Puntaje max = currentQuiz.length
-        // Formula: (Puntaje / Max) * 7. (Ajuste simple)
         let grade = (score / currentQuiz.length) * 7;
         if(grade < 1) grade = 1;
         
