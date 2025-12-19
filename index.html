@@ -3,417 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Evaluación Técnica - Parametrización</title>
+    <title>Simulador Examen INACAP - Final</title>
     <style>
-        :root {
-            --primary: #003366; /* Azul Institucional */
-            --secondary: #f4f4f4; /* Gris fondo */
-            --accent: #d32f2f; /* Rojo detalle */
-            --text: #333;
-            --white: #fff;
-            --border: #ccc;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: var(--secondary);
-            color: var(--text);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        /* HEADER */
-        header {
-            background-color: var(--primary);
-            color: var(--white);
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        h1 { margin: 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
-        p.subtitle { margin: 5px 0 0; font-size: 0.9rem; opacity: 0.9; }
-
-        /* CONTENEDOR PRINCIPAL */
-        .container {
-            background: var(--white);
-            width: 95%;
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 30px;
-            border-radius: 5px;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        /* MENU DE SELECCIÓN */
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .menu-card {
-            border: 1px solid var(--border);
-            border-radius: 5px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: #fafafa;
-        }
-
-        .menu-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border-color: var(--primary);
-        }
-
-        .menu-icon { font-size: 2.5rem; margin-bottom: 10px; display: block; }
-        .menu-title { font-weight: bold; font-size: 1.1rem; color: var(--primary); }
-        .menu-desc { font-size: 0.85rem; color: #666; margin-top: 5px; }
-
-        /* ÁREA DE PREGUNTAS */
-        .quiz-section { display: none; }
-
-        .progress-bar {
-            background: #e0e0e0;
-            height: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 0%;
-            transition: width 0.3s;
-        }
-
-        .question-box {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 25px;
-            border-left: 5px solid var(--accent);
-            padding-left: 15px;
-            line-height: 1.4;
-        }
-
-        .options-list { display: flex; flex-direction: column; gap: 10px; }
-
-        button.option-btn {
-            background: var(--white);
-            border: 1px solid var(--border);
-            padding: 15px;
-            text-align: left;
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background 0.2s;
-            color: var(--text);
-        }
-
-        button.option-btn:hover { background: #f0f4f8; border-color: var(--primary); }
+        body { font-family: 'Arial', sans-serif; background: #f0f2f5; color: #333; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .card { background: white; width: 100%; max-width: 700px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 30px; margin-bottom: 20px; border-top: 5px solid #d32f2f; }
+        h1 { color: #d32f2f; text-align: center; margin-bottom: 5px; }
+        h3 { margin-top: 0; color: #555; text-align: center; font-weight: normal; }
         
-        button.correct { background: #e8f5e9 !important; border-color: #4caf50 !important; color: #2e7d32; font-weight: bold; }
-        button.wrong { background: #ffebee !important; border-color: #ef5350 !important; color: #c62828; }
-
-        .feedback {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-left: 4px solid #666;
-            display: none;
-            font-size: 0.95rem;
+        .diagram-box {
+            background: #fff; border: 2px solid #333; padding: 15px; margin: 20px 0; position: relative; height: 180px; font-family: monospace;
         }
+        
+        .wire { position: absolute; background: #333; }
+        .component { position: absolute; border: 2px solid #000; padding: 5px; background: #eee; font-weight: bold; font-size: 0.9em; }
 
-        .action-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 20px;
-            display: none;
-            float: right;
-        }
-        .action-btn:hover { background: #002244; }
+        .question { font-size: 1.2em; margin-bottom: 20px; font-weight: bold; }
+        
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { padding: 15px; font-size: 1em; cursor: pointer; background: #fff; border: 2px solid #ccc; border-radius: 5px; transition: 0.2s; }
+        button:hover { background: #f9f9f9; border-color: #d32f2f; }
+        .correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; }
+        .wrong { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
 
-        .back-btn {
-            background: #666;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
-
-        /* RESULTADOS */
-        .results { text-align: center; display: none; }
-        .score-big { font-size: 4rem; font-weight: bold; color: var(--primary); margin: 20px 0; }
-
+        .feedback { margin-top: 15px; padding: 15px; background: #e2e3e5; border-radius: 5px; display: none; }
+        
+        #score-board { font-size: 1.5em; text-align: center; margin-top: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>Plataforma de Evaluación Técnica</h1>
-    <p class="subtitle">Parametrización Electrónica | Maquinaria Pesada</p>
-</header>
-
-<div class="container" id="main-menu">
-    <h3>Seleccione el Módulo de Evaluación:</h3>
-    <div class="menu-grid">
-        <div class="menu-card" onclick="startQuiz('math')">
-            <span class="menu-icon">🧮</span>
-            <div class="menu-title">Taller de Cálculo</div>
-            <div class="menu-desc">Ley de Ohm y Watt con voltaje implícito (12V/24V).</div>
-        </div>
-
-        <div class="menu-card" onclick="startQuiz('scope')">
-            <span class="menu-icon">📟</span>
-            <div class="menu-title">Osciloscopio</div>
-            <div class="menu-desc">Configuración, lectura de ondas y diagnóstico.</div>
-        </div>
-
-        <div class="menu-card" onclick="startQuiz('exam')">
-            <span class="menu-icon">📝</span>
-            <div class="menu-title">Simulacro Examen</div>
-            <div class="menu-desc">20 preguntas aleatorias de TODO el temario.</div>
-        </div>
-    </div>
-</div>
-
-<div class="container quiz-section" id="quiz-interface">
-    <button class="back-btn" onclick="location.reload()">← Volver al Menú</button>
+<div class="card">
+    <h1>EXAMEN TÉCNICO FINAL</h1>
+    <h3>Simulación basada en Guías Reales</h3>
     
-    <div class="progress-bar">
-        <div class="progress-fill" id="progress-fill"></div>
+    <div id="quiz-container">
+        <div class="diagram-box" id="schematic">
+            </div>
+
+        <div class="question" id="q-text">Cargando...</div>
+        <div class="options" id="opt-box"></div>
+        <div class="feedback" id="feedback"></div>
+        <button id="next-btn" style="width:100%; margin-top:20px; background:#333; color:white; display:none;" onclick="nextQ()">Siguiente Pregunta</button>
     </div>
 
-    <div class="question-box" id="question-text">
-        Cargando pregunta...
+    <div id="score-board" style="display:none;">
+        NOTA FINAL: <span id="final-grade"></span>
     </div>
-
-    <div class="options-list" id="options-container">
-        </div>
-
-    <div class="feedback" id="feedback-box"></div>
-    <button class="action-btn" id="next-btn" onclick="nextQuestion()">Siguiente Pregunta</button>
-</div>
-
-<div class="container results" id="results-screen">
-    <h2>Evaluación Finalizada</h2>
-    <p>Su calificación obtenida es:</p>
-    <div class="score-big" id="final-score">0.0</div>
-    <p id="final-msg">Mensaje de estado...</p>
-    <button class="action-btn" style="display:inline-block; float:none;" onclick="location.reload()">Realizar Nueva Evaluación</button>
 </div>
 
 <script>
-    // --- BASE DE DATOS FIJA (TEORÍA Y OSCILOSCOPIO) ---
-    const theoryQuestions = [
-        // OSCILOSCOPIO
-        { q: "En el osciloscopio, ¿qué ajuste controla la escala vertical?", opts: ["Volts/Div", "Sec/Div", "Trigger", "Position"], a: 0, tag: "scope", exp: "Volts/Div ajusta la amplitud (voltaje)." },
-        { q: "Si visualizas una señal digital CAN BUS, ¿qué unidad de tiempo es más apropiada?", opts: ["Microsegundos (us)", "Segundos (s)", "Minutos", "Horas"], a: 0, tag: "scope", exp: "Las redes de datos son muy rápidas (500 kbps), requieren 'us'." },
-        { q: "El 'Trigger' o Disparo sirve para:", opts: ["Estabilizar la señal en pantalla", "Aumentar el voltaje", "Filtrar ruido", "Guardar la imagen"], a: 0, tag: "scope", exp: "El Trigger sincroniza el inicio del barrido para que la onda se vea quieta." },
-        { q: "¿Qué indica el acoplamiento AC en la medición?", opts: ["Solo componente alterna (bloquea DC)", "Solo componente continua", "Mide resistencia", "Apaga el canal"], a: 0, tag: "scope", exp: "AC Coupling elimina el voltaje base para ver solo las variaciones (ruido)." },
-        { q: "Al medir un actuador PWM, el 'Duty Cycle' representa:", opts: ["El porcentaje de tiempo en ON", "El voltaje máximo", "La frecuencia de la señal", "La resistencia de la bobina"], a: 0, tag: "scope", exp: "Duty Cycle es el ciclo de trabajo activo (%) en un periodo." },
-        { q: "Si usas una sonda atenuadora x10 midiendo 12V, ¿cuánto voltaje entra realmente al osciloscopio?", opts: ["1.2 V", "12 V", "120 V", "0.12 V"], a: 0, tag: "scope", exp: "La sonda divide por 10. Entran 1.2V, por eso debes configurar el equipo en x10." },
-        { q: "El cable negro de la sonda del osciloscopio se conecta a:", opts: ["Masa (Chasis)", "Positivo Batería", "Señal", "Alternador"], a: 0, tag: "scope", exp: "Siempre a masa. Conectarlo a positivo causa corto." },
-        
-        // SENSORES
-        { q: "¿Qué tipo de señal emite un sensor CKP Inductivo?", opts: ["Analógica (Senoidal)", "Digital (Cuadrada)", "PWM", "Constante"], a: 0, tag: "theory", exp: "El inductivo genera voltaje AC, creando una onda senoidal." },
-        { q: "Un sensor de Efecto Hall necesita:", opts: ["Alimentación, Masa y Señal (3 cables)", "Solo 2 cables", "No necesita alimentación", "Presión de aire"], a: 0, tag: "theory", exp: "El Hall es un chip activo, requiere voltaje externo para funcionar." },
-        { q: "En un termistor NTC, si la temperatura aumenta:", opts: ["La resistencia disminuye", "La resistencia aumenta", "El voltaje sube", "No cambia nada"], a: 0, tag: "theory", exp: "NTC = Coeficiente Negativo. Más calor, menos resistencia." },
-        { q: "Para equilibrar un Puente de Wheatstone, el voltaje entre los puntos centrales debe ser:", opts: ["0 Voltios", "5 Voltios", "12 Voltios", "Infinito"], a: 0, tag: "theory", exp: "El equilibrio significa diferencia de potencial cero." },
-        
-        // MAQUETA Y CABLEADO
-        { q: "En la maquinaria, el 'Master Switch' corta:", opts: ["El negativo (o positivo) principal de la batería", "Solo las luces", "Solo el arranque", "La radio"], a: 0, tag: "theory", exp: "El cortacorriente aísla la batería del resto del chasis." },
-        { q: "Si mides continuidad en un fusible y el multímetro marca 'OL', el fusible está:", opts: ["Quemado (Abierto)", "Bueno", "En cortocircuito", "Operativo"], a: 0, tag: "theory", exp: "OL (Open Loop) significa que no hay camino para la corriente." },
-        { q: "El terminal 30 de un relé estándar se conecta habitualmente a:", opts: ["Potencia (Batería/Fusible)", "Salida a consumidor", "Masa", "Señal de control"], a: 0, tag: "theory", exp: "30 es la entrada de potencia (Común)." },
-        { q: "El terminal 86 de un relé corresponde a:", opts: ["Bobina (Control +)", "Potencia", "Salida", "Masa"], a: 0, tag: "theory", exp: "85 y 86 son la bobina de control." }
+    const questions = [
+        {
+            type: "fuse",
+            watts: [100, 100, 50], // Suma 250W
+            voltage: 24,
+            q: "Según el esquema, indique el rango ideal del fusible FU26 que alimenta a los 3 focos (100W, 100W, 50W) en un sistema de 24V.",
+            opts: ["10 Amperios", "15 Amperios", "20 Amperios", "5 Amperios"],
+            correct: 1, // 10.4A + 10% = 11.4A -> Usar 15A
+            exp: "Potencia Total: 250W.<br>Corriente: 250W / 24V = 10.41A.<br>Con margen (+10%): 11.45A.<br>Fusible comercial superior: <b>15A</b>."
+        },
+        {
+            type: "fuse",
+            watts: [55, 55], // Suma 110W
+            voltage: 12, // Auto
+            q: "Sistema de 12V (Automóvil). Calcula el fusible para dos focos delanteros de 55W cada uno.",
+            opts: ["10 Amperios", "15 Amperios", "5 Amperios", "25 Amperios"],
+            correct: 1, // 110W / 12V = 9.16A -> +10% = 10.08A -> Usar 15A (El de 10 queda muy justo)
+            exp: "Total: 110W / 12V = 9.16A.<br>Con seguridad: 10.1A.<br>El de 10A se quemaría eventualmente. Usar <b>15A</b>."
+        },
+        {
+            type: "section",
+            q: "Calcule la sección del conductor para un consumo de 15A, si la densidad de corriente máxima permitida es de 4 A/mm².",
+            opts: ["1.5 mm²", "2.5 mm²", "4.0 mm²", "0.5 mm²"],
+            correct: 2, // 15 / 4 = 3.75 -> Usar 4mm
+            exp: "Sección = Intensidad / Densidad.<br>15A / 4 = 3.75 mm².<br>Comercial más cercano hacia arriba: <b>4.0 mm²</b>."
+        },
+        {
+            type: "rectifier",
+            q: "En el osciloscopio ves una onda rectificada pero con mucho 'rizado' (baja y sube). ¿Qué componente falta o está fallando?",
+            opts: ["El Diodo", "El Transformador", "El Condensador (Filtro)", "La Resistencia"],
+            correct: 2,
+            exp: "El <b>Condensador</b> se encarga de aplanar la onda (filtrado). Si falla, aparece el rizado."
+        },
+        {
+            type: "relay",
+            q: "Necesitas que una luz se APAGUE cuando activas el interruptor. ¿A qué pin del relé la conectas?",
+            opts: ["87 (Normalmente Abierto)", "87a (Normalmente Cerrado)", "86 (Bobina)", "30 (Común)"],
+            correct: 1,
+            exp: "El <b>87a</b> tiene corriente siempre que el relé está DESACTIVADO. Al activar, se corta."
+        }
     ];
 
-    // --- GENERADOR DE MATEMÁTICAS (INFINITO) ---
-    const vehicles12 = ["Toyota Hilux", "Mitsubishi L200", "Nissan V16", "Suzuki Swift", "Ford Ranger", "Moto Honda", "Kia Rio"];
-    const vehicles24 = ["Camión Volvo FH", "Cargador Frontal CAT", "Excavadora Komatsu", "Bus Scania", "Camión Minero", "Tractor John Deere"];
-
-    function generateMathQuestion() {
-        const type = Math.floor(Math.random() * 3); // 0: Intensidad, 1: Resistencia, 2: Potencia
-        const is24V = Math.random() > 0.5;
-        const vehicle = is24V ? vehicles24[Math.floor(Math.random() * vehicles24.length)] : vehicles12[Math.floor(Math.random() * vehicles12.length)];
-        const voltage = is24V ? 24 : 12;
-        
-        let qText, correct, dist1, dist2, dist3, explanation;
-
-        if (type === 0) { // Calcular Intensidad (I = V/R)
-            const R = Math.floor(Math.random() * 20) + 2; // 2 a 22 Ohms
-            const I = (voltage / R).toFixed(2);
-            qText = `Estás diagnosticando un <b>${vehicle}</b>. Mides una resistencia de <b>${R} Ohms</b> en un componente. ¿Cuál es la Intensidad teórica que circula?`;
-            correct = `${I} A`;
-            dist1 = `${(voltage * R).toFixed(0)} A`; // Error multiplicar
-            dist2 = `${(R / voltage).toFixed(2)} A`; // Error dividir al revés
-            
-            let trapVoltage = (voltage === 12) ? 24 : 12;
-            dist3 = `${(trapVoltage / R).toFixed(2)} A`; // Trampa de voltaje
-
-            explanation = `Ley de Ohm: I = V / R. <br>Como es ${vehicle}, usas <b>${voltage}V</b>. <br>${voltage}V / ${R}Ω = <b>${I}A</b>.`;
-        } 
-        else if (type === 1) { // Calcular Resistencia (R = V/I)
-            const I = Math.floor(Math.random() * 10) + 1; 
-            const R = (voltage / I).toFixed(1);
-            qText = `En un <b>${vehicle}</b>, mides un consumo de corriente de <b>${I} Amperios</b> en un circuito. ¿Cuál es la resistencia de la carga?`;
-            correct = `${R} Ω`;
-            dist1 = `${(voltage * I).toFixed(0)} Ω`;
-            dist2 = "0.5 Ω";
-            
-            let trapVoltage = (voltage === 12) ? 24 : 12;
-            dist3 = `${(trapVoltage / I).toFixed(1)} Ω`; 
-
-            explanation = `Ley de Ohm: R = V / I. <br>Vehículo ${vehicle} usa <b>${voltage}V</b>. <br>${voltage}V / ${I}A = <b>${R}Ω</b>.`;
-        }
-        else { // Calcular Potencia (P = V*I)
-            const I = Math.floor(Math.random() * 15) + 2;
-            const P = voltage * I;
-            qText = `Necesitas reemplazar un fusible en un <b>${vehicle}</b>. El circuito consume <b>${I} Amperios</b>. ¿Qué potencia eléctrica está consumiendo?`;
-            correct = `${P} Watts`;
-            dist1 = `${(voltage / I).toFixed(1)} Watts`;
-            dist2 = `${P * 2} Watts`;
-            
-            // --- CORRECCIÓN DEL BUG ---
-            // Si es 12V, trampa con 24V. Si es 24V, trampa con 12V.
-            let trapVoltage = (voltage === 12) ? 24 : 12;
-            dist3 = `${(trapVoltage * I)} Watts`; 
-            // --------------------------
-
-            explanation = `Ley de Watt: P = V x I. <br>Vehículo ${vehicle} usa <b>${voltage}V</b>. <br>${voltage}V x ${I}A = <b>${P}W</b>.`;
-        }
-
-        return {
-            q: qText,
-            opts: [correct, dist1, dist2, dist3].sort(() => 0.5 - Math.random()),
-            a: -1, 
-            correctVal: correct,
-            tag: "math",
-            exp: explanation
-        };
-    }
-
-    // --- LÓGICA DEL EXAMEN ---
-    let currentQuiz = [];
-    let currentIndex = 0;
+    let current = 0;
     let score = 0;
 
-    function startQuiz(mode) {
-        currentQuiz = [];
-        currentIndex = 0;
-        score = 0;
-
-        if (mode === 'math') {
-            for(let i=0; i<20; i++) currentQuiz.push(generateMathQuestion());
-        } 
-        else if (mode === 'scope') {
-            currentQuiz = theoryQuestions.filter(q => q.tag === 'scope');
-            currentQuiz = currentQuiz.sort(() => 0.5 - Math.random());
-        } 
-        else if (mode === 'exam') {
-            let pool = [...theoryQuestions]; 
-            for(let i=0; i<30; i++) pool.push(generateMathQuestion());
-            pool.sort(() => 0.5 - Math.random());
-            currentQuiz = pool.slice(0, 20);
+    function loadQ() {
+        const qData = questions[current];
+        document.getElementById('q-text').innerHTML = qData.q;
+        
+        // Dibujar esquema simple si es de fusibles
+        const schematic = document.getElementById('schematic');
+        schematic.innerHTML = '';
+        if(qData.type === 'fuse') {
+            schematic.innerHTML = `
+                <div style="position:absolute; top:80px; left:10px; font-weight:bold;">${qData.voltage}V</div>
+                <div class="wire" style="top:90px; left:50px; width:50px; height:2px;"></div>
+                <div class="component" style="top:75px; left:100px;">FUSIBLE?</div>
+                <div class="wire" style="top:90px; left:180px; width:100px; height:2px;"></div>
+                
+                ${qData.watts.map((w, i) => `
+                    <div style="position:absolute; top:20px; left:${300 + i*100}px; border:2px solid #333; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center;">💡</div>
+                    <div style="position:absolute; top:70px; left:${310 + i*100}px; font-size:0.8em;">${w}W</div>
+                    <div class="wire" style="top:60px; left:${320 + i*100}px; width:2px; height:30px;"></div>
+                    <div class="wire" style="top:90px; left:280px; width:100px; height:2px;"></div>
+                `).join('')}
+            `;
+        } else {
+            schematic.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; height:100%; color:#777;">(Pregunta Teórica / Cálculo)</div>';
         }
 
-        currentQuiz.forEach(q => {
-            if(q.a === -1) {
-                q.a = q.opts.indexOf(q.correctVal);
-            }
-        });
-
-        document.getElementById('main-menu').style.display = 'none';
-        document.getElementById('quiz-interface').style.display = 'block';
-        document.getElementById('results-screen').style.display = 'none';
-        
-        loadQuestion();
-    }
-
-    function loadQuestion() {
-        const q = currentQuiz[currentIndex];
-        const pct = ((currentIndex) / currentQuiz.length) * 100;
-        document.getElementById('progress-fill').style.width = `${pct}%`;
-
-        document.getElementById('question-text').innerHTML = `${currentIndex + 1}. ${q.q}`;
-        
-        const optsContainer = document.getElementById('options-container');
-        optsContainer.innerHTML = '';
-
-        q.opts.forEach((opt, idx) => {
+        const optBox = document.getElementById('opt-box');
+        optBox.innerHTML = '';
+        qData.opts.forEach((opt, i) => {
             const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.innerHTML = opt;
-            btn.onclick = () => checkAnswer(idx, btn, q);
-            optsContainer.appendChild(btn);
+            btn.innerText = opt;
+            btn.onclick = () => check(btn, i);
+            optBox.appendChild(btn);
         });
 
-        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('feedback').style.display = 'none';
         document.getElementById('next-btn').style.display = 'none';
     }
 
-    function checkAnswer(selectedIdx, btn, qData) {
-        const allBtns = document.querySelectorAll('.option-btn');
+    function check(btn, idx) {
+        const qData = questions[current];
+        const allBtns = document.querySelectorAll('button');
         allBtns.forEach(b => b.disabled = true);
 
-        const feedback = document.getElementById('feedback-box');
-        feedback.style.display = 'block';
+        const fb = document.getElementById('feedback');
+        fb.style.display = 'block';
 
-        if(selectedIdx === qData.a) {
-            score++;
+        if(idx === qData.correct) {
             btn.classList.add('correct');
-            feedback.innerHTML = `<span style="color:green; font-weight:bold;">✅ Correcto</span><br>${qData.exp}`;
+            fb.innerHTML = `<b style="color:green">¡Correcto!</b><br>${qData.exp}`;
+            score++;
         } else {
             btn.classList.add('wrong');
-            allBtns[qData.a].classList.add('correct');
-            feedback.innerHTML = `<span style="color:red; font-weight:bold;">❌ Incorrecto</span><br>${qData.exp}`;
+            fb.innerHTML = `<b style="color:red">Incorrecto.</b><br>${qData.exp}`;
         }
-
         document.getElementById('next-btn').style.display = 'block';
     }
 
-    function nextQuestion() {
-        currentIndex++;
-        if(currentIndex < currentQuiz.length) {
-            loadQuestion();
+    function nextQ() {
+        current++;
+        if(current < questions.length) {
+            loadQ();
         } else {
-            showResults();
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('score-board').style.display = 'block';
+            let grade = (score / questions.length) * 7;
+            if(grade < 1) grade = 1;
+            document.getElementById('final-grade').innerText = grade.toFixed(1);
         }
     }
 
-    function showResults() {
-        document.getElementById('quiz-interface').style.display = 'none';
-        document.getElementById('results-screen').style.display = 'block';
-
-        let grade = (score / currentQuiz.length) * 7;
-        if(grade < 1) grade = 1;
-        
-        document.getElementById('final-score').innerText = grade.toFixed(1);
-        
-        let msg = "";
-        if(grade >= 6) msg = "¡Excelente! Estás listo para el examen.";
-        else if(grade >= 4) msg = "Aprobado. Tienes los conceptos, pero repasa los errores.";
-        else msg = "Reprobado. Necesitas estudiar más las fórmulas y teoría.";
-        
-        document.getElementById('final-msg').innerText = `${msg} (${score}/${currentQuiz.length} aciertos)`;
-    }
-
+    loadQ();
 </script>
 
 </body>
