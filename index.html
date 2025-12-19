@@ -3,422 +3,426 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrenador Osciloscopio PRO V2.0</title>
+    <title>Sistema de Evaluación Técnica - Parametrización</title>
     <style>
         :root {
-            --bg-color: #121212;
-            --panel-color: #1e1e24;
-            --screen-bg: #000;
-            --grid-color: rgba(0, 255, 0, 0.2);
-            --wave-color: #00ff00;
-            --text-main: #e0e0e0;
-            --accent: #29b6f6;
-            --success: #00e676;
-            --error: #ff5252;
+            --primary: #003366; /* Azul Institucional */
+            --secondary: #f4f4f4; /* Gris fondo */
+            --accent: #d32f2f; /* Rojo detalle */
+            --text: #333;
+            --white: #fff;
+            --border: #ccc;
         }
 
         body {
-            font-family: 'Roboto', 'Segoe UI', Helvetica, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+            background-color: var(--secondary);
+            color: var(--text);
             margin: 0;
-            padding: 20px;
-        }
-
-        /* CONTENEDOR PRINCIPAL (LA TABLET) */
-        .scope-container {
-            background-color: var(--panel-color);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 800px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-            border: 1px solid #333;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        /* ENCABEZADO */
+        /* HEADER */
         header {
-            background: #263238;
-            padding: 15px 25px;
-            border-bottom: 2px solid #37474f;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 1.2rem;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .battery-icon { font-size: 1.2rem; color: #66bb6a; }
-
-        /* PANTALLA OSCILOSCOPIO */
-        .screen-frame {
-            padding: 20px;
-            background: #101010;
-        }
-
-        .screen {
-            background-color: var(--screen-bg);
-            border: 2px solid #444;
-            border-radius: 8px;
-            height: 200px;
-            position: relative;
-            overflow: hidden;
-            /* CUADRÍCULA REALISTA */
-            background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-position: center center;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-        }
-
-        /* LÍNEA DE ONDA */
-        .wave-line {
-            height: 3px;
-            background: var(--wave-color);
+            background-color: var(--primary);
+            color: var(--white);
             width: 100%;
-            position: absolute;
-            top: 50%;
-            box-shadow: 0 0 8px var(--wave-color);
-            animation: pulse 2s infinite ease-in-out;
-        }
-        
-        /* Animación suave para que parezca vivo */
-        @keyframes pulse {
-            0% { opacity: 0.8; box-shadow: 0 0 5px var(--wave-color); }
-            50% { opacity: 1; box-shadow: 0 0 15px var(--wave-color); }
-            100% { opacity: 0.8; box-shadow: 0 0 5px var(--wave-color); }
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        .os-info {
-            position: absolute;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            color: var(--wave-color);
-            font-size: 0.8rem;
-            text-shadow: 0 0 2px rgba(0,255,0,0.5);
-            padding: 5px;
-            background: rgba(0,0,0,0.6);
+        h1 { margin: 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
+        p.subtitle { margin: 5px 0 0; font-size: 0.9rem; opacity: 0.9; }
+
+        /* CONTENEDOR PRINCIPAL */
+        .container {
+            background: var(--white);
+            width: 95%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
-        /* ZONA DE PREGUNTAS */
-        .quiz-area {
-            padding: 25px;
-            background: #1e1e24;
-        }
-
-        .stats-bar {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            color: #78909c;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .question {
-            font-size: 1.25rem;
-            margin-bottom: 25px;
-            line-height: 1.5;
-            color: #fff;
-            border-left: 4px solid var(--accent);
-            padding-left: 15px;
-        }
-
-        /* OPCIONES */
-        .options-grid {
+        /* MENU DE SELECCIÓN */
+        .menu-grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-        
-        @media (min-width: 600px) {
-            .options-grid { grid-template-columns: 1fr 1fr; }
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
 
-        button.opt-btn {
-            background: #2c3e50;
-            color: #eceff1;
-            border: 1px solid #455a64;
-            padding: 15px 20px;
-            text-align: left;
+        .menu-card {
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
             cursor: pointer;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.2s ease;
-            position: relative;
+            transition: all 0.2s;
+            background: #fafafa;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .menu-icon { font-size: 2.5rem; margin-bottom: 10px; display: block; }
+        .menu-title { font-weight: bold; font-size: 1.1rem; color: var(--primary); }
+        .menu-desc { font-size: 0.85rem; color: #666; margin-top: 5px; }
+
+        /* ÁREA DE PREGUNTAS */
+        .quiz-section { display: none; }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
             overflow: hidden;
         }
-
-        button.opt-btn:hover {
-            background: #37474f;
-            transform: translateY(-2px);
-            border-color: var(--accent);
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
         }
 
-        /* ESTADOS CORRECTO / INCORRECTO */
-        button.correct {
-            background: rgba(0, 230, 118, 0.15) !important;
-            border-color: var(--success) !important;
-            color: var(--success) !important;
+        .question-box {
+            font-size: 1.2rem;
             font-weight: bold;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--accent);
+            padding-left: 15px;
+            line-height: 1.4;
         }
 
-        button.wrong {
-            background: rgba(255, 82, 82, 0.15) !important;
-            border-color: var(--error) !important;
-            color: var(--error) !important;
-            opacity: 0.7;
+        .options-list { display: flex; flex-direction: column; gap: 10px; }
+
+        button.option-btn {
+            background: var(--white);
+            border: 1px solid var(--border);
+            padding: 15px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.2s;
+            color: var(--text);
         }
 
-        /* FEEDBACK */
+        button.option-btn:hover { background: #f0f4f8; border-color: var(--primary); }
+        
+        button.correct { background: #e8f5e9 !important; border-color: #4caf50 !important; color: #2e7d32; font-weight: bold; }
+        button.wrong { background: #ffebee !important; border-color: #ef5350 !important; color: #c62828; }
+
         .feedback {
             margin-top: 20px;
             padding: 15px;
-            border-radius: 8px;
-            background: #252530;
-            border: 1px solid #444;
+            background: #f8f9fa;
+            border-left: 4px solid #666;
             display: none;
-            animation: slideDown 0.3s ease;
+            font-size: 0.95rem;
         }
 
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .next-btn {
-            width: 100%;
-            padding: 15px;
-            background: var(--accent);
-            color: #000;
+        .action-btn {
+            background: var(--primary);
+            color: white;
             border: none;
-            font-weight: 800;
-            font-size: 1.1rem;
-            margin-top: 20px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 4px;
             cursor: pointer;
-            border-radius: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.2s;
+            margin-top: 20px;
             display: none;
-            box-shadow: 0 4px 15px rgba(41, 182, 246, 0.4);
+            float: right;
+        }
+        .action-btn:hover { background: #002244; }
+
+        .back-btn {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
         }
 
-        .next-btn:hover {
-            background: #4fc3f7;
-            transform: scale(1.02);
-        }
-
-        /* PANTALLA FINAL */
-        .result-screen {
-            padding: 40px;
-            text-align: center;
-            display: none;
-        }
-        
-        .score-circle {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 5px solid var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--accent);
-            margin: 0 auto 20px auto;
-            box-shadow: 0 0 30px rgba(41, 182, 246, 0.2);
-        }
+        /* RESULTADOS */
+        .results { text-align: center; display: none; }
+        .score-big { font-size: 4rem; font-weight: bold; color: var(--primary); margin: 20px 0; }
 
     </style>
 </head>
 <body>
 
-<div class="scope-container">
-    <header>
-        <h1><span style="font-size:1.5em">∿</span> DIAGNOSTIC TOOL V2.0</h1>
-        <div style="display:flex; align-items:center; gap:10px; font-size:0.8rem; color:#aaa;">
-            <span>OSCILOSCOPIO</span>
-            <span class="battery-icon">🔋 98%</span>
-        </div>
-    </header>
+<header>
+    <h1>Plataforma de Evaluación Técnica</h1>
+    <p class="subtitle">Parametrización Electrónica | Maquinaria Pesada</p>
+</header>
 
-    <div class="screen-frame">
-        <div class="screen">
-            <div class="wave-line"></div>
-            <div class="os-info" style="top:5px; left:5px;">CH1: 2.00V</div>
-            <div class="os-info" style="top:5px; right:5px;">Trig: 2.4V</div>
-            <div class="os-info" style="bottom:5px; right:5px;">Time: 500us</div>
-            <div class="os-info" style="bottom:5px; left:5px;">DC Coupling</div>
-        </div>
-    </div>
-
-    <div class="quiz-area" id="quiz-box">
-        <div class="stats-bar">
-            <span id="q-progress">Pregunta 1 / 20</span>
-            <span id="current-score">Puntaje: 0</span>
+<div class="container" id="main-menu">
+    <h3>Seleccione el Módulo de Evaluación:</h3>
+    <div class="menu-grid">
+        <div class="menu-card" onclick="startQuiz('math')">
+            <span class="menu-icon">🧮</span>
+            <div class="menu-title">Taller de Cálculo</div>
+            <div class="menu-desc">Ley de Ohm y Watt con voltaje implícito (12V/24V).</div>
         </div>
 
-        <div class="question" id="question-text">
-            Cargando base de datos...
+        <div class="menu-card" onclick="startQuiz('scope')">
+            <span class="menu-icon">📟</span>
+            <div class="menu-title">Osciloscopio</div>
+            <div class="menu-desc">Configuración, lectura de ondas y diagnóstico.</div>
         </div>
 
-        <div class="options-grid" id="options-box">
-            </div>
-
-        <div class="feedback" id="feedback-msg"></div>
-
-        <button class="next-btn" onclick="nextQuestion()">Siguiente Análisis ➔</button>
-    </div>
-
-    <div class="result-screen" id="result-box">
-        <div class="score-circle" id="final-score">0%</div>
-        <h2 style="color:#fff; margin-bottom:10px;">Diagnóstico Completado</h2>
-        <p id="final-msg" style="color:#aaa; margin-bottom:30px;">...</p>
-        <button class="next-btn" style="display:block" onclick="location.reload()">🔄 REINICIAR SISTEMA</button>
+        <div class="menu-card" onclick="startQuiz('exam')">
+            <span class="menu-icon">📝</span>
+            <div class="menu-title">Simulacro Examen</div>
+            <div class="menu-desc">20 preguntas aleatorias de TODO el temario.</div>
+        </div>
     </div>
 </div>
 
+<div class="container quiz-section" id="quiz-interface">
+    <button class="back-btn" onclick="location.reload()">← Volver al Menú</button>
+    
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <div class="question-box" id="question-text">
+        Cargando pregunta...
+    </div>
+
+    <div class="options-list" id="options-container">
+        </div>
+
+    <div class="feedback" id="feedback-box"></div>
+    <button class="action-btn" id="next-btn" onclick="nextQuestion()">Siguiente Pregunta</button>
+</div>
+
+<div class="container results" id="results-screen">
+    <h2>Evaluación Finalizada</h2>
+    <p>Su calificación obtenida es:</p>
+    <div class="score-big" id="final-score">0.0</div>
+    <p id="final-msg">Mensaje de estado...</p>
+    <button class="action-btn" style="display:inline-block; float:none;" onclick="location.reload()">Realizar Nueva Evaluación</button>
+</div>
+
 <script>
-    // BASE DE DATOS DE PREGUNTAS (Tus mismas preguntas, lógica intacta)
-    const questions = [
-        // --- ZONA VERTICAL ---
-        { q: "La señal se sale de la pantalla por arriba y por abajo. ¿Qué ajuste debes hacer?", opts: ["Aumentar Volts/Div (Zoom Vertical)", "Ajustar Sec/Div", "Mover Posición Horizontal", "Mover Trigger"], a: 0, exp: "Necesitas aumentar la escala de voltaje (hacer 'zoom out' vertical) para que la onda quepa en la pantalla." },
-        { q: "Tienes dos señales (CH1 y CH2) superpuestas. ¿Qué control las separa?", opts: ["Position (Vertical)", "Trigger Level", "Sec/Div", "Probe Attenuation"], a: 0, exp: "La perilla 'Vertical Position' mueve la señal arriba o abajo sin cambiar su voltaje, solo para organizarlas." },
-        { q: "¿Para qué sirve el acoplamiento 'AC'?", opts: ["Bloquea la corriente continua, deja ver solo el rizado/ruido", "Mide batería directa", "Apaga el canal", "Muestra la señal pura"], a: 0, exp: "El modo AC pone un filtro que elimina el voltaje base. Es vital para ver el 'rizado' de un alternador malo." },
-        { q: "Mides 12V pero la pantalla dice 1.2V. ¿Qué pasa?", opts: ["Sonda en x10 y Osciloscopio en x1", "Trigger alto", "Base de tiempo lenta", "Falta masa"], a: 0, exp: "Si la sonda atenúa (x10), debes configurar el canal en el menú para que multiplique x10 y muestre el valor real." },
-        // --- ZONA HORIZONTAL ---
-        { q: "Solo ves líneas verticales rápidas y borrosas. ¿Qué ajustas?", opts: ["Sec/Div (Base de tiempo)", "Volts/Div", "Trigger", "Brillo"], a: 0, exp: "La señal es muy lenta para tu zoom actual. Ajusta Sec/Div para ver la forma de onda." },
-        { q: "Si la base de tiempo es '500 us' (microsegundos), la señal es:", opts: ["Muy rápida (CAN Bus, Inyectores)", "Muy lenta (Temp. Motor)", "Estática", "DC pura"], a: 0, exp: "Microsegundos es para electrónica de alta velocidad." },
-        // --- TRIGGER ---
-        { q: "La onda 'baila' de izquierda a derecha. No se queda quieta.", opts: ["Ajustar Trigger Level", "Ajustar Posición Vertical", "Cambiar Volts/Div", "Nada, es normal"], a: 0, exp: "Falta sincronización. Mueve el nivel de disparo (Trigger) hasta que cruce la onda." },
-        { q: "¿Qué hace el modo 'SINGLE'?", opts: ["Captura una vez y congela la pantalla", "Disparo continuo", "Apaga el equipo", "Solo canal 1"], a: 0, exp: "Ideal para fallas que ocurren una sola vez y desaparecen (fallas intermitentes)." },
-        { q: "Trigger Level en 12V, pero la señal solo llega a 5V. (Modo Normal)", opts: ["Pantalla negra / Congelada", "Se ve bien", "Se quema", "Se ve distorsionada"], a: 0, exp: "En modo Normal, si la señal no toca el nivel de disparo, el osciloscopio NO dibuja nada." },
-        { q: "Quieres disparar cuando la señal EMPIEZA a subir.", opts: ["Slope: Rising (Ascendente)", "Slope: Falling (Descendente)", "Coupling: GND", "Invert: ON"], a: 0, exp: "Slope Rising (Flanco de subida) dispara en la pendiente positiva." },
-        // --- SONDA ---
-        { q: "Vas a medir picos de 400V en una bobina. ¿Sonda?", opts: ["x10 (Atenuada)", "x1 (Directa)", "Sin sonda", "Cable pelado"], a: 0, exp: "x10 protege el equipo reduciendo el voltaje de entrada 10 veces." },
-        { q: "¿Dónde conectas el caimán NEGRO de la sonda?", opts: ["Siempre a MASA (Chasis/Bat-)", "A positivo", "A la señal", "A nada"], a: 0, exp: "El negro es referencia (0V). Si toca positivo, haces un cortocircuito grave." },
-        // --- LECTURA ---
-        { q: "Volts/Div = 2V. La señal mide 3 cuadros de alto. ¿Voltaje?", opts: ["6 Voltios", "2 Voltios", "3 Voltios", "5 Voltios"], a: 0, exp: "3 cuadros x 2V = 6V." },
-        { q: "Sec/Div = 1ms. Un ciclo mide 4 cuadros de ancho. ¿Periodo?", opts: ["4 ms", "1 ms", "0.25 ms", "40 ms"], a: 0, exp: "4 cuadros x 1ms = 4ms." },
-        { q: "La señal tiene mucho 'ruido' (línea gruesa/sucia).", opts: ["Usar modo Average (Promedio)", "Peak Detect", "Single", "Roll Mode"], a: 0, exp: "El modo Promedio limpia el ruido aleatorio de la señal." },
-        // --- GENERAL ---
-        { q: "La parte metálica exterior del conector BNC es:", opts: ["Masa (Tierra)", "Señal", "220V", "Plástico"], a: 0, exp: "Todo el chasis del conector BNC es masa. Cuidado con tocar positivos con él." },
-        { q: "¿Botón para configurar todo automático?", opts: ["Auto Set / Auto Scale", "Menu", "Run/Stop", "Measure"], a: 0, exp: "Auto Set busca la señal y la acomoda sola. Útil para empezar rápido." },
-        { q: "¿Botón para ver números (Voltaje, Frecuencia) en pantalla?", opts: ["Measure (Medidas)", "Acquire", "Utility", "Save"], a: 0, exp: "Measure despliega el menú de valores numéricos." },
-        { q: "Modo 'Roll' (la señal camina de derecha a izq) sirve para:", opts: ["Señales lentas (O2, Temp)", "Inyectores", "Red CAN", "Congelar"], a: 0, exp: "Para ver cambios lentos en tiempo real, como un sensor de oxígeno oscilando." },
-        { q: "¿Qué hace la función 'Invert'?", opts: ["Voltea la señal (Positivo se ve abajo)", "Apaga el canal", "Cambia color", "Filtra ruido"], a: 0, exp: "Invierte la polaridad visualmente en la pantalla." }
+    // --- BASE DE DATOS FIJA (TEORÍA Y OSCILOSCOPIO) ---
+    const theoryQuestions = [
+        // OSCILOSCOPIO
+        { q: "En el osciloscopio, ¿qué ajuste controla la escala vertical?", opts: ["Volts/Div", "Sec/Div", "Trigger", "Position"], a: 0, tag: "scope", exp: "Volts/Div ajusta la amplitud (voltaje)." },
+        { q: "Si visualizas una señal digital CAN BUS, ¿qué unidad de tiempo es más apropiada?", opts: ["Microsegundos (us)", "Segundos (s)", "Minutos", "Horas"], a: 0, tag: "scope", exp: "Las redes de datos son muy rápidas (500 kbps), requieren 'us'." },
+        { q: "El 'Trigger' o Disparo sirve para:", opts: ["Estabilizar la señal en pantalla", "Aumentar el voltaje", "Filtrar ruido", "Guardar la imagen"], a: 0, tag: "scope", exp: "El Trigger sincroniza el inicio del barrido para que la onda se vea quieta." },
+        { q: "¿Qué indica el acoplamiento AC en la medición?", opts: ["Solo componente alterna (bloquea DC)", "Solo componente continua", "Mide resistencia", "Apaga el canal"], a: 0, tag: "scope", exp: "AC Coupling elimina el voltaje base para ver solo las variaciones (ruido)." },
+        { q: "Al medir un actuador PWM, el 'Duty Cycle' representa:", opts: ["El porcentaje de tiempo en ON", "El voltaje máximo", "La frecuencia de la señal", "La resistencia de la bobina"], a: 0, tag: "scope", exp: "Duty Cycle es el ciclo de trabajo activo (%) en un periodo." },
+        { q: "Si usas una sonda atenuadora x10 midiendo 12V, ¿cuánto voltaje entra realmente al osciloscopio?", opts: ["1.2 V", "12 V", "120 V", "0.12 V"], a: 0, tag: "scope", exp: "La sonda divide por 10. Entran 1.2V, por eso debes configurar el equipo en x10." },
+        { q: "El cable negro de la sonda del osciloscopio se conecta a:", opts: ["Masa (Chasis)", "Positivo Batería", "Señal", "Alternador"], a: 0, tag: "scope", exp: "Siempre a masa. Conectarlo a positivo causa corto." },
+        
+        // SENSORES
+        { q: "¿Qué tipo de señal emite un sensor CKP Inductivo?", opts: ["Analógica (Senoidal)", "Digital (Cuadrada)", "PWM", "Constante"], a: 0, tag: "theory", exp: "El inductivo genera voltaje AC, creando una onda senoidal." },
+        { q: "Un sensor de Efecto Hall necesita:", opts: ["Alimentación, Masa y Señal (3 cables)", "Solo 2 cables", "No necesita alimentación", "Presión de aire"], a: 0, tag: "theory", exp: "El Hall es un chip activo, requiere voltaje externo para funcionar." },
+        { q: "En un termistor NTC, si la temperatura aumenta:", opts: ["La resistencia disminuye", "La resistencia aumenta", "El voltaje sube", "No cambia nada"], a: 0, tag: "theory", exp: "NTC = Coeficiente Negativo. Más calor, menos resistencia." },
+        { q: "Para equilibrar un Puente de Wheatstone, el voltaje entre los puntos centrales debe ser:", opts: ["0 Voltios", "5 Voltios", "12 Voltios", "Infinito"], a: 0, tag: "theory", exp: "El equilibrio significa diferencia de potencial cero." },
+        
+        // MAQUETA Y CABLEADO
+        { q: "En la maquinaria, el 'Master Switch' corta:", opts: ["El negativo (o positivo) principal de la batería", "Solo las luces", "Solo el arranque", "La radio"], a: 0, tag: "theory", exp: "El cortacorriente aísla la batería del resto del chasis." },
+        { q: "Si mides continuidad en un fusible y el multímetro marca 'OL', el fusible está:", opts: ["Quemado (Abierto)", "Bueno", "En cortocircuito", "Operativo"], a: 0, tag: "theory", exp: "OL (Open Loop) significa que no hay camino para la corriente." },
+        { q: "El terminal 30 de un relé estándar se conecta habitualmente a:", opts: ["Potencia (Batería/Fusible)", "Salida a consumidor", "Masa", "Señal de control"], a: 0, tag: "theory", exp: "30 es la entrada de potencia (Común)." },
+        { q: "El terminal 86 de un relé corresponde a:", opts: ["Bobina (Control +)", "Potencia", "Salida", "Masa"], a: 0, tag: "theory", exp: "85 y 86 son la bobina de control." }
     ];
 
-    let currentQ = 0;
-    let score = 0;
-    let shuffledQuestions = [];
+    // --- GENERADOR DE MATEMÁTICAS (INFINITO) ---
+    const vehicles12 = ["Toyota Hilux", "Mitsubishi L200", "Nissan V16", "Suzuki Swift", "Ford Ranger", "Moto Honda", "Kia Rio"];
+    const vehicles24 = ["Camión Volvo FH", "Cargador Frontal CAT", "Excavadora Komatsu", "Bus Scania", "Camión Minero", "Tractor John Deere"];
 
-    function start() {
-        shuffledQuestions = questions.sort(() => 0.5 - Math.random());
-        currentQ = 0;
+    function generateMathQuestion() {
+        const type = Math.floor(Math.random() * 3); // 0: Intensidad, 1: Resistencia, 2: Potencia
+        const is24V = Math.random() > 0.5;
+        const vehicle = is24V ? vehicles24[Math.floor(Math.random() * vehicles24.length)] : vehicles12[Math.floor(Math.random() * vehicles12.length)];
+        const voltage = is24V ? 24 : 12;
+        
+        let qText, correct, dist1, dist2, dist3, explanation;
+
+        if (type === 0) { // Calcular Intensidad (I = V/R)
+            const R = Math.floor(Math.random() * 20) + 2; // 2 a 22 Ohms
+            const I = (voltage / R).toFixed(2);
+            qText = `Estás diagnosticando un <b>${vehicle}</b>. Mides una resistencia de <b>${R} Ohms</b> en un componente. ¿Cuál es la Intensidad teórica que circula?`;
+            correct = `${I} A`;
+            dist1 = `${(voltage * R).toFixed(0)} A`; // Error multiplicar
+            dist2 = `${(R / voltage).toFixed(2)} A`; // Error dividir al revés
+            dist3 = `${(12 / R).toFixed(2)} A`; // Error de voltaje incorrecto (trampa)
+            explanation = `Ley de Ohm: I = V / R. <br>Como es ${vehicle}, usas <b>${voltage}V</b>. <br>${voltage}V / ${R}Ω = <b>${I}A</b>.`;
+        } 
+        else if (type === 1) { // Calcular Resistencia (R = V/I)
+            const I = Math.floor(Math.random() * 10) + 1; 
+            const R = (voltage / I).toFixed(1);
+            qText = `En un <b>${vehicle}</b>, mides un consumo de corriente de <b>${I} Amperios</b> en un circuito. ¿Cuál es la resistencia de la carga?`;
+            correct = `${R} Ω`;
+            dist1 = `${(voltage * I).toFixed(0)} Ω`;
+            dist2 = "0.5 Ω";
+            dist3 = `${(12 / I).toFixed(1)} Ω`; 
+            explanation = `Ley de Ohm: R = V / I. <br>Vehículo ${vehicle} usa <b>${voltage}V</b>. <br>${voltage}V / ${I}A = <b>${R}Ω</b>.`;
+        }
+        else { // Calcular Potencia (P = V*I)
+            const I = Math.floor(Math.random() * 15) + 2;
+            const P = voltage * I;
+            qText = `Necesitas reemplazar un fusible en un <b>${vehicle}</b>. El circuito consume <b>${I} Amperios</b>. ¿Qué potencia eléctrica está consumiendo?`;
+            correct = `${P} Watts`;
+            dist1 = `${(voltage / I).toFixed(1)} Watts`;
+            dist2 = `${P * 2} Watts`;
+            dist3 = `${(12 * I)} Watts`; // Trampa voltaje 12v en camión
+            explanation = `Ley de Watt: P = V x I. <br>Vehículo ${vehicle} usa <b>${voltage}V</b>. <br>${voltage}V x ${I}A = <b>${P}W</b>.`;
+        }
+
+        return {
+            q: qText,
+            opts: [correct, dist1, dist2, dist3].sort(() => 0.5 - Math.random()),
+            a: -1, // Se calculará dinámicamente al buscar el índice de 'correct'
+            correctVal: correct,
+            tag: "math",
+            exp: explanation
+        };
+    }
+
+    // --- LÓGICA DEL EXAMEN ---
+    let currentQuiz = [];
+    let currentIndex = 0;
+    let score = 0;
+
+    function startQuiz(mode) {
+        currentQuiz = [];
+        currentIndex = 0;
         score = 0;
-        document.getElementById('result-box').style.display = 'none';
-        document.getElementById('quiz-box').style.display = 'block';
+
+        // 1. GENERAR BANCO DE PREGUNTAS SEGÚN MODO
+        if (mode === 'math') {
+            // Generar 20 preguntas matemáticas nuevas
+            for(let i=0; i<20; i++) currentQuiz.push(generateMathQuestion());
+        } 
+        else if (mode === 'scope') {
+            // Filtrar solo preguntas de osciloscopio
+            currentQuiz = theoryQuestions.filter(q => q.tag === 'scope');
+            // Duplicarlas o revolverlas si son pocas, o mezclar
+            currentQuiz = currentQuiz.sort(() => 0.5 - Math.random());
+        } 
+        else if (mode === 'exam') {
+            // MODO EXAMEN: MEZCLA TOTAL
+            // Tomamos toda la teoría
+            let pool = [...theoryQuestions]; 
+            // Generamos 30 matemáticas para engordar el pool
+            for(let i=0; i<30; i++) pool.push(generateMathQuestion());
+            
+            // Barajar todo el pool gigante
+            pool.sort(() => 0.5 - Math.random());
+            
+            // Tomar solo 20 preguntas
+            currentQuiz = pool.slice(0, 20);
+        }
+
+        // Ajustar índices de respuestas correctas para las generadas
+        currentQuiz.forEach(q => {
+            if(q.a === -1) {
+                q.a = q.opts.indexOf(q.correctVal);
+            }
+        });
+
+        // UI
+        document.getElementById('main-menu').style.display = 'none';
+        document.getElementById('quiz-interface').style.display = 'block';
+        document.getElementById('results-screen').style.display = 'none';
+        
         loadQuestion();
     }
 
     function loadQuestion() {
-        const qData = shuffledQuestions[currentQ];
-        document.getElementById('q-progress').innerText = `ANÁLISIS ${currentQ + 1} / ${shuffledQuestions.length}`;
-        document.getElementById('question-text').innerText = qData.q;
+        const q = currentQuiz[currentIndex];
         
-        const optsDiv = document.getElementById('options-box');
-        optsDiv.innerHTML = '';
-        
-        // Mezclar opciones
-        const answers = qData.opts.map((opt, i) => ({ txt: opt, idx: i }));
-        const shuffledAnswers = answers.sort(() => 0.5 - Math.random());
+        // Barra de progreso
+        const pct = ((currentIndex) / currentQuiz.length) * 100;
+        document.getElementById('progress-fill').style.width = `${pct}%`;
 
-        shuffledAnswers.forEach(ans => {
+        document.getElementById('question-text').innerHTML = `${currentIndex + 1}. ${q.q}`;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+
+        q.opts.forEach((opt, idx) => {
             const btn = document.createElement('button');
-            btn.className = 'opt-btn';
-            btn.innerHTML = `<span style="color:#29b6f6; font-weight:bold; margin-right:10px;">${String.fromCharCode(65+ans.idx)}:</span> ${ans.txt}`; // A, B, C, D
-            btn.onclick = () => check(btn, ans.idx === qData.a, qData.exp);
-            optsDiv.appendChild(btn);
+            btn.className = 'option-btn';
+            btn.innerHTML = opt;
+            btn.onclick = () => checkAnswer(idx, btn, q);
+            optsContainer.appendChild(btn);
         });
 
-        document.getElementById('feedback-msg').style.display = 'none';
-        document.querySelector('.next-btn').style.display = 'none';
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
     }
 
-    function check(btn, isCorrect, exp) {
-        const btns = document.querySelectorAll('.opt-btn');
-        btns.forEach(b => b.disabled = true); // Bloquear botones
-        
-        const fb = document.getElementById('feedback-msg');
-        fb.style.display = 'block';
-        
-        if (isCorrect) {
-            btn.classList.add('correct');
-            fb.innerHTML = `<div style="color:#00e676; font-weight:bold; margin-bottom:5px;">✅ DIAGNÓSTICO CORRECTO</div>${exp}`;
-            fb.style.borderColor = "#00e676";
+    function checkAnswer(selectedIdx, btn, qData) {
+        // Bloquear botones
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedback = document.getElementById('feedback-box');
+        feedback.style.display = 'block';
+
+        if(selectedIdx === qData.a) {
             score++;
+            btn.classList.add('correct');
+            feedback.innerHTML = `<span style="color:green; font-weight:bold;">✅ Correcto</span><br>${qData.exp}`;
         } else {
             btn.classList.add('wrong');
-            fb.innerHTML = `<div style="color:#ff5252; font-weight:bold; margin-bottom:5px;">❌ ERROR DE LECTURA</div>${exp}`;
-            fb.style.borderColor = "#ff5252";
+            // Mostrar la correcta
+            allBtns[qData.a].classList.add('correct');
+            feedback.innerHTML = `<span style="color:red; font-weight:bold;">❌ Incorrecto</span><br>${qData.exp}`;
         }
-        
-        document.getElementById('current-score').innerText = `Puntaje: ${score}`;
-        document.querySelector('.next-btn').style.display = 'block';
+
+        document.getElementById('next-btn').style.display = 'block';
     }
 
     function nextQuestion() {
-        currentQ++;
-        if (currentQ < shuffledQuestions.length) {
+        currentIndex++;
+        if(currentIndex < currentQuiz.length) {
             loadQuestion();
         } else {
-            endGame();
+            showResults();
         }
     }
 
-    function endGame() {
-        document.getElementById('quiz-box').style.display = 'none';
-        document.getElementById('result-box').style.display = 'block';
+    function showResults() {
+        document.getElementById('quiz-interface').style.display = 'none';
+        document.getElementById('results-screen').style.display = 'block';
+
+        // Nota escala 1.0 a 7.0 (Chile)
+        // Puntaje max = currentQuiz.length
+        // Formula: (Puntaje / Max) * 7. (Ajuste simple)
+        let grade = (score / currentQuiz.length) * 7;
+        if(grade < 1) grade = 1;
         
-        const percentage = Math.round((score / shuffledQuestions.length) * 100);
-        document.getElementById('final-score').innerText = `${percentage}%`;
+        document.getElementById('final-score').innerText = grade.toFixed(1);
         
         let msg = "";
-        let color = "#aaa";
+        if(grade >= 6) msg = "¡Excelente! Estás listo para el examen.";
+        else if(grade >= 4) msg = "Aprobado. Tienes los conceptos, pero repasa los errores.";
+        else msg = "Reprobado. Necesitas estudiar más las fórmulas y teoría.";
         
-        if (percentage === 100) { msg = "🏆 NIVEL EXPERTO: Certificación Lista."; color = "#00e676"; }
-        else if (percentage >= 80) { msg = "✅ NIVEL TÉCNICO: Aprobado Sólido."; color = "#29b6f6"; }
-        else if (percentage >= 60) { msg = "⚠️ NIVEL APRENDIZ: Necesitas repasar Trigger y Voltajes."; color = "#ffeb3b"; }
-        else { msg = "⛔ PELIGRO: No toques el osciloscopio real todavía."; color = "#ff5252"; }
-        
-        document.getElementById('final-msg').innerText = msg;
-        document.getElementById('final-msg').style.color = color;
+        document.getElementById('final-msg').innerText = `${msg} (${score}/${currentQuiz.length} aciertos)`;
     }
 
-    // Iniciar
-    start();
 </script>
 
 </body>
 </html>
-
